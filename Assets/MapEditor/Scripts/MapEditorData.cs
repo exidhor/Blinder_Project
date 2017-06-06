@@ -9,7 +9,7 @@ namespace MapEditor
     public class MapEditorData : ScriptableObject
     {
         public Vector2 Bounds;
-        public Vector2 CaseSize;
+        public float CaseSize;
 
         public bool DrawGrid;
         public bool DrawCase;
@@ -17,5 +17,15 @@ namespace MapEditor
         public Color GridColor;
 
         public List<ColorContent> Colors = new List<ColorContent>();
+
+        public List<ECaseContent> grid = new List<ECaseContent>();
+
+        public void ClearGrid()
+        {
+            for (int i = 0; i < grid.Count; i++)
+            {
+                grid[i] = ECaseContent.None;
+            }
+        }
     }
 }

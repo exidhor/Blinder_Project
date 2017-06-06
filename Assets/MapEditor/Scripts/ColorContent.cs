@@ -7,7 +7,7 @@ using UnityEngine;
 namespace MapEditor
 {
     [Serializable]
-    public struct ColorContent 
+    public class ColorContent 
     {
         public ECaseContent CaseContent;
         public Color Color;

@@ -23,9 +23,19 @@ namespace Tools
             return new Vector2i(c1.x + c2.x, c1.y + c2.y);
         }
 
-        public static Vector2 operator -(Vector2i c1, Vector2i c2)
+        public static Vector2i operator -(Vector2i c1, Vector2i c2)
         {
-            return new Vector2(c1.x - c2.x, c1.y - c2.y);
+            return new Vector2i(c1.x - c2.x, c1.y - c2.y);
+        }
+
+        public static Vector2 operator *(Vector2i c, float f)
+        {
+            return new Vector2(c.x * f, c.y * f);
+        }
+
+        public static Vector2 operator *(float f, Vector2i c)
+        {
+            return new Vector2(c.x * f, c.y * f);
         }
 
         public static implicit operator Vector2(Vector2i c)

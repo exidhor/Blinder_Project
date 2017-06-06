@@ -9,11 +9,17 @@ namespace MapEditor
     [ExecuteInEditMode]
     public class EditModeGridSnap : MonoBehaviour
     {
-        public float snapValue = 1;
         public float depth = 0;
 
         void Update()
         {
+            float snapValue = MapEditorModel.Instance.data.CaseSize;
+
+            if (snapValue == 0)
+            {
+                return;
+            }
+
             float snapInverse = 1 / snapValue;
 
             float x, y, z;

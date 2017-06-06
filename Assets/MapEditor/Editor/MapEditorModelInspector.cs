@@ -14,20 +14,27 @@ namespace MapEditorEditor
         [DrawGizmo(GizmoType.NonSelected)]
         static void DrawGizmoNonSelected(MapEditorModel mapEditorModel, GizmoType type)
         {
-            DrawGizmosGrid(mapEditorModel);
+            DisplayGizmos(mapEditorModel);
         }
 
         [DrawGizmo(GizmoType.Selected)]
         static void DrawGizmo(MapEditorModel mapEditorModel, GizmoType type)
         {
-            DrawGizmosGrid(mapEditorModel);
+            DisplayGizmos(mapEditorModel);
         }
 
-        void OnSceneGUI()
+        static void DisplayGizmos(MapEditorModel mapEditorModel)
         {
-            if (Event.current.type == EventType.Repaint)
+            MapEditorData data = mapEditorModel.data;
+
+            if (data.DrawGrid)
             {
-                DrawHandlesGrid((MapEditorModel)target);
+                DrawGizmosGrid(mapEditorModel);
+            }
+
+            if (data.DrawCase)
+            {
+                DrawGizmosCases(mapEditorModel);
             }
         }
 
@@ -35,67 +42,64 @@ namespace MapEditorEditor
         {
             MapEditorData data = model.data;
 
-            if (data.DrawGrid)
+            Gizmos.color = data.GridColor;
+
+            Vector2 position = model.transform.position;
+            position -= data.Bounds / 2;
+
+            Rect rect = new Rect(position, data.Bounds);
+
+            Vector2 startLine = rect.min;
+            Vector2 endLine = new Vector2(rect.xMin, rect.yMax);
+            Vector2 step = new Vector2(data.CaseSize, 0);
+
+            for (int i = 0; i <= model.caseCount.x; i++)
             {
-                Gizmos.color = data.GridColor;
+                Gizmos.DrawLine(startLine, endLine);
 
-                Vector2 position = model.transform.position;
-                position -= data.Bounds / 2;
+                startLine += step;
+                endLine += step;
+            }
 
-                Rect rect = new Rect(position, data.Bounds);
+            startLine = rect.min;
+            endLine = new Vector2(rect.xMax, rect.yMin);
+            step = new Vector2(0, data.CaseSize);
 
-                Vector2 startLine = rect.min;
-                Vector2 endLine = new Vector2(rect.xMin, rect.yMax);
-                Vector2 step = new Vector2(data.CaseSize.x, 0);
+            for (int i = 0; i <= model.caseCount.x; i++)
+            {
+                Gizmos.DrawLine(startLine, endLine);
 
-                for (int i = 0; i <= model.caseCount.x; i++)
-                {
-                    Gizmos.DrawLine(startLine, endLine);
-
-                    startLine += step;
-                    endLine += step;
-                }
-
-                startLine = rect.min;
-                endLine = new Vector2(rect.xMax, rect.yMin);
-                step = new Vector2(0, data.CaseSize.y);
-
-                for (int i = 0; i <= model.caseCount.x; i++)
-                {
-                    Gizmos.DrawLine(startLine, endLine);
-
-                    startLine += step;
-                    endLine += step;
-                }
+                startLine += step;
+                endLine += step;
             }
         }
 
-        private static void DrawHandlesGrid(MapEditorModel model)
+        private static void DrawGizmosCases(MapEditorModel model)
         {
+            float offset = 0.5f;
+
+            Vector3 gizmosCaseSize = new Vector3(model.data.CaseSize - offset * 2, 
+                model.data.CaseSize - offset * 2, 
+                0.1f);
+
+            Vector3 firstPosition = model.transform.position;
+            firstPosition.x -= (model.caseCount.x * model.data.CaseSize) / 2 - model.data.CaseSize / 2;
+            firstPosition.y -= (model.caseCount.y * model.data.CaseSize) / 2 - model.data.CaseSize / 2;
+
             for (int i = 0; i < model.caseCount.x; i++)
             {
                 for (int j = 0; j < model.caseCount.y; j++)
                 {
-                    ECaseContent caseContent = model.grid[i * model.caseCount.x + j];
-                    Color color = model.data.Colors[(int) caseContent].Color;
+                    ECaseContent caseContent = (ECaseContent) model.data.grid[i * model.caseCount.x + j];
+                    Gizmos.color = model.data.Colors[(int) caseContent].Color;
 
-                    //DrawHandleCase(caseContent, model.transform.position, i, j, color);       
+                    Vector3 position = firstPosition;
+                    position.x += i * model.data.CaseSize;
+                    position.y += j * model.data.CaseSize;
+
+                    Gizmos.DrawCube(position, gizmosCaseSize);   
                 }  
             }
-        }
-
-        private static void DrawHandleCase(ECaseContent caseContent, Vector3 position, Quaternion rotation,
-            int x, int y, Color color)
-        {
-            Handles.color = color;
-
-            Handles.RectangleHandleCap(
-                0,
-                position,
-                rotation,
-                1f,
-                EventType.Repaint
-                );
         }
     }
 }

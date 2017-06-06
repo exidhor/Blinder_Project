@@ -8,7 +8,7 @@ using UnityEngine;
 namespace MapEditor
 {
     [ExecuteInEditMode]
-    public class MapEditorModel : MonoBehaviour
+    public class MapEditorModel : MonoSingleton<MapEditorModel>
     {
         public MapEditorData data;
 
@@ -17,43 +17,49 @@ namespace MapEditor
             get { return _caseCount; }
         }
 
+        public Bounds bounds
+        {
+            get { return new Bounds(boundsCenter, boundsSize); }
+        }
+
+        public Vector2 boundsCenter
+        {
+            get { return transform.position; }
+        }
+
+        public Vector2 boundsSize
+        {
+            get { return _boundsSize; }
+        }
+
+        private Vector2 _boundsSize;
+
         private Vector2i _caseCount;
-
-        //public List<ECaseContent> grid
-        //{
-        //    get { return grid; }
-        //}
-
-        public List<ColorContent> colorTest;
-
-        public List<ECaseContent> grid;
 
         void Awake()
         {
-            grid = new List<ECaseContent>();
-
             data = ScriptableObject.CreateInstance<MapEditorData>();
         }
 
-        public void SetData(MapEditorData data)
+        public void ReconstructGrid()
         {
-            this.data = data;
-
             ConstructGrid();
         }
 
         private void ConstructGrid()
         {
-            _caseCount.x = (int)(data.Bounds.x / data.CaseSize.x);
-            _caseCount.y = (int)(data.Bounds.y / data.CaseSize.y);
+            _boundsSize = data.Bounds;
 
-            grid.Clear();
+            _caseCount.x = (int) (data.Bounds.x/data.CaseSize);
+            _caseCount.y = (int) (data.Bounds.y/data.CaseSize);
+
+            data.grid.Clear();
 
             for (int i = 0; i < _caseCount.x; i++)
             {
                 for (int j = 0; j < _caseCount.y; j++)
                 {
-                    grid.Add(ECaseContent.None);
+                    data.grid.Add((int)ECaseContent.None);
                 }
             }
         }
