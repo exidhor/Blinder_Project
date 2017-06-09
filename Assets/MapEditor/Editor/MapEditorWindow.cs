@@ -27,8 +27,25 @@ namespace MapEditorEditor
             instance.Show();
         }
 
+        void Awake()
+        {
+            Debug.Log("w Awake "  + GetInstanceID());
+        }
+
+        private void OnDisable()
+        {
+            Debug.Log("w OnDisable " + GetInstanceID());
+        }
+
+        private void OnDestroy()
+        {
+            Debug.Log("w OnDestroy " + GetInstanceID());
+        }
+
         void OnEnable()
         {
+            Debug.Log("w OnEnable " + GetInstanceID());
+
             _mapEditor = GameObject.FindObjectOfType<MapEditorModel>();
 
             _dataBuffer = _mapEditor.data;
@@ -40,7 +57,9 @@ namespace MapEditorEditor
 
             for (int i = 0; i < colorsSize; i++)
             {
-                _dataBuffer.Colors.Add(new ColorContent((ECaseContent)i));
+                //_dataBuffer.Colors.Add(CreateInstance<ColorContent>());
+                //_dataBuffer.Colors[i].CaseContent = (ECaseContent)i;
+                _dataBuffer.Colors.Add(new ColorContent((ECaseContent) i));
             }
 
             _showContentColors = new AnimBool(false);
@@ -62,20 +81,27 @@ namespace MapEditorEditor
             if (newBounds != _dataBuffer.Bounds
                 || newCaseSize != _dataBuffer.CaseSize)
             {
+                _dataBuffer.Bounds = newBounds;
+                _dataBuffer.CaseSize = newCaseSize;
+
                 _mapEditor.ReconstructGrid();
             }
-
-            _dataBuffer.Bounds = newBounds;
-            _dataBuffer.CaseSize = newCaseSize;
 
             _dataBuffer.GridColor = EditorGUILayout.ColorField("Grid color", _dataBuffer.GridColor);
 
             DrawColors();
 
+            _serializedData.ApplyModifiedProperties();
+
             if (GUILayout.Button("Bake"))
             {
                 Bake();
             }
+        }
+
+        private void Load()
+        {
+
         }
 
         private void Bake()
@@ -185,16 +211,31 @@ namespace MapEditorEditor
             if (EditorGUILayout.BeginFadeGroup(_showContentColors.faded))
             {
                 EditorGUI.indentLevel++;
+
+                //SerializedProperty property = _serializedData.FindProperty("Colors");
+
+                //SerializedObject obj = new SerializedObject(property.objectReferenceValue);
+
+                //EditorGUILayout.PropertyField(property);
+
+                //SerializedProperty property = _serializedData.FindProperty("Colors");
+
                 for (int i = 0; i < _dataBuffer.Colors.Count; i++)
                 {
+                    //SerializedObject serialized = new SerializedObject(_dataBuffer);
+
                     SerializedProperty property = _serializedData.FindProperty("Colors").GetArrayElementAtIndex(i);
+                    
+                    //SerializedProperty colorContentProperty = obj.
 
-                    bool isModified = EditorGUILayout.PropertyField(property);
+                    EditorGUILayout.PropertyField(property);
 
-                    if (isModified)
-                    {
-                        _dataBuffer.Colors[i].Color = property.colorValue;
-                    }
+                    //_serializedData.CopyFromSerializedProperty(property);
+
+                    //Debug.Log(((MapEditorData)_serializedData.targetObject).Colors[i].Color);
+                    //_dataBuffer.Colors[i].Color = ((MapEditorData)_serializedData.targetObject).Colors[i].Color;
+
+                    //_dataBuffer.Colors[i] = (ColorContent) property.objectReferenceValue;
                 }
                 EditorGUI.indentLevel--;
             }

@@ -34,7 +34,7 @@ namespace MapEditorEditor
             Rect positionX = new Rect(position.x + labelWidth, position.y, valueWidth, position.height);
             Rect labelPositionY = new Rect(position.x + labelWidth + valueWidth, position.y, labelWidth, position.height);
             Rect positionY = new Rect(position.x + 2 * labelWidth + valueWidth, position.y, valueWidth, position.height);
-
+            
             // Draw fields - passs GUIContent.none to each so they are drawn without labels
             EditorGUI.LabelField(labelPositionX, "Type");
             ECaseContent caseContent = (ECaseContent) (property.FindPropertyRelative("CaseContent").intValue);

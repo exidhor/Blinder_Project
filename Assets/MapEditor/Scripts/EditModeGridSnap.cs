@@ -11,6 +11,26 @@ namespace MapEditor
     {
         public float depth = 0;
 
+        private void Awake()
+        {
+            Debug.Log("b Awake " + GetInstanceID());
+        }
+
+        private void OnEnable()
+        {
+            Debug.Log("b OnEnable " + GetInstanceID());
+        }
+
+        private void OnDisable()
+        {
+            Debug.Log("b OnDisable " + GetInstanceID());
+        }
+
+        private void OnDestroy()
+        {
+            Debug.Log("b OnDestroy " + GetInstanceID());
+        }
+
         void Update()
         {
             float snapValue = MapEditorModel.Instance.data.CaseSize;

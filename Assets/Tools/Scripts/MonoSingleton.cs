@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Tools
 {
+    [ExecuteInEditMode]
     public abstract class MonoSingleton<T> : MonoBehaviour
         where T : MonoBehaviour
     {
@@ -17,9 +18,16 @@ namespace Tools
             {
                 if (_instance == null)
                 {
-                    GameObject go = new GameObject();
-                    _instance = go.AddComponent<T>();
-                    _instance.name = typeof(T).Name;
+                    // we first try to find if there is already an GameObject in the scene 
+                    _instance = GameObject.FindObjectOfType<T>();
+
+                    if(_instance == null)
+                    {
+                        // if not, we create one
+                        GameObject go = new GameObject();
+                        _instance = go.AddComponent<T>();
+                        _instance.name = typeof(T).Name;
+                    }
                 }
 
                 return _instance;
@@ -34,14 +42,14 @@ namespace Tools
             }
         }
 
-        protected virtual void OnEnable()
-        {
-            // we register this instance if it is created in the editor
-            if (_instance == null)
-            {
-                _instance = GameObject.FindObjectOfType<T>();
-            }
-        }
+        //protected virtual void Awake()
+        //{
+        //    // we register this instance if it is created in the editor
+        //    if (_instance == null)
+        //    {
+        //        _instance = GameObject.FindObjectOfType<T>();
+        //    }
+        //}
 
         protected virtual void OnDestroy()
         {

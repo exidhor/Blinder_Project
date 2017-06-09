@@ -39,6 +39,25 @@ namespace MapEditor
         void Awake()
         {
             data = ScriptableObject.CreateInstance<MapEditorData>();
+
+            Debug.DebugBreak();
+
+            Debug.Log("m Awake " + GetInstanceID());
+        }
+
+        private void OnEnable()
+        {
+            Debug.Log("m OnEnable " + GetInstanceID());
+        }
+
+        private void OnDisable()
+        {
+            Debug.Log("m OnDisable " + GetInstanceID());
+        }
+
+        private void OnDestroy()
+        {
+            Debug.Log("m OnDestroy " + GetInstanceID());
         }
 
         public void ReconstructGrid()

@@ -17,5 +17,10 @@ namespace MapEditor
             CaseContent = caseContent;
             Color = new Color();
         }
+
+        public static implicit operator Color(ColorContent colorContent)
+        {
+            return colorContent.Color;
+        }
     }
 }
