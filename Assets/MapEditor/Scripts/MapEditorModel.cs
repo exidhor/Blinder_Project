@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Tools;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace MapEditor
 {
@@ -19,53 +20,39 @@ namespace MapEditor
                 if (Data == null)
                     return 0;
 
-                return Data.CaseSize;
+                return Data.Grid.CaseSize;
             }
         }
 
         public Bounds bounds
         {
-            get { return new Bounds(boundsCenter, Data.Bounds); }
+            get { return new Bounds(center, Data.Grid.Size); }
         }
 
-        public Vector2 boundsCenter
+        public Vector2 center
         {
             get { return transform.position; }
         }
 
-        public Vector2 boundsSize
+        public Vector2 size
         {
-            get { return _boundsSize; }
+            get { return _size; }
         }
 
-        private Vector2 _boundsSize;
+        private Vector2 _size;
 
-
-        public void ReconstructGrid()
+        public void ConstructGrid()
         {
-            ConstructGrid();
-        }
+            //Data.Grid.Clear();
 
-        private void ConstructGrid()
-        {
-            Data.Grid.Clear();
-
-            Data.Grid.Resize(Data.CaseCount.x, Data.CaseCount.y);
-
-            //for (int i = 0; i < Data.CaseCount.x; i++)
-            //{
-            //    for (int j = 0; j < Data.CaseCount.y; j++)
-            //    {
-            //        Data.Grid.Add((int)ECaseContent.None);
-            //    }
-            //}
+            Data.Grid.Resize(Data.Grid.width, Data.Grid.height);
         }
 
         void Update()
         {
             if (Data != null)
             {
-                Data.Position = transform.position;
+                Data.Grid.Position = transform.position;
             }
         }
     }

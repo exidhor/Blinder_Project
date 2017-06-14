@@ -25,37 +25,63 @@ namespace MapEditorEditor
         private bool _showLoad = false;
         private bool _showCreateNew = false;
 
-        [MenuItem("Window/Map Editor")]
+        private static Vector2i? mouseCoord = null;
+        private static Vector2 mousePosition;
+        private static MapEditorWindow _instance;
+
+        [MenuItem("Window/Map Editor/Create Window")]
         static void Init()
         {
             // Get existing open window or if none, make a new one:
-            MapEditorWindow instance = (MapEditorWindow) EditorWindow.GetWindow(typeof(MapEditorWindow));
-            instance.titleContent = new GUIContent("Map Editor");
+            _instance = (MapEditorWindow) EditorWindow.GetWindow(typeof(MapEditorWindow));
+            _instance.titleContent = new GUIContent("Map Editor");
 
-            instance.Show();
+            _instance.Show();
         }
 
-        void Awake()
+        private static void OnScene(SceneView sceneview)
         {
-            Debug.Log("w Awake " + GetInstanceID());
+            mousePosition = Event.current.mousePosition;
+            mousePosition.y = SceneView.currentDrawingSceneView.camera.pixelHeight - mousePosition.y;
+            mousePosition = SceneView.currentDrawingSceneView.camera.ScreenToWorldPoint(mousePosition);
+            mousePosition.y = -mousePosition.y;
+            mousePosition.y *= -1;
+
+            mouseCoord = _instance._mapEditor.Data.Grid.GetCoordAt(mousePosition);
+
+            //Debug.Log("Drawn : " + mousePosition);
+
+            Handles.BeginGUI();
+
+            string coordText;
+            string mousePositionText = "Mouse Position : " + mousePosition + " (World coordinate)";
+
+            if (mouseCoord.HasValue)
+            {
+                coordText = "Coord : " +  mouseCoord.Value.x + ", " + mouseCoord.Value.y;
+            }
+            else
+            {
+                coordText = "Coord : " + "None";
+            }
+
+            GUILayout.Label(mousePositionText);
+            GUILayout.Label(coordText);
+            Handles.EndGUI();
         }
 
         private void OnDisable()
         {
-            Debug.Log("w OnDisable " + GetInstanceID());
+            SceneView.onSceneGUIDelegate -= OnScene;
 
             _mapEditor = GameObject.FindObjectOfType<MapEditorModel>();
             _dataBuffer = _mapEditor.Data;
         }
 
-        private void OnDestroy()
-        {
-            Debug.Log("w OnDestroy " + GetInstanceID());
-        }
-
         void OnEnable()
         {
-            //Debug.Log("w OnEnable " + GetInstanceID());
+            _instance = this;
+            SceneView.onSceneGUIDelegate += OnScene;
 
             _mapEditor = GameObject.FindObjectOfType<MapEditorModel>();
 
@@ -63,53 +89,40 @@ namespace MapEditorEditor
 
             _showContentColors = new AnimBool(false);
             _showContentColors.valueChanged.AddListener(Repaint);
-
-            //// tmp
-            //int colorsSize = 2;
-
-            //_dataBuffer.Colors = new List<ColorContent>(colorsSize);
-
-            //for (int i = 0; i < colorsSize; i++)
-            //{
-            //    _dataBuffer.Colors.Add(new ColorContent((ECaseContent) i));
-            //}
-
-            //_showContentColors = new AnimBool(false);
-            //_showContentColors.valueChanged.AddListener(Repaint);
-
-            //_serializedData = new SerializedObject(_dataBuffer);
         }
 
         void OnGUI()
         {
             if (_data != null)
             {
+                CaseContentGrid grid = _data.Grid;
+
                 _serializedData = new SerializedObject(_data);
 
                 bool reconstructGrid = false;
 
-                _data.DrawGrid = EditorGUILayout.Toggle("Draw grid", _data.DrawGrid);
+                grid.DrawGrid = EditorGUILayout.Toggle("Draw grid", grid.DrawGrid);
                 _data.DrawCase = EditorGUILayout.Toggle("Draw case", _data.DrawCase);
 
-                Vector2 newBounds = EditorGUILayout.Vector2Field("Bounds", _data.Bounds);
-                float newCaseSize = EditorGUILayout.FloatField("Case size", _data.CaseSize);
+                Vector2 newSize = EditorGUILayout.Vector2Field("Size", grid.Size);
+                float newCaseSize = EditorGUILayout.FloatField("Case size", grid.CaseSize);
 
-                if (newBounds != _data.Bounds
-                    || newCaseSize != _data.CaseSize)
+                if (newSize != grid.Size
+                    || newCaseSize != grid.CaseSize)
                 {
-                    _data.Bounds = newBounds;
-                    _data.CaseSize = newCaseSize;
+                    grid.Size = newSize;
+                    grid.CaseSize = newCaseSize;
 
-                    if (_data.CaseSize > 0)
+                    if (grid.CaseSize > 0)
                     {
-                        _data.CaseCount.x = (int)(_data.Bounds.x / _data.CaseSize);
-                        _data.CaseCount.y = (int)(_data.Bounds.y / _data.CaseSize);
+                        int width = (int)(grid.Size.x / grid.CaseSize);
+                        int height = (int)(grid.Size.y / grid.CaseSize);
 
-                        _mapEditor.ReconstructGrid();
+                        grid.Resize(width, height);
                     }
                 }
 
-                _data.GridColor = EditorGUILayout.ColorField("Grid color", _data.GridColor);
+                grid.Color = EditorGUILayout.ColorField("Grid color", grid.Color);
 
                 DrawColors();
 
@@ -201,7 +214,7 @@ namespace MapEditorEditor
             Obstacle[] obstacles = FindObjectsOfType<Obstacle>();
 
             // Remove old values
-            _data.ClearGrid();
+            _data.Grid.Clear();
 
             // Add the found obstacles
             for (int i = 0; i < obstacles.Length; i++)
@@ -247,8 +260,8 @@ namespace MapEditorEditor
 
             Vector2i coord = new Vector2i();
 
-            coord.x = (int) ((point.x + gridBounds.size.x/2)/_data.CaseSize);
-            coord.y = (int) ((point.y + +gridBounds.size.y/2)/_data.CaseSize);
+            coord.x = (int) ((point.x + gridBounds.size.x/2)/_data.Grid.CaseSize);
+            coord.y = (int) ((point.y + +gridBounds.size.y/2)/_data.Grid.CaseSize);
 
             return coord;
         }
@@ -285,9 +298,6 @@ namespace MapEditorEditor
                 {
                     for (int j = start.y; j <= end.y; j++)
                     {
-                        //int index = i*_mapEditor.Data.CaseCount.x + j;
-
-                        //_data.grid[index] = ECaseContent.Blocking;
                         _data.Grid[i][j] = ECaseContent.Blocking;
 
                         Debug.Log("Add blocking at " + i + ", " + j);

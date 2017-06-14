@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEditor;
 using MapEditor;
+using ToolsEditor;
 using UnityEngine;
 
 namespace MapEditorEditor
@@ -23,6 +24,41 @@ namespace MapEditorEditor
             DisplayGizmos(mapEditorModel);
         }
 
+        //void OnSceneGUI()
+        //{
+        //    MapEditorModel model = target as MapEditorModel;
+
+        //    DrawCoord(model);
+        //}
+
+        private static void DrawCoord(MapEditorModel model)
+        {
+            Vector3 mousePosition = Event.current.mousePosition;
+            mousePosition.y = SceneView.currentDrawingSceneView.camera.pixelHeight - mousePosition.y;
+            mousePosition = SceneView.currentDrawingSceneView.camera.ScreenToWorldPoint(mousePosition);
+            mousePosition.y = -mousePosition.y;
+
+
+            Vector2? mouseCoord = model.Data.Grid.GetCoordAt(mousePosition);
+
+            string coord;
+
+            Debug.Log("Drawn");
+
+            if (mouseCoord.HasValue)
+            {
+                coord = "Coord : " + mouseCoord.Value.x + ", " + mouseCoord.Value.y;
+            }
+            else
+            {
+                coord = "Coord : " + "None";
+            }
+
+            Handles.BeginGUI();
+            GUILayout.Label(coord);
+            Handles.EndGUI();
+        }
+
         static void DisplayGizmos(MapEditorModel mapEditorModel)
         {
             MapEditorData data = mapEditorModel.Data;
@@ -30,7 +66,7 @@ namespace MapEditorEditor
             if (data == null)
                 return;
 
-            if (data.DrawGrid)
+            if (data.Grid.DrawGrid)
             {
                 DrawGizmosGrid(mapEditorModel);
             }
@@ -45,18 +81,18 @@ namespace MapEditorEditor
         {
             MapEditorData data = model.Data;
 
-            Gizmos.color = data.GridColor;
+            Gizmos.color = data.Grid.Color;
 
             Vector2 position = model.transform.position;
-            position -= data.Bounds / 2;
+            position -= data.Grid.Size / 2;
 
-            Rect rect = new Rect(position, data.Bounds);
+            Rect rect = new Rect(position, data.Grid.Size);
 
             Vector2 startLine = rect.min;
             Vector2 endLine = new Vector2(rect.xMin, rect.yMax);
-            Vector2 step = new Vector2(data.CaseSize, 0);
+            Vector2 step = new Vector2(data.Grid.CaseSize, 0);
 
-            for (int i = 0; i <= model.Data.CaseCount.x; i++)
+            for (int i = 0; i <= model.Data.Grid.width; i++)
             {
                 Gizmos.DrawLine(startLine, endLine);
 
@@ -66,9 +102,9 @@ namespace MapEditorEditor
 
             startLine = rect.min;
             endLine = new Vector2(rect.xMax, rect.yMin);
-            step = new Vector2(0, data.CaseSize);
+            step = new Vector2(0, data.Grid.CaseSize);
 
-            for (int i = 0; i <= model.Data.CaseCount.x; i++)
+            for (int i = 0; i <= model.Data.Grid.height; i++)
             {
                 Gizmos.DrawLine(startLine, endLine);
 
@@ -79,30 +115,68 @@ namespace MapEditorEditor
 
         private static void DrawGizmosCases(MapEditorModel model)
         {
-            float offset = 0.5f;
+            float offset = 0.1f * model.Data.Grid.CaseSize;
 
-            Vector3 gizmosCaseSize = new Vector3(model.Data.CaseSize - offset * 2, 
-                model.Data.CaseSize - offset * 2, 
+            Vector3 gizmosCaseSize = new Vector3(model.Data.Grid.CaseSize - offset * 2, 
+                model.Data.Grid.CaseSize - offset * 2, 
                 0.1f);
 
             Vector3 firstPosition = model.transform.position;
-            firstPosition.x -= (model.Data.CaseCount.x * model.Data.CaseSize) / 2 - model.Data.CaseSize / 2;
-            firstPosition.y -= (model.Data.CaseCount.y * model.Data.CaseSize) / 2 - model.Data.CaseSize / 2;
+            firstPosition.x -= (model.Data.Grid.width * model.Data.Grid.CaseSize) / 2 - model.Data.Grid.CaseSize / 2;
+            firstPosition.y -= (model.Data.Grid.height * model.Data.Grid.CaseSize) / 2 - model.Data.Grid.CaseSize / 2;
 
-            for (int i = 0; i < model.Data.CaseCount.x; i++)
+            for (int i = 0; i < model.Data.Grid.width; i++)
             {
-                for (int j = 0; j < model.Data.CaseCount.y; j++)
+                for (int j = 0; j < model.Data.Grid.height; j++)
                 {
-                    //ECaseContent caseContent = (ECaseContent) model.Data.grid[i * model.Data.CaseCount.x + j];
+                    //ECaseContent caseContent = (ECaseContent) model.Data.grid[i * model.Data.Grid.width + j];
                     ECaseContent caseContent = model.Data.Grid[i][j];
                     Gizmos.color = model.Data.Colors[(int) caseContent].Color;
 
                     Vector3 position = firstPosition;
-                    position.x += i * model.Data.CaseSize;
-                    position.y += j * model.Data.CaseSize;
+                    position.x += i * model.Data.Grid.CaseSize;
+                    position.y += j * model.Data.Grid.CaseSize;
 
                     Gizmos.DrawCube(position, gizmosCaseSize);   
                 }  
+            }
+        }
+
+        private static void DrawGizmosCoords(MapEditorModel model)
+        {
+            Vector3 firstPosition = model.transform.position;
+            firstPosition.x -= (model.Data.Grid.width * model.Data.Grid.CaseSize) / 2 - model.Data.Grid.CaseSize / 2;
+            firstPosition.y -= (model.Data.Grid.height * model.Data.Grid.CaseSize) / 2 - model.Data.Grid.CaseSize / 2;
+
+            Handles.color = Color.gray;
+
+            //GUIStyle style = new GUIStyle();
+            //style.fontSize = (int)(model.Data.tmpoffset*model.Data.Grid.CaseSize);
+
+            // source : https://gamedev.stackexchange.com/questions/124864/how-to-get-current-zoom-level-from-scene-window
+            // this is the internal camera rendering the scene view, not the main camera!
+            float zoom = SceneView.currentDrawingSceneView.camera.orthographicSize;
+
+            // the style object allows you to control font size, among many other settings
+            var style = new GUIStyle();
+
+            // this value depends on your scene, tweak it to match the other objects
+            int fontSize = 100 * (int)(model.Data.tmpoffset * model.Data.Grid.CaseSize);
+
+            // as you zoom out, the ortho size actually increases, 
+            // so dividing by it makes the font smaller which is exactly what we need
+            style.fontSize = Mathf.FloorToInt(fontSize / zoom);
+
+            for (int i = 0; i < model.Data.Grid.width; i++)
+            {
+                for (int j = 0; j < model.Data.Grid.height; j++)
+                {
+                    Vector3 position = firstPosition;
+                    position.x += i * model.Data.Grid.CaseSize;
+                    position.y += j * model.Data.Grid.CaseSize;
+
+                    Handles.Label(position, i + "\n" + j, style);
+                }
             }
         }
     }
