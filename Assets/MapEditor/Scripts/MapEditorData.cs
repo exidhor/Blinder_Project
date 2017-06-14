@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Tools;
 using UnityEngine;
 
 namespace MapEditor
@@ -10,6 +11,9 @@ namespace MapEditor
     {
         public Vector2 Bounds;
         public float CaseSize;
+        public Vector2 Position; // bot left
+
+        public Vector2i CaseCount;
 
         public bool DrawGrid;
         public bool DrawCase;
@@ -18,14 +22,17 @@ namespace MapEditor
 
         public List<ColorContent> Colors = new List<ColorContent>();
 
-        public List<ECaseContent> grid = new List<ECaseContent>();
+        //public List<ECaseContent> Grid = new List<ECaseContent>();
+        public CaseContentGrid Grid = new CaseContentGrid();
 
         public void ClearGrid()
         {
-            for (int i = 0; i < grid.Count; i++)
-            {
-                grid[i] = ECaseContent.None;
-            }
+            Grid.Clear(ECaseContent.None);
+
+            //for (int i = 0; i < Grid.Count; i++)
+            //{
+            //    Grid[i] = ECaseContent.None;
+            //}
         }
     }
 }

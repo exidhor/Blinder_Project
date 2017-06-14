@@ -12,7 +12,7 @@ namespace Tools
     {
         private static T _instance;
 
-        public static T Instance
+        public static T instance
         {
             get
             {
@@ -34,7 +34,7 @@ namespace Tools
             }
         }
 
-        public static T InternalInstance
+        public static T internalInstance
         {
             get
             {

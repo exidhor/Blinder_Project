@@ -28,14 +28,14 @@ namespace BlinderProject
 
         private void HandleInputAction()
         {
-            _horizontalAction.Axis = Input.GetAxisRaw("Horizontal");
-            _verticalAction.Axis = Input.GetAxisRaw("Vertical");
+            _horizontalAction.axis = Input.GetAxisRaw("Horizontal");
+            _verticalAction.axis = Input.GetAxisRaw("Vertical");
         }
 
         void FixedUpdate()
         {
-            float horizontal = _horizontalAction.Axis * Speed;
-            float vertical = _verticalAction.Axis * Speed;
+            float horizontal = _horizontalAction.axis * Speed;
+            float vertical = _verticalAction.axis * Speed;
 
             if (horizontal != 0f && vertical != 0)
             {

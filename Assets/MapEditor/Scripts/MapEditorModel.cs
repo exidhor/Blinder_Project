@@ -10,16 +10,22 @@ namespace MapEditor
     [ExecuteInEditMode]
     public class MapEditorModel : MonoSingleton<MapEditorModel>
     {
-        public MapEditorData data;
+        public MapEditorData Data;
 
-        public Vector2i caseCount
+        public float caseSize
         {
-            get { return _caseCount; }
+            get
+            {
+                if (Data == null)
+                    return 0;
+
+                return Data.CaseSize;
+            }
         }
 
         public Bounds bounds
         {
-            get { return new Bounds(boundsCenter, boundsSize); }
+            get { return new Bounds(boundsCenter, Data.Bounds); }
         }
 
         public Vector2 boundsCenter
@@ -34,31 +40,6 @@ namespace MapEditor
 
         private Vector2 _boundsSize;
 
-        private Vector2i _caseCount;
-
-        void Awake()
-        {
-            data = ScriptableObject.CreateInstance<MapEditorData>();
-
-            Debug.DebugBreak();
-
-            Debug.Log("m Awake " + GetInstanceID());
-        }
-
-        private void OnEnable()
-        {
-            Debug.Log("m OnEnable " + GetInstanceID());
-        }
-
-        private void OnDisable()
-        {
-            Debug.Log("m OnDisable " + GetInstanceID());
-        }
-
-        private void OnDestroy()
-        {
-            Debug.Log("m OnDestroy " + GetInstanceID());
-        }
 
         public void ReconstructGrid()
         {
@@ -67,19 +48,24 @@ namespace MapEditor
 
         private void ConstructGrid()
         {
-            _boundsSize = data.Bounds;
+            Data.Grid.Clear();
 
-            _caseCount.x = (int) (data.Bounds.x/data.CaseSize);
-            _caseCount.y = (int) (data.Bounds.y/data.CaseSize);
+            Data.Grid.Resize(Data.CaseCount.x, Data.CaseCount.y);
 
-            data.grid.Clear();
+            //for (int i = 0; i < Data.CaseCount.x; i++)
+            //{
+            //    for (int j = 0; j < Data.CaseCount.y; j++)
+            //    {
+            //        Data.Grid.Add((int)ECaseContent.None);
+            //    }
+            //}
+        }
 
-            for (int i = 0; i < _caseCount.x; i++)
+        void Update()
+        {
+            if (Data != null)
             {
-                for (int j = 0; j < _caseCount.y; j++)
-                {
-                    data.grid.Add((int)ECaseContent.None);
-                }
+                Data.Position = transform.position;
             }
         }
     }

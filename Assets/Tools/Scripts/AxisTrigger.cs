@@ -9,10 +9,10 @@ namespace Tools
     {
         public static implicit operator float(AxisTrigger axisTrigger)
         {
-            return axisTrigger.Axis;
+            return axisTrigger.axis;
         }
 
-        public float Axis
+        public float axis
         {
             get
             {

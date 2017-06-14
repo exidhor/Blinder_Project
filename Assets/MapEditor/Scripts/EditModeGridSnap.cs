@@ -9,31 +9,11 @@ namespace MapEditor
     [ExecuteInEditMode]
     public class EditModeGridSnap : MonoBehaviour
     {
-        public float depth = 0;
-
-        private void Awake()
-        {
-            Debug.Log("b Awake " + GetInstanceID());
-        }
-
-        private void OnEnable()
-        {
-            Debug.Log("b OnEnable " + GetInstanceID());
-        }
-
-        private void OnDisable()
-        {
-            Debug.Log("b OnDisable " + GetInstanceID());
-        }
-
-        private void OnDestroy()
-        {
-            Debug.Log("b OnDestroy " + GetInstanceID());
-        }
+        public float Depth = 0;
 
         void Update()
         {
-            float snapValue = MapEditorModel.Instance.data.CaseSize;
+            float snapValue = MapEditorModel.instance.caseSize;
 
             if (snapValue == 0)
             {
@@ -48,7 +28,7 @@ namespace MapEditor
             // so 1.45 to nearest .5 is 1.5
             x = Mathf.Round(transform.position.x * snapInverse) / snapInverse;
             y = Mathf.Round(transform.position.y * snapInverse) / snapInverse;
-            z = depth;  // depth from camera
+            z = Depth;  // depth from camera
 
             transform.position = new Vector3(x, y, z);
         }

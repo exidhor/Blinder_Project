@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using MapEditor;
 using Tools;
+using ToolsEditor;
 using UnityEditor.AnimatedValues;
 
 namespace MapEditorEditor
@@ -11,17 +12,24 @@ namespace MapEditorEditor
     public class MapEditorWindow : EditorWindow
     {
         private MapEditorModel _mapEditor;
+        private MapEditorData _data;
         private MapEditorData _dataBuffer;
 
         private AnimBool _showContentColors;
 
         private SerializedObject _serializedData;
 
+        private string _bufferNewNameAsset;
+
+        private bool _showSave = false;
+        private bool _showLoad = false;
+        private bool _showCreateNew = false;
+
         [MenuItem("Window/Map Editor")]
         static void Init()
         {
             // Get existing open window or if none, make a new one:
-            MapEditorWindow instance = (MapEditorWindow)EditorWindow.GetWindow(typeof(MapEditorWindow));
+            MapEditorWindow instance = (MapEditorWindow) EditorWindow.GetWindow(typeof(MapEditorWindow));
             instance.titleContent = new GUIContent("Map Editor");
 
             instance.Show();
@@ -29,12 +37,15 @@ namespace MapEditorEditor
 
         void Awake()
         {
-            Debug.Log("w Awake "  + GetInstanceID());
+            Debug.Log("w Awake " + GetInstanceID());
         }
 
         private void OnDisable()
         {
             Debug.Log("w OnDisable " + GetInstanceID());
+
+            _mapEditor = GameObject.FindObjectOfType<MapEditorModel>();
+            _dataBuffer = _mapEditor.Data;
         }
 
         private void OnDestroy()
@@ -44,64 +55,144 @@ namespace MapEditorEditor
 
         void OnEnable()
         {
-            Debug.Log("w OnEnable " + GetInstanceID());
+            //Debug.Log("w OnEnable " + GetInstanceID());
 
             _mapEditor = GameObject.FindObjectOfType<MapEditorModel>();
 
-            _dataBuffer = _mapEditor.data;
-
-            // tmp
-            int colorsSize = 2;
-
-            _dataBuffer.Colors = new List<ColorContent>(colorsSize);
-
-            for (int i = 0; i < colorsSize; i++)
-            {
-                //_dataBuffer.Colors.Add(CreateInstance<ColorContent>());
-                //_dataBuffer.Colors[i].CaseContent = (ECaseContent)i;
-                _dataBuffer.Colors.Add(new ColorContent((ECaseContent) i));
-            }
+            _dataBuffer = _mapEditor.Data;
 
             _showContentColors = new AnimBool(false);
             _showContentColors.valueChanged.AddListener(Repaint);
 
-            _serializedData = new SerializedObject(_dataBuffer);
+            //// tmp
+            //int colorsSize = 2;
+
+            //_dataBuffer.Colors = new List<ColorContent>(colorsSize);
+
+            //for (int i = 0; i < colorsSize; i++)
+            //{
+            //    _dataBuffer.Colors.Add(new ColorContent((ECaseContent) i));
+            //}
+
+            //_showContentColors = new AnimBool(false);
+            //_showContentColors.valueChanged.AddListener(Repaint);
+
+            //_serializedData = new SerializedObject(_dataBuffer);
         }
 
         void OnGUI()
         {
-            bool reconstructGrid = false;
-
-            _dataBuffer.DrawGrid = EditorGUILayout.Toggle("Draw grid", _dataBuffer.DrawGrid);
-            _dataBuffer.DrawCase = EditorGUILayout.Toggle("Draw case", _dataBuffer.DrawCase);
-
-            Vector2 newBounds = EditorGUILayout.Vector2Field("Bounds", _dataBuffer.Bounds);
-            float newCaseSize = EditorGUILayout.FloatField("Case size", _dataBuffer.CaseSize);
-
-            if (newBounds != _dataBuffer.Bounds
-                || newCaseSize != _dataBuffer.CaseSize)
+            if (_data != null)
             {
-                _dataBuffer.Bounds = newBounds;
-                _dataBuffer.CaseSize = newCaseSize;
+                _serializedData = new SerializedObject(_data);
 
-                _mapEditor.ReconstructGrid();
+                bool reconstructGrid = false;
+
+                _data.DrawGrid = EditorGUILayout.Toggle("Draw grid", _data.DrawGrid);
+                _data.DrawCase = EditorGUILayout.Toggle("Draw case", _data.DrawCase);
+
+                Vector2 newBounds = EditorGUILayout.Vector2Field("Bounds", _data.Bounds);
+                float newCaseSize = EditorGUILayout.FloatField("Case size", _data.CaseSize);
+
+                if (newBounds != _data.Bounds
+                    || newCaseSize != _data.CaseSize)
+                {
+                    _data.Bounds = newBounds;
+                    _data.CaseSize = newCaseSize;
+
+                    if (_data.CaseSize > 0)
+                    {
+                        _data.CaseCount.x = (int)(_data.Bounds.x / _data.CaseSize);
+                        _data.CaseCount.y = (int)(_data.Bounds.y / _data.CaseSize);
+
+                        _mapEditor.ReconstructGrid();
+                    }
+                }
+
+                _data.GridColor = EditorGUILayout.ColorField("Grid color", _data.GridColor);
+
+                DrawColors();
+
+                _serializedData.ApplyModifiedProperties();
+
+                if (GUILayout.Button("Bake"))
+                {
+                    Bake();
+                }
             }
 
-            _dataBuffer.GridColor = EditorGUILayout.ColorField("Grid color", _dataBuffer.GridColor);
-
-            DrawColors();
-
-            _serializedData.ApplyModifiedProperties();
-
-            if (GUILayout.Button("Bake"))
+            _showCreateNew = EditorGUILayout.Foldout(_showCreateNew, "Create New");
+            if (_showCreateNew)
             {
-                Bake();
+                DrawCreateNew();
             }
+
+            _showLoad = EditorGUILayout.Foldout(_showLoad, "Load");
+            if (_showLoad)
+            {
+                DrawLoad();
+            }
+        }
+
+        private void DrawCreateNew()
+        {
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUILayout.LabelField("Name", GUILayout.MaxWidth(60));
+
+            _bufferNewNameAsset = EditorGUILayout.TextField(_bufferNewNameAsset);
+
+            if (GUILayout.Button("Create", GUILayout.MaxWidth(100)))
+            {
+                CreateNew(_bufferNewNameAsset);
+            }
+
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private void DrawLoad()
+        {
+            EditorGUILayout.BeginHorizontal();
+
+            EditorGUILayout.LabelField("Data", GUILayout.MaxWidth(60));
+
+            _dataBuffer = (MapEditorData) EditorGUILayout.ObjectField(_dataBuffer, typeof(MapEditorData), false);
+
+            if (GUILayout.Button("Load", GUILayout.MaxWidth(100)))
+            {
+                Load();
+            }
+
+            EditorGUILayout.EndHorizontal();
         }
 
         private void Load()
         {
+            _data = _dataBuffer;
 
+            _mapEditor.Data = _data;
+        }
+
+        private void CreateNew(string name)
+        {
+            string path = "Assets/Output";
+
+            _data = ScriptableObjectUtility.CreateAsset<MapEditorData>(path, name);
+
+            int colorsSize = 2;
+
+            _data.Colors = new List<ColorContent>(colorsSize);
+
+            for (int i = 0; i < colorsSize; i++)
+            {
+                _data.Colors.Add(new ColorContent((ECaseContent) i));
+            }
+
+
+            _dataBuffer = _data;
+            _mapEditor.Data = _data;
+
+            _serializedData = new SerializedObject(_data);
         }
 
         private void Bake()
@@ -110,7 +201,7 @@ namespace MapEditorEditor
             Obstacle[] obstacles = FindObjectsOfType<Obstacle>();
 
             // Remove old values
-            _dataBuffer.ClearGrid();
+            _data.ClearGrid();
 
             // Add the found obstacles
             for (int i = 0; i < obstacles.Length; i++)
@@ -156,8 +247,8 @@ namespace MapEditorEditor
 
             Vector2i coord = new Vector2i();
 
-            coord.x = (int) ((point.x + gridBounds.size.x/2) / _dataBuffer.CaseSize);
-            coord.y = (int) ((point.y + +gridBounds.size.y/2) / _dataBuffer.CaseSize);
+            coord.x = (int) ((point.x + gridBounds.size.x/2)/_data.CaseSize);
+            coord.y = (int) ((point.y + +gridBounds.size.y/2)/_data.CaseSize);
 
             return coord;
         }
@@ -171,7 +262,7 @@ namespace MapEditorEditor
             if (minIsOutside && maxIsOutside)
             {
                 Debug.Log("Can't handle " + objectName
-                    + " because both the min and max bounds are outside the grid.");
+                          + " because both the min and max bounds are outside the grid.");
 
                 return;
             }
@@ -194,9 +285,10 @@ namespace MapEditorEditor
                 {
                     for (int j = start.y; j <= end.y; j++)
                     {
-                        int index = i*_mapEditor.caseCount.x + j;
+                        //int index = i*_mapEditor.Data.CaseCount.x + j;
 
-                        _dataBuffer.grid[index] = ECaseContent.Blocking;
+                        //_data.grid[index] = ECaseContent.Blocking;
+                        _data.Grid[i][j] = ECaseContent.Blocking;
 
                         Debug.Log("Add blocking at " + i + ", " + j);
                     }
@@ -212,30 +304,11 @@ namespace MapEditorEditor
             {
                 EditorGUI.indentLevel++;
 
-                //SerializedProperty property = _serializedData.FindProperty("Colors");
-
-                //SerializedObject obj = new SerializedObject(property.objectReferenceValue);
-
-                //EditorGUILayout.PropertyField(property);
-
-                //SerializedProperty property = _serializedData.FindProperty("Colors");
-
-                for (int i = 0; i < _dataBuffer.Colors.Count; i++)
+                for (int i = 0; i < _data.Colors.Count; i++)
                 {
-                    //SerializedObject serialized = new SerializedObject(_dataBuffer);
-
                     SerializedProperty property = _serializedData.FindProperty("Colors").GetArrayElementAtIndex(i);
-                    
-                    //SerializedProperty colorContentProperty = obj.
 
                     EditorGUILayout.PropertyField(property);
-
-                    //_serializedData.CopyFromSerializedProperty(property);
-
-                    //Debug.Log(((MapEditorData)_serializedData.targetObject).Colors[i].Color);
-                    //_dataBuffer.Colors[i].Color = ((MapEditorData)_serializedData.targetObject).Colors[i].Color;
-
-                    //_dataBuffer.Colors[i] = (ColorContent) property.objectReferenceValue;
                 }
                 EditorGUI.indentLevel--;
             }

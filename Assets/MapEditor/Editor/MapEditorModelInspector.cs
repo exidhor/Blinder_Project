@@ -25,7 +25,10 @@ namespace MapEditorEditor
 
         static void DisplayGizmos(MapEditorModel mapEditorModel)
         {
-            MapEditorData data = mapEditorModel.data;
+            MapEditorData data = mapEditorModel.Data;
+
+            if (data == null)
+                return;
 
             if (data.DrawGrid)
             {
@@ -40,7 +43,7 @@ namespace MapEditorEditor
 
         private static void DrawGizmosGrid(MapEditorModel model)
         {
-            MapEditorData data = model.data;
+            MapEditorData data = model.Data;
 
             Gizmos.color = data.GridColor;
 
@@ -53,7 +56,7 @@ namespace MapEditorEditor
             Vector2 endLine = new Vector2(rect.xMin, rect.yMax);
             Vector2 step = new Vector2(data.CaseSize, 0);
 
-            for (int i = 0; i <= model.caseCount.x; i++)
+            for (int i = 0; i <= model.Data.CaseCount.x; i++)
             {
                 Gizmos.DrawLine(startLine, endLine);
 
@@ -65,7 +68,7 @@ namespace MapEditorEditor
             endLine = new Vector2(rect.xMax, rect.yMin);
             step = new Vector2(0, data.CaseSize);
 
-            for (int i = 0; i <= model.caseCount.x; i++)
+            for (int i = 0; i <= model.Data.CaseCount.x; i++)
             {
                 Gizmos.DrawLine(startLine, endLine);
 
@@ -78,24 +81,25 @@ namespace MapEditorEditor
         {
             float offset = 0.5f;
 
-            Vector3 gizmosCaseSize = new Vector3(model.data.CaseSize - offset * 2, 
-                model.data.CaseSize - offset * 2, 
+            Vector3 gizmosCaseSize = new Vector3(model.Data.CaseSize - offset * 2, 
+                model.Data.CaseSize - offset * 2, 
                 0.1f);
 
             Vector3 firstPosition = model.transform.position;
-            firstPosition.x -= (model.caseCount.x * model.data.CaseSize) / 2 - model.data.CaseSize / 2;
-            firstPosition.y -= (model.caseCount.y * model.data.CaseSize) / 2 - model.data.CaseSize / 2;
+            firstPosition.x -= (model.Data.CaseCount.x * model.Data.CaseSize) / 2 - model.Data.CaseSize / 2;
+            firstPosition.y -= (model.Data.CaseCount.y * model.Data.CaseSize) / 2 - model.Data.CaseSize / 2;
 
-            for (int i = 0; i < model.caseCount.x; i++)
+            for (int i = 0; i < model.Data.CaseCount.x; i++)
             {
-                for (int j = 0; j < model.caseCount.y; j++)
+                for (int j = 0; j < model.Data.CaseCount.y; j++)
                 {
-                    ECaseContent caseContent = (ECaseContent) model.data.grid[i * model.caseCount.x + j];
-                    Gizmos.color = model.data.Colors[(int) caseContent].Color;
+                    //ECaseContent caseContent = (ECaseContent) model.Data.grid[i * model.Data.CaseCount.x + j];
+                    ECaseContent caseContent = model.Data.Grid[i][j];
+                    Gizmos.color = model.Data.Colors[(int) caseContent].Color;
 
                     Vector3 position = firstPosition;
-                    position.x += i * model.data.CaseSize;
-                    position.y += j * model.data.CaseSize;
+                    position.x += i * model.Data.CaseSize;
+                    position.y += j * model.Data.CaseSize;
 
                     Gizmos.DrawCube(position, gizmosCaseSize);   
                 }  
