@@ -36,7 +36,6 @@ namespace Tools
             }
 
             Vector2 halfSize = Size / 2;
-            float halfCaseSize = CaseSize / 2;
 
             float dist_x = Mathf.Abs(Position.x - halfSize.x - point.x);
             float dist_y = Mathf.Abs(Position.y - halfSize.y - point.y);

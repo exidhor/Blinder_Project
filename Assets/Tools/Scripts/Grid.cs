@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Tools
 {
     [Serializable]
-    public class Grid<T>
+    public class Grid<T> : ScriptableObject, ISerializationCallbackReceiver
     {
         public int width
         {
@@ -40,6 +40,11 @@ namespace Tools
         }
 
         private List<List<T>> _cases = new List<List<T>>();
+
+        // serializable data
+        [SerializeField] private int _serializableLine;
+        [SerializeField] private int _serializableCulumn;
+        [SerializeField] private List<T> _serializableCases = new List<T>();
 
         public void Clear(T resetValue = default(T))
         {
@@ -110,6 +115,41 @@ namespace Tools
                     }
                 }
             }
+        }
+
+        public void OnBeforeSerialize()
+        {
+            _serializableLine = width;
+            _serializableCulumn = height;
+
+            _serializableCases = new List<T>();
+
+            for (int i = 0; i < width; i++)
+            {
+                for (int j = 0; j < height; j++)
+                {
+                    _serializableCases.Add(_cases[i][j]);
+                }
+            }
+        }
+
+        public void OnAfterDeserialize()
+        {
+            _cases = new List<List<T>>();
+
+            for (int i = 0; i < _serializableLine; i++)
+            {
+                _cases.Add(new List<T>());
+
+                for (int j = 0; j < _serializableCulumn; j++)
+                {
+                    int index = i*_serializableLine + j;
+
+                    _cases[i].Add(_serializableCases[index]);
+                }
+            }
+
+            _serializableCases = null;
         }
     }
 }

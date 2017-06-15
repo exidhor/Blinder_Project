@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEditor;
 using MapEditor;
@@ -190,7 +191,16 @@ namespace MapEditorEditor
         {
             string path = "Assets/Output";
 
+            string guid = AssetDatabase.CreateFolder(path, name);
+
+            path = AssetDatabase.GUIDToAssetPath(guid);
+
+            name = Path.GetFileName(path);
+
             _data = ScriptableObjectUtility.CreateAsset<MapEditorData>(path, name);
+            CaseContentGrid grid = ScriptableObjectUtility.CreateAsset<CaseContentGrid>(path, name + "_grid");
+
+            _data.Grid = grid;
 
             int colorsSize = 2;
 
@@ -200,7 +210,6 @@ namespace MapEditorEditor
             {
                 _data.Colors.Add(new ColorContent((ECaseContent) i));
             }
-
 
             _dataBuffer = _data;
             _mapEditor.Data = _data;
@@ -253,17 +262,19 @@ namespace MapEditorEditor
 
         private Vector2i? FindCoordInGrid(Vector2 point, Bounds gridBounds)
         {
-            if (!gridBounds.Contains(point))
-            {
-                return null;
-            }
+            //if (!gridBounds.Contains(point))
+            //{
+            //    return null;
+            //}
 
-            Vector2i coord = new Vector2i();
+            //Vector2i coord = new Vector2i();
 
-            coord.x = (int) ((point.x + gridBounds.size.x/2)/_data.Grid.CaseSize);
-            coord.y = (int) ((point.y + +gridBounds.size.y/2)/_data.Grid.CaseSize);
+            //coord.x = (int) ((point.x + gridBounds.size.x/2)/_data.Grid.CaseSize);
+            //coord.y = (int) ((point.y + +gridBounds.size.y/2)/_data.Grid.CaseSize);
 
-            return coord;
+            //return coord;
+
+            return _mapEditor.Data.Grid.GetCoordAt(point);
         }
 
         private void FillGrid(Vector2i? min, Vector2i? max, string objectName)
@@ -280,7 +291,6 @@ namespace MapEditorEditor
                 return;
             }
 
-            Vector2i delta = max.Value - min.Value;
             Vector2i start = min.Value;
             Vector2i end = max.Value;
 
@@ -300,7 +310,7 @@ namespace MapEditorEditor
                     {
                         _data.Grid[i][j] = ECaseContent.Blocking;
 
-                        Debug.Log("Add blocking at " + i + ", " + j);
+                        //Debug.Log("Add blocking at " + i + ", " + j);
                     }
                 }
             }

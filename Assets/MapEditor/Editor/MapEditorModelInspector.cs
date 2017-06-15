@@ -141,43 +141,5 @@ namespace MapEditorEditor
                 }  
             }
         }
-
-        private static void DrawGizmosCoords(MapEditorModel model)
-        {
-            Vector3 firstPosition = model.transform.position;
-            firstPosition.x -= (model.Data.Grid.width * model.Data.Grid.CaseSize) / 2 - model.Data.Grid.CaseSize / 2;
-            firstPosition.y -= (model.Data.Grid.height * model.Data.Grid.CaseSize) / 2 - model.Data.Grid.CaseSize / 2;
-
-            Handles.color = Color.gray;
-
-            //GUIStyle style = new GUIStyle();
-            //style.fontSize = (int)(model.Data.tmpoffset*model.Data.Grid.CaseSize);
-
-            // source : https://gamedev.stackexchange.com/questions/124864/how-to-get-current-zoom-level-from-scene-window
-            // this is the internal camera rendering the scene view, not the main camera!
-            float zoom = SceneView.currentDrawingSceneView.camera.orthographicSize;
-
-            // the style object allows you to control font size, among many other settings
-            var style = new GUIStyle();
-
-            // this value depends on your scene, tweak it to match the other objects
-            int fontSize = 100 * (int)(model.Data.tmpoffset * model.Data.Grid.CaseSize);
-
-            // as you zoom out, the ortho size actually increases, 
-            // so dividing by it makes the font smaller which is exactly what we need
-            style.fontSize = Mathf.FloorToInt(fontSize / zoom);
-
-            for (int i = 0; i < model.Data.Grid.width; i++)
-            {
-                for (int j = 0; j < model.Data.Grid.height; j++)
-                {
-                    Vector3 position = firstPosition;
-                    position.x += i * model.Data.Grid.CaseSize;
-                    position.y += j * model.Data.Grid.CaseSize;
-
-                    Handles.Label(position, i + "\n" + j, style);
-                }
-            }
-        }
     }
 }

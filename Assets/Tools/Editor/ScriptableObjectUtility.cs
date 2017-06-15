@@ -14,7 +14,6 @@ namespace ToolsEditor
         {
             T asset = ScriptableObject.CreateInstance<T>();
 
-            //string path = AssetDatabase.GetAssetPath(Selection.activeObject);
             if (path == "")
             {
                 path = "Assets";

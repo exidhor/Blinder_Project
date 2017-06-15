@@ -9,5 +9,6 @@ namespace MapEditor
     [Serializable]
     public class CaseContentGrid : UnityGrid<ECaseContent>
     {
+
     }
 }
