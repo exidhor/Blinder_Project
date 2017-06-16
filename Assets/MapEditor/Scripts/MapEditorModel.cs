@@ -24,6 +24,17 @@ namespace MapEditor
             }
         }
 
+        public CaseContentGrid grid
+        {
+            get
+            {
+                if (Data == null)
+                    return null;
+
+                return Data.Grid;
+            }
+        }
+
         public Bounds bounds
         {
             get { return new Bounds(center, Data.Grid.Size); }

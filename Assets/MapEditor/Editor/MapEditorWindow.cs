@@ -90,6 +90,11 @@ namespace MapEditorEditor
 
             _showContentColors = new AnimBool(false);
             _showContentColors.valueChanged.AddListener(Repaint);
+
+            if (_dataBuffer != null)
+            {
+                Load();
+            }
         }
 
         void OnGUI()
@@ -129,7 +134,7 @@ namespace MapEditorEditor
 
                 _serializedData.ApplyModifiedProperties();
 
-                if (GUILayout.Button("Bake"))
+                if (GUILayout.Button("Bake & Save"))
                 {
                     Bake();
                 }
@@ -242,6 +247,9 @@ namespace MapEditorEditor
                     AddBlockingCollider(boxColliders[j]);
                 }
             }
+
+            //AssetDatabase.SaveAssets();
+            EditorUtility.SetDirty(_data.Grid);
         }
 
         private void AddBlockingCollider(BoxCollider2D boxCollider)

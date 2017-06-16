@@ -50,5 +50,18 @@ namespace Tools
         {
             return this[coord.x][coord.y];
         }
+
+        public Vector2 GetCasePosition(Vector2i coord)
+        {
+            return GetCasePosition(coord.x, coord.y);
+        }
+
+        public Vector2 GetCasePosition(int x, int y)
+        {
+            float halfCaseSize = CaseSize/2;
+
+            return new Vector2(x * CaseSize + halfCaseSize - Position.x - Size.x / 2,
+                               y * CaseSize + halfCaseSize - Position.y - Size.y / 2);
+        }
     }
 }
