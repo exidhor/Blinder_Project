@@ -46,11 +46,6 @@ namespace Tools
             return new Vector2i(x, y);
         }
 
-        public T GetCaseAt(Vector2i coord)
-        {
-            return this[coord.x][coord.y];
-        }
-
         public Vector2 GetCasePosition(Vector2i coord)
         {
             return GetCasePosition(coord.x, coord.y);

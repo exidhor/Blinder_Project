@@ -13,7 +13,7 @@ namespace BlinderProject
 
         void Start()
         {
-            MapNode.instance.Load(MapData);
+            
         }
     }
 }

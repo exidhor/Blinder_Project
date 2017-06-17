@@ -151,5 +151,26 @@ namespace Tools
 
             _serializableCases = null;
         }
+
+        public bool IsValidCoord(Vector2i coord)
+        {
+            return IsValidCoord(coord.x, coord.y);
+        }
+
+        public bool IsValidCoord(int x, int y)
+        {
+            return 0 < x && x < width
+                   && 0 < y && y < height;
+        }
+
+        public T GetCaseAt(Vector2i coord)
+        {
+            return this[coord.x][coord.y];
+        }
+
+        public T GetCaseAt(int x, int y)
+        {
+            return this[x][y];
+        }
     }
 }

@@ -5,10 +5,9 @@ using System.Text;
 
 namespace Pathfinding
 {
-    public enum NodeRecordState
+    public enum EHeuristicType
     {
-        Unvisited,
-        Open,
-        Closed
+        ManhattanDistance,
+        OctileDistance
     }
 }

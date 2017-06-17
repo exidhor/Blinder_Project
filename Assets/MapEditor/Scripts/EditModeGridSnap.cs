@@ -48,6 +48,8 @@ namespace MapEditor
             Vector2 transformOffset = globalBounds.center - transform.position;
 
             transform.position = newPosition - transformOffset;
+
+            SaveOffset();
         }
 
         public void SaveOffset()

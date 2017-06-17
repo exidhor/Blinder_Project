@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Pathfinding
+namespace Tools
 {
-    public enum HeuristicType
+    public enum ENodeRecordState
     {
-        ManhattanDistance,
-        OctileDistance
+        Unvisited,
+        Open,
+        Closed
     }
 }

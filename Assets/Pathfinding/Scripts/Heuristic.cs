@@ -18,7 +18,7 @@ namespace Pathfinding
             int dx = Mathf.Abs(node.x - goal.x);
             int dy = Mathf.Abs(node.y - goal.y);
 
-            return SideCost*(dx + dy);
+            return SideCost * (dx + dy);
         }
 
         public static float OctileEstimation(Vector2i node, Vector2i goal)

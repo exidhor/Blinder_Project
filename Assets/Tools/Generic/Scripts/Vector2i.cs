@@ -38,6 +38,17 @@ namespace Tools
             return new Vector2(c.x * f, c.y * f);
         }
 
+        public static bool operator ==(Vector2i c1, Vector2i c2)
+        {
+            return c1.x == c2.x
+                   && c1.y == c2.y;
+        }
+
+        public static bool operator !=(Vector2i c1, Vector2i c2)
+        {
+            return !(c1 == c2);
+        }
+
         public static implicit operator Vector2(Vector2i c)
         {
             return new Vector2(c.x, c.y);
