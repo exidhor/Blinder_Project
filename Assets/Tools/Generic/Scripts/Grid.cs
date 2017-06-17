@@ -39,12 +39,13 @@ namespace Tools
             set { _cases[i] = value; }
         }
 
-        private List<List<T>> _cases = new List<List<T>>();
+        protected List<List<T>> _cases = new List<List<T>>();
 
         // serializable data
-        [SerializeField] private int _serializableLine;
-        [SerializeField] private int _serializableCulumn;
-        [SerializeField] private List<T> _serializableCases = new List<T>();
+        [SerializeField] protected int _serializableLine;
+        [SerializeField] protected int _serializableCulumn;
+        [SerializeField] protected List<T> _serializableCases = new List<T>();
+        [SerializeField] protected List<bool> _serializableNullArray = new List<bool>(); // to handle null ref serialization
 
         public void Clear(T resetValue = default(T))
         {
@@ -55,6 +56,11 @@ namespace Tools
                     _cases[i][j] = resetValue;
                 }
             }
+        }
+
+        public virtual void Copy<U>(Grid<U> otherGrid)
+        {
+            Resize(otherGrid.width, otherGrid.height);
         }
 
         public void Resize(int width, int height, T defaultValue = default(T))
@@ -117,23 +123,26 @@ namespace Tools
             }
         }
 
-        public void OnBeforeSerialize()
+        public virtual void OnBeforeSerialize()
         {
             _serializableLine = width;
             _serializableCulumn = height;
 
             _serializableCases = new List<T>();
+            _serializableNullArray = new List<bool>();
 
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
                 {
                     _serializableCases.Add(_cases[i][j]);
+
+                    _serializableNullArray.Add(EqualityComparer<T>.Default.Equals(_cases[i][j], default(T)));
                 }
             }
         }
 
-        public void OnAfterDeserialize()
+        public virtual void OnAfterDeserialize()
         {
             _cases = new List<List<T>>();
 
@@ -145,7 +154,14 @@ namespace Tools
                 {
                     int index = i*_serializableLine + j;
 
-                    _cases[i].Add(_serializableCases[index]);
+                    if (_serializableNullArray[index])
+                    {
+                        _cases[i].Add(default(T));
+                    }
+                    else
+                    {
+                        _cases[i].Add(_serializableCases[index]);
+                    }
                 }
             }
 
@@ -159,8 +175,8 @@ namespace Tools
 
         public bool IsValidCoord(int x, int y)
         {
-            return 0 < x && x < width
-                   && 0 < y && y < height;
+            return 0 <= x && x < width
+                   && 0 <= y && y < height;
         }
 
         public T GetCaseAt(Vector2i coord)

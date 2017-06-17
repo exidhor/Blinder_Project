@@ -30,6 +30,8 @@ namespace MapEditorEditor
         private static Vector2 mousePosition;
         private static MapEditorWindow _instance;
 
+        private readonly string folder = "Assets/Resources/Output";
+
         [MenuItem("Window/Map Editor/Create Window")]
         static void Init()
         {
@@ -194,7 +196,7 @@ namespace MapEditorEditor
 
         private void CreateNew(string name)
         {
-            string path = "Assets/Output";
+            string path = folder;
 
             string guid = AssetDatabase.CreateFolder(path, name);
 

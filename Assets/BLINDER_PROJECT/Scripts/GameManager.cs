@@ -9,11 +9,9 @@ namespace BlinderProject
 {
     public class GameManager : MonoSingleton<GameManager>
     {
-        public MapEditorData MapData;
-
         void Start()
         {
-            
+            Map.instance.CreateNavGrid();   
         }
     }
 }

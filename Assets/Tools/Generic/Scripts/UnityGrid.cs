@@ -17,15 +17,30 @@ namespace Tools
 
         public Color Color;
 
+        public override void Copy<U>(Grid<U> otherGrid)
+        {
+            base.Copy(otherGrid);
+
+            UnityGrid<U> otherUnityGrid = otherGrid as UnityGrid<U>;
+
+            if (otherUnityGrid != null)
+            {
+                Position = otherUnityGrid.Position;
+                Size = otherUnityGrid.Size;
+                CaseSize = otherUnityGrid.CaseSize;
+                Color = otherUnityGrid.Color;
+            }
+        }
+
         public bool PointIsInGrid(Vector2 point)
         {
             float halfCaseSize = 0; // = CaseSize/2;
             Vector2 halfSize = Size/2;
 
             return !(point.x < Position.x - halfSize.x - halfCaseSize
-                   || point.x > Position.x + halfSize.x  - halfCaseSize
-                   || point.y < Position.y - halfSize.y - halfCaseSize
-                   || point.y > Position.y + halfSize.y - halfCaseSize);
+                     || point.x > Position.x + halfSize.x - halfCaseSize
+                     || point.y < Position.y - halfSize.y - halfCaseSize
+                     || point.y > Position.y + halfSize.y - halfCaseSize);
         }
 
         public Vector2i? GetCoordAt(Vector2 point)
@@ -35,13 +50,13 @@ namespace Tools
                 return null;
             }
 
-            Vector2 halfSize = Size / 2;
+            Vector2 halfSize = Size/2;
 
             float dist_x = Mathf.Abs(Position.x - halfSize.x - point.x);
             float dist_y = Mathf.Abs(Position.y - halfSize.y - point.y);
 
-            int x = (int)(dist_x / CaseSize);
-            int y = (int)(dist_y / CaseSize);
+            int x = (int) (dist_x/CaseSize);
+            int y = (int) (dist_y/CaseSize);
 
             return new Vector2i(x, y);
         }
@@ -55,8 +70,8 @@ namespace Tools
         {
             float halfCaseSize = CaseSize/2;
 
-            return new Vector2(x * CaseSize + halfCaseSize - Position.x - Size.x / 2,
-                               y * CaseSize + halfCaseSize - Position.y - Size.y / 2);
+            return new Vector2(x*CaseSize + halfCaseSize - Position.x - Size.x/2,
+                y*CaseSize + halfCaseSize - Position.y - Size.y/2);
         }
     }
 }

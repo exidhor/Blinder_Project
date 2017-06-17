@@ -9,7 +9,7 @@ using UnityEngine.UI;
 namespace MapEditor
 {
     [ExecuteInEditMode]
-    public class MapEditorModel : MonoSingleton<MapEditorModel>
+    public class MapEditorModel : EditModeSingleton<MapEditorModel>
     {
         public MapEditorData Data;
 

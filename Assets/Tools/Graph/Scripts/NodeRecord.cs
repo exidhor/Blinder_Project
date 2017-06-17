@@ -37,5 +37,10 @@ namespace Tools
 
             State = ENodeRecordState.Unvisited;
         }
+
+        public override string ToString()
+        {
+            return "NodeRecord (" + Coord.x + ", " + Coord.y + ")";
+        }
     }
 }

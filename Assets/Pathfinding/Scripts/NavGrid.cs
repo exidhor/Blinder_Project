@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
 using MapEditor;
 using Tools;
 
@@ -22,7 +19,11 @@ namespace Pathfinding
 
         public void ConstructFrom(CaseContentGrid caseContentGrid)
         {
-            Resize(caseContentGrid.width, caseContentGrid.height);
+            _cases = new List<List<NodeRecord>>();
+
+            Copy(caseContentGrid);
+
+            //Resize(caseContentGrid.width, caseContentGrid.height);
 
             for (int i = 0; i < caseContentGrid.width; i++)
             {

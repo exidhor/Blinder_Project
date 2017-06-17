@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace Tools
 {
-    [ExecuteInEditMode]
     public abstract class MonoSingleton<T> : MonoBehaviour
         where T : MonoBehaviour
     {
