@@ -173,6 +173,8 @@ namespace MapEditorEditor
 
                     _data.Grid.Resize(width, height);
                 }
+
+                _data.Grid.Bufferize();
             }
         }
 

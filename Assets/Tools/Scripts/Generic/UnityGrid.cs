@@ -15,6 +15,10 @@ namespace Tools
         public Vector2 Size;
         public float CaseSize;
 
+        private Vector2 _halfSize;
+        private float _halfCaseSize;
+        private float _caseInverse;
+
         public Color Color;
 
         public override void Copy<U>(Grid<U> otherGrid)
@@ -30,17 +34,23 @@ namespace Tools
                 CaseSize = otherUnityGrid.CaseSize;
                 Color = otherUnityGrid.Color;
             }
+
+            Bufferize();
+        }
+
+        public void Bufferize()
+        {
+            _halfSize = Size/2;
+            _halfCaseSize = CaseSize/2;
+            _caseInverse = 1/CaseSize;
         }
 
         public bool PointIsInGrid(Vector2 point)
         {
-            float halfCaseSize = 0; // = CaseSize/2;
-            Vector2 halfSize = Size/2;
-
-            return !(point.x < Position.x - halfSize.x - halfCaseSize
-                     || point.x > Position.x + halfSize.x - halfCaseSize
-                     || point.y < Position.y - halfSize.y - halfCaseSize
-                     || point.y > Position.y + halfSize.y - halfCaseSize);
+            return !(point.x < Position.x - _halfSize.x
+                     || point.x > Position.x + _halfSize.x
+                     || point.y < Position.y - _halfSize.y
+                     || point.y > Position.y + _halfSize.y);
         }
 
         public Vector2i? GetCoordAt(Vector2 point)
@@ -50,13 +60,11 @@ namespace Tools
                 return null;
             }
 
-            Vector2 halfSize = Size/2;
+            float dist_x = Mathf.Abs(Position.x - _halfSize.x - point.x);
+            float dist_y = Mathf.Abs(Position.y - _halfSize.y - point.y);
 
-            float dist_x = Mathf.Abs(Position.x - halfSize.x - point.x);
-            float dist_y = Mathf.Abs(Position.y - halfSize.y - point.y);
-
-            int x = (int) (dist_x/CaseSize);
-            int y = (int) (dist_y/CaseSize);
+            int x = (int) (dist_x * _caseInverse);
+            int y = (int) (dist_y * _caseInverse);
 
             return new Vector2i(x, y);
         }
@@ -68,10 +76,8 @@ namespace Tools
 
         public Vector2 GetCasePosition(int x, int y)
         {
-            float halfCaseSize = CaseSize/2;
-
-            return new Vector2(x*CaseSize + halfCaseSize - Position.x - Size.x/2,
-                y*CaseSize + halfCaseSize - Position.y - Size.y/2);
+            return new Vector2(x*CaseSize + _halfCaseSize - Position.x - _halfSize.x,
+                y*CaseSize + _halfCaseSize - Position.y - _halfSize.y);
         }
     }
 }
