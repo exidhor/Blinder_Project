@@ -48,7 +48,7 @@ namespace AIEditor
                     DisplaySteering();
                 }
 
-                EditorGUILayout.HelpBox("Asked for a recomputing of the Steering. This can be usefull if you" +
+                EditorGUILayout.HelpBox("Ask for a recomputing of the Steering. This can be usefull if you" +
                         " modify manually (by the inspector) some internal values of the steering.", MessageType.Info);
 
 

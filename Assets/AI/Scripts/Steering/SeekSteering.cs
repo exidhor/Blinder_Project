@@ -104,7 +104,7 @@ namespace AI
         {
             _currentTime += Time.deltaTime;
 
-            if (_currentTime > _specs.refreshPathTime)
+            if (_specs != null && _currentTime > _specs.refreshPathTime)
             {
                 RefreshPath();
             }

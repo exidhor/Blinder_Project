@@ -37,7 +37,7 @@ namespace AIEditor
         {
             List<Vector2> path = seekSteering.GetDebugPath();
 
-            Gizmos.color = Color.cyan;
+            Gizmos.color = Color.red;
 
             if (path != null)
             {
