@@ -14,7 +14,6 @@ namespace MapEditorEditor
     {
         private MapEditorModel _mapEditor;
         private MapEditorData _data;
-        private MapEditorData _dataBuffer;
 
         private AnimBool _showContentColors;
 
@@ -22,7 +21,8 @@ namespace MapEditorEditor
 
         private string _bufferNewNameAsset;
 
-        private bool _showSave = false;
+        private bool _showGridSettings = false;
+        private bool _showColors = false;
         private bool _showLoad = false;
         private bool _showCreateNew = false;
 
@@ -78,7 +78,7 @@ namespace MapEditorEditor
             SceneView.onSceneGUIDelegate -= OnScene;
 
             _mapEditor = GameObject.FindObjectOfType<MapEditorModel>();
-            _dataBuffer = _mapEditor.Data;
+            _data = _mapEditor.Data;
         }
 
         void OnEnable()
@@ -88,12 +88,12 @@ namespace MapEditorEditor
 
             _mapEditor = GameObject.FindObjectOfType<MapEditorModel>();
 
-            _dataBuffer = _mapEditor.Data;
+            _data = _mapEditor.Data;
 
             _showContentColors = new AnimBool(false);
             _showContentColors.valueChanged.AddListener(Repaint);
 
-            if (_dataBuffer != null)
+            if (_data != null)
             {
                 Load();
             }
@@ -109,37 +109,22 @@ namespace MapEditorEditor
 
                 bool reconstructGrid = false;
 
-                grid.DrawGrid = EditorGUILayout.Toggle("Draw grid", grid.DrawGrid);
+                _data.Grid.DrawGrid = EditorGUILayout.Toggle("Draw grid", _data.Grid.DrawGrid);
                 _data.DrawCase = EditorGUILayout.Toggle("Draw case", _data.DrawCase);
 
-                Vector2 newSize = EditorGUILayout.Vector2Field("Size", grid.Size);
-                float newCaseSize = EditorGUILayout.FloatField("Case size", grid.CaseSize);
-
-                if (newSize != grid.Size
-                    || newCaseSize != grid.CaseSize)
+                _showGridSettings = EditorGUILayout.Foldout(_showGridSettings, "Grid Settings");
+                if (_showGridSettings)
                 {
-                    grid.Size = newSize;
-                    grid.CaseSize = newCaseSize;
-
-                    if (grid.CaseSize > 0)
-                    {
-                        int width = (int)(grid.Size.x / grid.CaseSize);
-                        int height = (int)(grid.Size.y / grid.CaseSize);
-
-                        grid.Resize(width, height);
-                    }
+                    DrawGridSettings();
                 }
 
-                grid.Color = EditorGUILayout.ColorField("Grid color", grid.Color);
-
-                DrawColors();
+                _showColors = EditorGUILayout.Foldout(_showColors, "Colors");
+                if (_showColors)
+                {
+                    DrawColors();
+                }
 
                 _serializedData.ApplyModifiedProperties();
-
-                if (GUILayout.Button("Bake & Save"))
-                {
-                    Bake();
-                }
             }
 
             _showCreateNew = EditorGUILayout.Foldout(_showCreateNew, "Create New");
@@ -153,10 +138,58 @@ namespace MapEditorEditor
             {
                 DrawLoad();
             }
+
+            if (_data != null)
+            {
+                string buttonName = "Bake & Save";
+
+                EditorGUILayout.HelpBox("\"" + buttonName + "\" will regenerate the map and mark as \"isBlocking\" every case which contains" +
+                                        " a collider2D. Then it will save the output in " + folder + " .", MessageType.Info);
+
+                if (GUILayout.Button(buttonName))
+                {
+                    Bake();
+                }
+            }
+        }
+
+        private void DrawGridSettings()
+        {
+            EditorGUILayout.HelpBox("Modify this regenerate the grid.", MessageType.Info);
+
+            Vector2 newSize = EditorGUILayout.Vector2Field("Grid Size", _data.Grid.Size);
+            float newCaseSize = EditorGUILayout.FloatField("Case size", _data.Grid.CaseSize);
+
+            if (newSize != _data.Grid.Size
+                || newCaseSize != _data.Grid.CaseSize)
+            {
+                _data.Grid.Size = newSize;
+                _data.Grid.CaseSize = newCaseSize;
+
+                if (_data.Grid.CaseSize > 0)
+                {
+                    int width = (int)(_data.Grid.Size.x / _data.Grid.CaseSize);
+                    int height = (int)(_data.Grid.Size.y / _data.Grid.CaseSize);
+
+                    _data.Grid.Resize(width, height);
+                }
+            }
+        }
+
+        private void DrawColors()
+        {
+            _data.Grid.Color = EditorGUILayout.ColorField("Grid", _data.Grid.Color);
+
+            EditorGUILayout.LabelField("Cases");
+
+            DrawColorContents();
         }
 
         private void DrawCreateNew()
         {
+            EditorGUILayout.HelpBox("Create a new data, composed of a folder contained two assets." +
+                        " The folder is saved in " + folder + " .", MessageType.Info);
+
             EditorGUILayout.BeginHorizontal();
 
             EditorGUILayout.LabelField("Name", GUILayout.MaxWidth(60));
@@ -173,11 +206,13 @@ namespace MapEditorEditor
 
         private void DrawLoad()
         {
+            EditorGUILayout.HelpBox("Load the data and display its values in this window.", MessageType.Info);
+
             EditorGUILayout.BeginHorizontal();
 
             EditorGUILayout.LabelField("Data", GUILayout.MaxWidth(60));
 
-            _dataBuffer = (MapEditorData) EditorGUILayout.ObjectField(_dataBuffer, typeof(MapEditorData), false);
+            _data = (MapEditorData) EditorGUILayout.ObjectField(_data, typeof(MapEditorData), false);
 
             if (GUILayout.Button("Load", GUILayout.MaxWidth(100)))
             {
@@ -189,8 +224,6 @@ namespace MapEditorEditor
 
         private void Load()
         {
-            _data = _dataBuffer;
-
             _mapEditor.Data = _data;
         }
 
@@ -218,7 +251,6 @@ namespace MapEditorEditor
                 _data.Colors.Add(new ColorContent((ECaseContent) i));
             }
 
-            _dataBuffer = _data;
             _mapEditor.Data = _data;
 
             _serializedData = new SerializedObject(_data);
@@ -250,7 +282,6 @@ namespace MapEditorEditor
                 }
             }
 
-            //AssetDatabase.SaveAssets();
             EditorUtility.SetDirty(_data.Grid);
         }
 
@@ -326,23 +357,14 @@ namespace MapEditorEditor
             }
         }
 
-        private void DrawColors()
+        private void DrawColorContents()
         {
-            _showContentColors.target = EditorGUILayout.Foldout(_showContentColors.target, "Color content");
-
-            if (EditorGUILayout.BeginFadeGroup(_showContentColors.faded))
+            for (int i = 0; i < _data.Colors.Count; i++)
             {
-                EditorGUI.indentLevel++;
+                SerializedProperty property = _serializedData.FindProperty("Colors").GetArrayElementAtIndex(i);
 
-                for (int i = 0; i < _data.Colors.Count; i++)
-                {
-                    SerializedProperty property = _serializedData.FindProperty("Colors").GetArrayElementAtIndex(i);
-
-                    EditorGUILayout.PropertyField(property);
-                }
-                EditorGUI.indentLevel--;
+                EditorGUILayout.PropertyField(property);
             }
-            EditorGUILayout.EndFadeGroup();
         }
     }
 }
