@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MapEditor;
 using Tools;
 
 namespace Pathfinding
@@ -10,10 +11,14 @@ namespace Pathfinding
     {
         private static List<NodeRecord> _neighbourList = new List<NodeRecord>(8);
 
-        public static List<Vector2i> Classical_A_Star(NavGrid grid, Vector2i coordStart, Vector2i coordGoal, EHeuristicType heuristicType)
+        private static NavGrid _grid;
+
+        public static List<Vector2i> A_Star(Vector2i coordStart, Vector2i coordGoal, EHeuristicType heuristicType = EHeuristicType.ManhattanDistance)
         {
+            _grid = Map.instance.currentNavGrid;
+
             // find the start
-            NodeRecord start = grid.GetCaseAt(coordStart);
+            NodeRecord start = _grid.GetCaseAt(coordStart);
 
             // verify if it's in the grid
             if (start == null)
@@ -22,7 +27,7 @@ namespace Pathfinding
             }
 
             // prepare the record
-            grid.ClearRecords();
+            _grid.ClearRecords();
             PriorityQueue<NodeRecord, float> frontier = new PriorityQueue<NodeRecord, float>();
 
             start.EstimatedTotalCost = Estimate(coordStart, coordGoal, heuristicType);
@@ -42,7 +47,7 @@ namespace Pathfinding
                     break;
                 }
 
-                _neighbourList = grid.GetNeighbour(current.Coord);
+                _neighbourList = _grid.GetNeighbour(current.Coord);
 
                 for (int i = 0; i < _neighbourList.Count; i++)
                 {

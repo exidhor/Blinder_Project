@@ -8,14 +8,7 @@ namespace Pathfinding
     [Serializable]
     public class NavGrid : NodeGrid
     {
-        private List<NodeRecord> _bufferNeighbourList;
-
-        public NavGrid(CaseContentGrid caseContentGrid)
-        {
-            ConstructFrom(caseContentGrid);
-
-            _bufferNeighbourList = new List<NodeRecord>(4);
-        }
+        private List<NodeRecord> _bufferNeighbourList = new List<NodeRecord>(4);
 
         public void ConstructFrom(CaseContentGrid caseContentGrid)
         {
