@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using MapEditor;
 using Tools;
+using UnityEngine;
 
 namespace Pathfinding
 {
@@ -13,12 +14,22 @@ namespace Pathfinding
 
         private static NavGrid _grid;
 
-        public static List<Vector2i> A_Star(Vector2i coordStart, Vector2i coordGoal, EHeuristicType heuristicType = EHeuristicType.ManhattanDistance)
+        private static Vector2 _floatCoordGoal;
+
+        public static List<Vector2i> A_Star(Vector2 startPosition, Vector2 goalPosition, EHeuristicType heuristicType = EHeuristicType.ManhattanDistance)
         {
             _grid = Map.instance.currentNavGrid;
 
             // find the start
-            NodeRecord start = _grid.GetCaseAt(coordStart);
+            Vector2i? startCoord = _grid.GetCoordAt(startPosition);
+            Vector2i? goalCoord = _grid.GetCoordAt(goalPosition);
+
+            if (!startCoord.HasValue || !goalCoord.HasValue)
+            {
+                return new List<Vector2i>();
+            }
+
+            NodeRecord start = _grid.GetCaseAt(startCoord.Value);
 
             // verify if it's in the grid
             if (start == null)
@@ -26,11 +37,14 @@ namespace Pathfinding
                 return new List<Vector2i>();
             }
 
+            // buffer this because it will be used for each estimation
+            _floatCoordGoal = GetFloatCoordFrom(goalPosition);
+
             // prepare the record
             _grid.ClearRecords();
             PriorityQueue<NodeRecord, float> frontier = new PriorityQueue<NodeRecord, float>();
 
-            start.EstimatedTotalCost = Estimate(coordStart, coordGoal, heuristicType);
+            start.EstimatedTotalCost = EstimatePosition(startPosition, heuristicType);
 
             EnqueueNodeRecord(start, frontier);
 
@@ -41,7 +55,7 @@ namespace Pathfinding
                 NodeRecord current = frontier.Dequeue().Value;
                 current.State = ENodeRecordState.Closed;
 
-                if (current.Coord == coordGoal)
+                if (current.Coord == goalCoord)
                 {
                     endNode = current;
                     break;
@@ -57,7 +71,7 @@ namespace Pathfinding
                         || newCost < _neighbourList[i].CostSoFar)
                     {
                         _neighbourList[i].CostSoFar = newCost;
-                        _neighbourList[i].EstimatedTotalCost = newCost + Estimate(_neighbourList[i].Coord, coordGoal, heuristicType);
+                        _neighbourList[i].EstimatedTotalCost = newCost + EstimateCoord(_neighbourList[i].Coord, heuristicType);
                         EnqueueNodeRecord(_neighbourList[i], frontier);
                         _neighbourList[i].CameFrom = current;
                     }
@@ -80,7 +94,7 @@ namespace Pathfinding
 
             NodeRecord current = end;
 
-            while (current != null)
+            while (current != null && current.CameFrom != null)
             {
                 path.Add(current.Coord);
 
@@ -90,18 +104,41 @@ namespace Pathfinding
             return path;
         }
 
-        private static float Estimate(Vector2i from, Vector2i to, EHeuristicType type)
+        private static Vector2 GetFloatCoordFrom(Vector2 worldPosition)
+        {
+            Vector2i coord = _grid.GetCoordAt(worldPosition).Value;
+            Vector2 casePosition = _grid.GetCasePosition(coord);
+
+            Vector2 delta = worldPosition - casePosition;
+            delta /= _grid.CaseSize;
+
+            return coord + delta;
+        }
+
+        private static float EstimatePosition(Vector2 from, EHeuristicType type)
+        {
+            Vector2 floatCoord = GetFloatCoordFrom(from);
+
+            return Estimate(floatCoord, type);
+        }
+
+        private static float EstimateCoord(Vector2i from, EHeuristicType type)
+        {
+            return Estimate(from, type);
+        }
+
+        private static float Estimate(Vector2 floatCoordFrom, EHeuristicType type)
         {
             switch (type)
             {
                 case EHeuristicType.ManhattanDistance:
-                    return Heuristic.ManhattanEstimation(from, to);
+                    return Heuristic.ManhattanEstimation(floatCoordFrom, _floatCoordGoal);
 
                 case EHeuristicType.OctileDistance:
-                    return Heuristic.OctileEstimation(from, to);
+                    return Heuristic.OctileEstimation(floatCoordFrom, _floatCoordGoal);
 
                 default:
-                    return Heuristic.ManhattanEstimation(from, to);
+                    return Heuristic.ManhattanEstimation(floatCoordFrom, _floatCoordGoal);
             }
         }
     }

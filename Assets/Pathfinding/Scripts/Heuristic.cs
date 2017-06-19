@@ -9,18 +9,18 @@ namespace Pathfinding
         public static float SideCost = 1f;
         public static float DiagonalCost = Mathf.Sqrt(2);
 
-        public static float ManhattanEstimation(Vector2i node, Vector2i goal)
+        public static float ManhattanEstimation(Vector2 node, Vector2 goal)
         {
-            int dx = Mathf.Abs(node.x - goal.x);
-            int dy = Mathf.Abs(node.y - goal.y);
+            float dx = Mathf.Abs(node.x - goal.x);
+            float dy = Mathf.Abs(node.y - goal.y);
 
             return SideCost * (dx + dy);
         }
 
-        public static float OctileEstimation(Vector2i node, Vector2i goal)
+        public static float OctileEstimation(Vector2 node, Vector2 goal)
         {
-            int dx = Mathf.Abs(node.x - goal.x);
-            int dy = Mathf.Abs(node.y - goal.y);
+            float dx = Mathf.Abs(node.x - goal.x);
+            float dy = Mathf.Abs(node.y - goal.y);
 
             return SideCost * (dx + dy) + (DiagonalCost - 2 * SideCost) * Mathf.Min(dx, dy);
         }

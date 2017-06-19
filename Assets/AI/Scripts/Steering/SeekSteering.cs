@@ -126,15 +126,15 @@ namespace AI
 
             NavGrid navGrid = Map.instance.currentNavGrid;
 
-            Vector2i? startCoord = navGrid.GetCoordAt(_character.GetPosition());
-            Vector2i? endCoord = navGrid.GetCoordAt(_target.position);
+            //Vector2i? startCoord = navGrid.GetCoordAt(_character.GetPosition());
+            //Vector2i? endCoord = navGrid.GetCoordAt(_target.position);
 
-            if (!startCoord.HasValue || !endCoord.HasValue)
-            {
-                return;
-            }
+            //if (!startCoord.HasValue || !endCoord.HasValue)
+            //{
+            //    return;
+            //}
 
-            _coordPath = Pathfinder.A_Star(startCoord.Value, endCoord.Value);
+            _coordPath = Pathfinder.A_Star(_character.GetPosition(), _target.position);
 
             for (int i = 0; i < _coordPath.Count; i++)
             {
