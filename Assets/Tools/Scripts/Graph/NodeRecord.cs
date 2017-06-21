@@ -10,14 +10,17 @@ namespace Tools
     {
         public Vector2i Coord;
 
-        public float NodeCost;
+        // "NodeCost" is used to modify the cost needed to cross the node.
+        // It's not the connection cost, which is computed in the grid.
+        public float NodeCost; 
+                              
         public float CostSoFar;
         public float EstimatedTotalCost;
         public NodeRecord CameFrom;
 
         public ENodeRecordState State;
 
-        public NodeRecord(Vector2i coord, float nodeCost = 1f)
+        public NodeRecord(Vector2i coord, float nodeCost = 0f)
         {
             Coord = coord;
 

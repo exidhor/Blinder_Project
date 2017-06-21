@@ -103,11 +103,7 @@ namespace MapEditorEditor
         {
             if (_data != null)
             {
-                CaseContentGrid grid = _data.Grid;
-
                 _serializedData = new SerializedObject(_data);
-
-                bool reconstructGrid = false;
 
                 _data.Grid.DrawGrid = EditorGUILayout.Toggle("Draw grid", _data.Grid.DrawGrid);
                 _data.DrawCase = EditorGUILayout.Toggle("Draw case", _data.DrawCase);
@@ -227,6 +223,8 @@ namespace MapEditorEditor
         private void Load()
         {
             _mapEditor.Data = _data;
+
+            _mapEditor.Data.Grid.Bufferize();
         }
 
         private void CreateNew(string name)

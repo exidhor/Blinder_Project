@@ -14,12 +14,16 @@ namespace AI
     {
         //[SerializeField] private Location _target;
 
-        [SerializeField] private float _currentTime;
+        public bool DrawDebugSmoothPath = true;
+        public bool DrawDebugPath = true;
+
+        [SerializeField, UnityReadOnly] private float _currentTime;
         //[SerializeField] private float _refreshPathTime;
 
         // for the path
         [SerializeField] private int _currentNodeIndex;
         [SerializeField] private List<Vector2> _path = new List<Vector2>();
+        [SerializeField] private List<Vector2> _smoothPath = new List<Vector2>();
         [SerializeField] private List<Vector2i> _coordPath = new List<Vector2i>();
 
         //// specs
@@ -64,7 +68,7 @@ namespace AI
             // check if the character has reached the targetNode
             if (_currentNodeIndex >= 0 && _path.Count > 0)
             {
-                Vector2i? coord = Map.instance.currentNavGrid.GetCoordAt(_character.GetPosition());
+                Vector2i? coord = Map.instance.navGrid.GetCoordAt(_character.GetPosition());
 
                 if (!coord.HasValue)
                 {
@@ -124,7 +128,7 @@ namespace AI
             if (!_target.isSet)
                 return;
 
-            NavGrid navGrid = Map.instance.currentNavGrid;
+            NavGrid navGrid = Map.instance.navGrid;
 
             //Vector2i? startCoord = navGrid.GetCoordAt(_character.GetPosition());
             //Vector2i? endCoord = navGrid.GetCoordAt(_target.position);
@@ -142,11 +146,18 @@ namespace AI
             }
 
             _currentNodeIndex = _coordPath.Count - 1;
+
+            _smoothPath = PathSmoother.SmoothPath(_path);
         }
 
         public List<Vector2> GetDebugPath()
         {
             return _path;
+        }
+
+        public List<Vector2> GetSmoothedPath()
+        {
+            return _smoothPath;
         }
     }
 }

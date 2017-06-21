@@ -11,7 +11,12 @@ namespace MapEditor
         [SerializeField]
         private NavGrid _navGrid;
 
-        public NavGrid currentNavGrid
+        public MapEditorData mapData
+        {
+            get { return _mapData; }
+        }
+
+        public NavGrid navGrid
         {
             get { return _navGrid; }
         }

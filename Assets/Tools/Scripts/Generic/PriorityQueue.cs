@@ -4,12 +4,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using UnityEngine;
+
+//using System.Runtime.InteropServices;
 
 namespace Tools
 {
     [Serializable]
-    [ComVisible(false)]
+    //[ComVisible(false)]
     public struct PriorityQueueItem<TValue, TPriority>
     {
         private TValue _value;
@@ -32,7 +34,7 @@ namespace Tools
     }
 
     [Serializable]
-    [ComVisible(false)]
+    //[ComVisible(false)]
     public class PriorityQueue<TValue, TPriority> : ICollection,
         IEnumerable<PriorityQueueItem<TValue, TPriority>>
     {
@@ -134,10 +136,10 @@ namespace Tools
                 i = (i - 1) / 2;
             }
             items[i] = newItem;
-            //if (!VerifyQueue())
-            //{
-            //    Console.WriteLine("ERROR: Queue out of order!");
-            //}
+            if (!VerifyQueue())
+            {
+                Console.WriteLine("ERROR: Queue out of order!");
+            }
         }
 
         public void Enqueue(TValue value, TPriority priority)
@@ -187,10 +189,10 @@ namespace Tools
                 // Be sure to store the item in its place.
                 items[i] = tmp;
             }
-            //if (!VerifyQueue())
-            //{
-            //    Console.WriteLine("ERROR: Queue out of order!");
-            //}
+            if (!VerifyQueue())
+            {
+                Console.WriteLine("ERROR: Queue out of order!");
+            }
             return o;
         }
 

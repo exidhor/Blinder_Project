@@ -10,15 +10,15 @@ namespace Pathfinding
 {
     public static class Pathfinder
     {
-        private static List<NodeRecord> _neighbourList = new List<NodeRecord>(8);
+        private static List<WeightedNode> _neighbourList = new List<WeightedNode>(8);
 
         private static NavGrid _grid;
 
         private static Vector2 _floatCoordGoal;
 
-        public static List<Vector2i> A_Star(Vector2 startPosition, Vector2 goalPosition, EHeuristicType heuristicType = EHeuristicType.ManhattanDistance)
+        public static List<Vector2i> A_Star(Vector2 startPosition, Vector2 goalPosition, EHeuristicType heuristicType = EHeuristicType.OctileDistance)
         {
-            _grid = Map.instance.currentNavGrid;
+            _grid = Map.instance.navGrid;
 
             // find the start
             Vector2i? startCoord = _grid.GetCoordAt(startPosition);
@@ -50,10 +50,16 @@ namespace Pathfinding
 
             NodeRecord endNode = null;
 
+            // Debug.Log("-----------------------");
+
+            // Debug.Log("Start : " + startCoord);
+
             while (frontier.Count > 0)
             {
                 NodeRecord current = frontier.Dequeue().Value;
                 current.State = ENodeRecordState.Closed;
+
+                // Debug.Log("currentNode : " + current);
 
                 if (current.Coord == goalCoord)
                 {
@@ -65,15 +71,26 @@ namespace Pathfinding
 
                 for (int i = 0; i < _neighbourList.Count; i++)
                 {
-                    float newCost = current.CostSoFar + _neighbourList[i].NodeCost;
+                    NodeRecord currentNeighbour = _neighbourList[i].Node;
 
-                    if (_neighbourList[i].State == ENodeRecordState.Unvisited
-                        || newCost < _neighbourList[i].CostSoFar)
+                    // Debug.Log("\tcurrentNeighbour : " + currentNeighbour);
+
+                    float newCost = current.CostSoFar + _neighbourList[i].ImmediateCost + currentNeighbour.NodeCost;
+
+                    // Debug.Log("\t\tnewCost : " + current.CostSoFar + " + " + _neighbourList[i].ImmediateCost + " + " + currentNeighbour.NodeCost + " = " + newCost);
+
+                    if (currentNeighbour.State == ENodeRecordState.Unvisited
+                        ||  currentNeighbour.CostSoFar > newCost)
                     {
-                        _neighbourList[i].CostSoFar = newCost;
-                        _neighbourList[i].EstimatedTotalCost = newCost + EstimateCoord(_neighbourList[i].Coord, heuristicType);
-                        EnqueueNodeRecord(_neighbourList[i], frontier);
-                        _neighbourList[i].CameFrom = current;
+                        currentNeighbour.CostSoFar = newCost;
+
+                        float estimateCost = EstimateCoord(currentNeighbour.Coord, heuristicType);
+
+                        currentNeighbour.EstimatedTotalCost = newCost + estimateCost;
+                        // Debug.Log("\t\testimateTotalCost : " + newCost + " + " + estimateCost + " = " + currentNeighbour.EstimatedTotalCost);
+
+                        EnqueueNodeRecord(currentNeighbour, frontier);
+                        currentNeighbour.CameFrom = current;
                     }
                 }
             }
@@ -92,15 +109,18 @@ namespace Pathfinding
         {
             List<Vector2i> path = new List<Vector2i>();
 
-            NodeRecord current = end;
-
-            while (current != null && current.CameFrom != null)
+            if (end != null)
             {
-                path.Add(current.Coord);
+                NodeRecord current = end.CameFrom;
 
-                current = current.CameFrom;
+                while (current != null && current.CameFrom != null)
+                {
+                    path.Add(current.Coord);
+
+                    current = current.CameFrom;
+                }
             }
-
+            
             return path;
         }
 

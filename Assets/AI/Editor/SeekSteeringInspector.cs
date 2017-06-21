@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using AI;
+using MapEditor;
 using UnityEditor;
 using UnityEngine;
 
@@ -35,15 +36,33 @@ namespace AIEditor
 
         private static void DisplayGizmos(SeekSteering seekSteering)
         {
-            List<Vector2> path = seekSteering.GetDebugPath();
-
-            Gizmos.color = Color.red;
-
-            if (path != null)
+            if (seekSteering.DrawDebugPath)
             {
+                Gizmos.color = Color.red;
+                DrawPath(seekSteering.GetDebugPath());
+            }
+
+            if (seekSteering.DrawDebugSmoothPath)
+            {
+                Gizmos.color = Color.blue;
+                DrawPath(seekSteering.GetSmoothedPath());
+            }
+        }
+
+        private static void DrawPath(List<Vector2> path)
+        {
+            if (path != null && path.Count > 0)
+            {
+                float caseSize = Map.instance.mapData.Grid.CaseSize / 4;
+                Vector3 size = new Vector3(caseSize, caseSize, caseSize);
+
+                Gizmos.DrawCube(path[0], size);
+
                 for (int i = 1; i < path.Count; i++)
                 {
-                    Gizmos.DrawLine(path[i-1], path[i]);
+                    Gizmos.DrawLine(path[i - 1], path[i]);
+
+                    Gizmos.DrawCube(path[i], size);
                 }
             }
         }

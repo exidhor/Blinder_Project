@@ -15,11 +15,11 @@ namespace Tools
         public Vector2 Size;
         public float CaseSize;
 
-        private Vector2 _halfSize;
-        private float _halfCaseSize;
-        private float _caseInverse;
-
         public Color Color;
+
+        [SerializeField, UnityReadOnly] private Vector2 _halfSize;
+        [SerializeField, UnityReadOnly] private float _halfCaseSize;
+        [SerializeField, UnityReadOnly] private float _caseInverse;
 
         public override void Copy<U>(Grid<U> otherGrid)
         {

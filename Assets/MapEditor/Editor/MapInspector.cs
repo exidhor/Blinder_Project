@@ -27,7 +27,7 @@ namespace BlinderProjectEditor
 
         static void DisplayGizmos(Map map)
         {
-            NavGrid grid = map.currentNavGrid;
+            NavGrid grid = map.navGrid;
 
             if (grid == null)
                 return;
