@@ -50,16 +50,10 @@ namespace Pathfinding
 
             NodeRecord endNode = null;
 
-            // Debug.Log("-----------------------");
-
-            // Debug.Log("Start : " + startCoord);
-
             while (frontier.Count > 0)
             {
                 NodeRecord current = frontier.Dequeue().Value;
                 current.State = ENodeRecordState.Closed;
-
-                // Debug.Log("currentNode : " + current);
 
                 if (current.Coord == goalCoord)
                 {
@@ -73,22 +67,16 @@ namespace Pathfinding
                 {
                     NodeRecord currentNeighbour = _neighbourList[i].Node;
 
-                    // Debug.Log("\tcurrentNeighbour : " + currentNeighbour);
 
                     float newCost = current.CostSoFar + _neighbourList[i].ImmediateCost + currentNeighbour.NodeCost;
-
-                    // Debug.Log("\t\tnewCost : " + current.CostSoFar + " + " + _neighbourList[i].ImmediateCost + " + " + currentNeighbour.NodeCost + " = " + newCost);
 
                     if (currentNeighbour.State == ENodeRecordState.Unvisited
                         ||  currentNeighbour.CostSoFar > newCost)
                     {
-                        currentNeighbour.CostSoFar = newCost;
-
                         float estimateCost = EstimateCoord(currentNeighbour.Coord, heuristicType);
 
+                        currentNeighbour.CostSoFar = newCost;
                         currentNeighbour.EstimatedTotalCost = newCost + estimateCost;
-                        // Debug.Log("\t\testimateTotalCost : " + newCost + " + " + estimateCost + " = " + currentNeighbour.EstimatedTotalCost);
-
                         EnqueueNodeRecord(currentNeighbour, frontier);
                         currentNeighbour.CameFrom = current;
                     }
@@ -120,7 +108,9 @@ namespace Pathfinding
                     current = current.CameFrom;
                 }
             }
-            
+
+            path.Reverse();
+
             return path;
         }
 

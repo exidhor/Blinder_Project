@@ -11,6 +11,39 @@ namespace Tools
         private static bool _globalBoundsIsFilled;
         private static Bounds _globalBounds;
 
+        public static Rect GetGlobalRect(Vector2 firstPoint, Vector2 secondPoint)
+        {
+            Vector2 min, max;
+
+            if (firstPoint.x < secondPoint.x)
+            {
+                min.x = firstPoint.x;
+                max.x = secondPoint.x;
+            }
+            else
+            {
+                min.x = secondPoint.x;
+                max.x = firstPoint.x;
+            }
+
+            if (firstPoint.y < secondPoint.y)
+            {
+                min.y = firstPoint.y;
+                max.y = secondPoint.y;
+            }
+            else
+            {
+                min.y = secondPoint.y;
+                max.y = firstPoint.y;
+            }
+
+            Vector2 size = max - min;
+            //size.x = Mathf.Abs(size.x);
+            //size.y = Mathf.Abs(size.y);
+
+            return new Rect(min, size);
+        }
+
         public static Bounds FindGlobalBounds(GameObject gameObject, EBoundsType type)
         {
             _globalBoundsIsFilled = false;

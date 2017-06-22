@@ -18,40 +18,13 @@ namespace AI
         public bool DrawDebugPath = true;
 
         [SerializeField, UnityReadOnly] private float _currentTime;
-        //[SerializeField] private float _refreshPathTime;
 
         // for the path
         [SerializeField] private int _currentNodeIndex;
         [SerializeField] private List<Vector2> _path = new List<Vector2>();
         [SerializeField] private List<Vector2> _smoothPath = new List<Vector2>();
+        [SerializeField] private List<Vector2i> _smoothCoordPath = new List<Vector2i>();
         [SerializeField] private List<Vector2i> _coordPath = new List<Vector2i>();
-
-        //// specs
-        //[SerializeField] private float _speed;
-        //[SerializeField] private float _radiusMarginError;
-        //[SerializeField] private float _slowRadius;
-
-        //public void Init(Kinematic character, 
-        //    Location target, 
-        //    float refreshPathTime,
-        //    float speed,
-        //    float radiusMarginError,
-        //    float slowRadius)
-        //{
-        //    _character = character;
-        //    _target = target;
-
-        //    _refreshPathTime = refreshPathTime;
-        //    _currentTime = RandomGenerator.instance.NextFloat(_refreshPathTime);
-
-        //    _speed = speed;
-        //    _radiusMarginError = radiusMarginError;
-        //    _slowRadius = slowRadius;
-
-        //    _type = ESteeringType.Seek;
-
-        //    ConstructPath();
-        //}
 
         public override void Recompute()
         {
@@ -66,7 +39,7 @@ namespace AI
             }
 
             // check if the character has reached the targetNode
-            if (_currentNodeIndex >= 0 && _path.Count > 0)
+            if (_currentNodeIndex < _path.Count && _path.Count > 0)
             {
                 Vector2i? coord = Map.instance.navGrid.GetCoordAt(_character.GetPosition());
 
@@ -86,13 +59,13 @@ namespace AI
 
                 if (_coordPath[_currentNodeIndex] == coord.Value)
                 {
-                    _currentNodeIndex--;
+                    _currentNodeIndex++;
                 }
             }
 
             Vector2 targetPosition;
 
-            if (_currentNodeIndex < 0 || _path.Count == 0)
+            if (_currentNodeIndex >= _path.Count || _path.Count == 0)
             {
                 targetPosition = _target.position;
             }
@@ -123,20 +96,14 @@ namespace AI
         private void ConstructPath()
         {
             _path.Clear();
+            _smoothPath.Clear();
+
             _currentNodeIndex = 0;
 
             if (!_target.isSet)
                 return;
 
             NavGrid navGrid = Map.instance.navGrid;
-
-            //Vector2i? startCoord = navGrid.GetCoordAt(_character.GetPosition());
-            //Vector2i? endCoord = navGrid.GetCoordAt(_target.position);
-
-            //if (!startCoord.HasValue || !endCoord.HasValue)
-            //{
-            //    return;
-            //}
 
             _coordPath = Pathfinder.A_Star(_character.GetPosition(), _target.position);
 
@@ -145,9 +112,14 @@ namespace AI
                 _path.Add(navGrid.GetCasePosition(_coordPath[i]));
             }
 
-            _currentNodeIndex = _coordPath.Count - 1;
+            //_currentNodeIndex = _coordPath.Count - 1;
 
-            _smoothPath = PathSmoother.SmoothPath(_path);
+            _smoothCoordPath = PathSmoother.SmoothPath(_coordPath);
+
+            for (int i = 0; i < _smoothCoordPath.Count; i++)
+            {
+                _smoothPath.Add(navGrid.GetCasePosition(_smoothCoordPath[i]));
+            }
         }
 
         public List<Vector2> GetDebugPath()

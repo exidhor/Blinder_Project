@@ -14,6 +14,8 @@ namespace AIEditor
     {
         private SeekSteering _targetObject;
 
+        private static readonly float depth = -3;
+
         private string _specsName = "";
         private ESteeringType _steeringType;
 
@@ -54,15 +56,19 @@ namespace AIEditor
             if (path != null && path.Count > 0)
             {
                 float caseSize = Map.instance.mapData.Grid.CaseSize / 4;
-                Vector3 size = new Vector3(caseSize, caseSize, caseSize);
+                Vector3 size = new Vector3(caseSize, caseSize, 0.1f);
+                Vector3 position = new Vector3(path[0].x, path[0].y, depth);
 
-                Gizmos.DrawCube(path[0], size);
+                Gizmos.DrawCube(position, size);
 
                 for (int i = 1; i < path.Count; i++)
                 {
-                    Gizmos.DrawLine(path[i - 1], path[i]);
+                    Vector3 startPosition = new Vector3(path[i - 1].x, path[i - 1].y, depth);
+                    Vector3 endPosition = new Vector3(path[i].x, path[i].y, depth);
 
-                    Gizmos.DrawCube(path[i], size);
+                    Gizmos.DrawLine(startPosition, endPosition);
+
+                    Gizmos.DrawCube(endPosition, size);
                 }
             }
         }

@@ -53,6 +53,11 @@ namespace Tools
                      || point.y > Position.y + _halfSize.y);
         }
 
+        public Vector2i? GetCoordAt(float x, float y)
+        {
+            return GetCoordAt(new Vector2(x, y));
+        }
+
         public Vector2i? GetCoordAt(Vector2 point)
         {
             if (!PointIsInGrid(point))

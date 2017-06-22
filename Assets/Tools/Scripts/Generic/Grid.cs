@@ -181,11 +181,19 @@ namespace Tools
 
         public T GetCaseAt(Vector2i coord)
         {
-            return this[coord.x][coord.y];
+            return GetCaseAt(coord.x, coord.y);
         }
 
         public T GetCaseAt(int x, int y)
         {
+#if UNITY_EDITOR
+            if (x < 0 || x >= _cases.Count
+                || y < 0 || y >= _cases[x].Count)
+            {
+                Debug.LogError("invalid indices : x(" + x + "), y(" + y + "); Width = " + width + ", height = " + height);
+            }
+#endif
+
             return this[x][y];
         }
     }
