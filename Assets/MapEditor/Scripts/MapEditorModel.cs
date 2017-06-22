@@ -59,6 +59,14 @@ namespace MapEditor
             Data.Grid.Resize(Data.Grid.width, Data.Grid.height);
         }
 
+        void Awake()
+        {
+            if (Application.isPlaying)
+            {
+                DontDestroyOnLoad(transform.gameObject);
+            }
+        }
+
         void Update()
         {
             if (Data != null)

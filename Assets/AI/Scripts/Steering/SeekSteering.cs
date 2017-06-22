@@ -39,25 +39,25 @@ namespace AI
             }
 
             // check if the character has reached the targetNode
-            if (_currentNodeIndex < _path.Count && _path.Count > 0)
+            if (_currentNodeIndex < _smoothPath.Count && _smoothPath.Count > 0)
             {
                 Vector2i? coord = Map.instance.navGrid.GetCoordAt(_character.GetPosition());
 
                 if (!coord.HasValue)
                 {
                     Debug.LogWarning("The character exit the map");
-                    _path.Clear();
+                    _smoothPath.Clear();
                     _currentNodeIndex = 0;
 
                     return new SteeringOutput();
                 }
 
-                if (_currentNodeIndex < 0 || _currentNodeIndex >= _coordPath.Count)
+                if (_currentNodeIndex < 0 || _currentNodeIndex >= _smoothCoordPath.Count)
                 {
                     Debug.Break();
                 }
 
-                if (_coordPath[_currentNodeIndex] == coord.Value)
+                if (_smoothCoordPath[_currentNodeIndex] == coord.Value)
                 {
                     _currentNodeIndex++;
                 }
@@ -65,13 +65,13 @@ namespace AI
 
             Vector2 targetPosition;
 
-            if (_currentNodeIndex >= _path.Count || _path.Count == 0)
+            if (_currentNodeIndex >= _smoothPath.Count || _smoothPath.Count == 0)
             {
                 targetPosition = _target.position;
             }
             else
             {
-                targetPosition = _path[_currentNodeIndex];
+                targetPosition = _smoothPath[_currentNodeIndex];
             }
 
             return Behavior.Arrive(_character, targetPosition, _specs.radiusMarginError, _specs.speed, _specs.slowRadius);

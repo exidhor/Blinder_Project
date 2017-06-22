@@ -25,10 +25,8 @@ namespace Pathfinding
 
             NavGrid navGrid = Map.instance.navGrid;
 
-            Debug.Log("=================================");
-
             // we run through each node of the previous path
-            for (int i = 0; i < path.Count - 2; i++)
+            for (int i = 0; i < path.Count - 1; i++)
             {
                 int bestClearIndex = -1;
 
@@ -62,17 +60,16 @@ namespace Pathfinding
                     // we want to try start at the last added node
                     i = bestClearIndex - 1;
                 }
-                else
+                else // if (i < path.Count - 3)
                 {
                     // no shortcut found, we add the immediate next node
-                    //smoothPath.Add(path[i + 1]);
-                    smoothPath.Add(path[i]);
+                    smoothPath.Add(path[i + 1]);
                 }
             }
 
             // we add the last node to be sure that the smmoth path has
             // the same destination as the previous path
-            smoothPath.Add(path.Last());
+            //smoothPath.Add(path.Last());
             
             return smoothPath;
         } 
