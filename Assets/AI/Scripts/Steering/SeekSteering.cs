@@ -68,13 +68,11 @@ namespace AI
             if (_currentNodeIndex >= _smoothPath.Count || _smoothPath.Count == 0)
             {
                 targetPosition = _target.position;
+                return Behavior.Arrive(_character, targetPosition, _specs.radiusMarginError, _specs.speed, _specs.slowRadius);
             }
-            else
-            {
-                targetPosition = _smoothPath[_currentNodeIndex];
-            }
-
-            return Behavior.Arrive(_character, targetPosition, _specs.radiusMarginError, _specs.speed, _specs.slowRadius);
+            
+            targetPosition = _smoothPath[_currentNodeIndex];
+            return Behavior.Seek(_character, targetPosition, _specs.speed);
         }
 
         void Update()

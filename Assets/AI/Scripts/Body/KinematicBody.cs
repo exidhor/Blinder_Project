@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace AI
 {
-    public enum ELocationType
+    public class KinematicBody : Body
     {
-        Transform,
-        Position,
-        StaticBody
+        //todo
     }
 }

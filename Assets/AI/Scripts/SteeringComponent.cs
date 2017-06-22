@@ -7,28 +7,28 @@ using Tools;
 
 namespace AI
 {
-    [RequireComponent(typeof(Kinematic))]
+    [RequireComponent(typeof(StaticBody))]
     public class SteeringComponent : MonoBehaviour
     {
         [SerializeField, UnityReadOnly] private SteeringOutput _outputBuffer;
         [SerializeField, UnityReadOnly] private Steering _steering;
         [SerializeField, UnityReadOnly] private SteeringSpecs _steeringSpecs;
 
-        private Kinematic _kinematic;
+        private StaticBody _staticBody;
 
         private void Awake()
         {
-            _kinematic = GetComponent<Kinematic>();
+            _staticBody = GetComponent<StaticBody>();
         }
 
-        public void ApplyOnKinematic(float deltaTime)
+        public void ApplyOnStatic(float deltaTime)
         {
-            _kinematic.ResetVelocity();
+            _staticBody.ResetVelocity();
 
             if (_steering != null)
             {
                 _outputBuffer = _steering.GetOutput();
-                _kinematic.Actualize(_outputBuffer, deltaTime);
+                _staticBody.Actualize(_outputBuffer, deltaTime);
             }
         }
 
@@ -40,7 +40,7 @@ namespace AI
             {
                 if (_steering)
                 {
-                    _steering.Init(_kinematic, _steeringSpecs, null);
+                    _steering.Init(_staticBody, _steeringSpecs, null);
                 }
             }
             else
@@ -56,12 +56,12 @@ namespace AI
                 _steering.Release();
             }
 
-            _steering = SteeringTable.instance.GetFreeSteering(type, _kinematic, _steeringSpecs, target);
+            _steering = SteeringTable.instance.GetFreeSteering(type, _staticBody, _steeringSpecs, target);
         }
 
         void Update()
         {
-            ApplyOnKinematic(Time.deltaTime);
+            ApplyOnStatic(Time.deltaTime);
         }
 
         /// <summary>

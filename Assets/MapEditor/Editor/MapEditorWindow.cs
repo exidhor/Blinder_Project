@@ -222,6 +222,8 @@ namespace MapEditorEditor
 
         private void Load()
         {
+            _mapEditor = GameObject.FindObjectOfType<MapEditorModel>();
+
             _mapEditor.Data = _data;
 
             _mapEditor.Data.Grid.Bufferize();

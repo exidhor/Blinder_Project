@@ -9,7 +9,7 @@ namespace AI
 {
     public static partial class Behavior
     {
-        public static SteeringOutput Flee(Kinematic character, Vector2 target, float speed)
+        public static SteeringOutput Flee(StaticBody character, Vector2 target, float speed)
         {
             SteeringOutput output = new SteeringOutput();
 

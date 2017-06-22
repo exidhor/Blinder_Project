@@ -8,7 +8,7 @@ namespace AI
 {
     public static partial class Behavior
     {
-        public static SteeringOutput Evade(Kinematic character, Kinematic target, float speed, float maxPredictionTime)
+        public static SteeringOutput Evade(StaticBody character, StaticBody target, float speed, float maxPredictionTime)
         {
             Vector2 predictedTargetPosition = PredictTargetDeplacement(character, target, maxPredictionTime);
 

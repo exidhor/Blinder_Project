@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace AI
 {
-    public enum ELocationType
+    [RequireComponent(typeof(Rigidbody2D))]
+    public abstract class Body : MonoBehaviour
     {
-        Transform,
-        Position,
-        StaticBody
+
     }
 }

@@ -8,7 +8,7 @@ namespace AI
 {
     public static partial class Behavior
     {
-        public static SteeringOutput Face(Kinematic character, Vector2 target)
+        public static SteeringOutput Face(StaticBody character, Vector2 target)
         {
             SteeringOutput output = new SteeringOutput();
 

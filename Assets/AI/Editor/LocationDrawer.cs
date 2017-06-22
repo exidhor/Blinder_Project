@@ -66,9 +66,9 @@ namespace MapEditorEditor
                         break;
                     }
 
-                case ELocationType.Kinematic:
+                case ELocationType.StaticBody:
                     {
-                        EditorGUI.PropertyField(locationValuePosition, property.FindPropertyRelative("_kinematic"), GUIContent.none);
+                        EditorGUI.PropertyField(locationValuePosition, property.FindPropertyRelative("_staticBody"), GUIContent.none);
                         break;
                     }
             }

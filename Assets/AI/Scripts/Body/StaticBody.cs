@@ -5,10 +5,9 @@ using System.Text;
 using Tools;
 using UnityEngine;
 
-namespace OldAI
+namespace AI
 {
-    [RequireComponent(typeof(Rigidbody2D))]
-    public class Kinematic : MonoBehaviour
+    public class StaticBody : Body
     {
         public float MaxSpeed;
         public float OrientationInDegree;
@@ -21,7 +20,7 @@ namespace OldAI
 
         public float SqrMaxSpeed
         {
-            get { return MaxSpeed*MaxSpeed; }
+            get { return MaxSpeed * MaxSpeed; }
         }
 
         public bool isMoving
@@ -37,6 +36,8 @@ namespace OldAI
         private float _rotationInDegree;
 
         private Rigidbody2D _rigidBody;
+
+        private Location _bufferLocation = new Location();
 
         private float _rotationInRadian
         {
@@ -54,8 +55,6 @@ namespace OldAI
 
         public void Actualize(SteeringOutput steering, float deltaTime)
         {
-            //ResetVelocity();
-
             if (steering.IsInstantOrientation)
             {
                 OrientationInDegree = steering.AngularInDegree;
@@ -99,9 +98,8 @@ namespace OldAI
             OrientationInDegree %= 360f;
 
             _rotationInDegree += angularInDegree * deltaTime;
-            
-            ActualizeOrientation();            
-            //_rotationInDegree %= 360f;
+
+            ActualizeOrientation();
         }
 
         private void CapVelocity()
@@ -132,14 +130,18 @@ namespace OldAI
             return _rigidBody.position;
         }
 
-        public TransformLocation GetDynamicLocation()
+        public Location GetDynamicLocation()
         {
-            return new TransformLocation(_rigidBody.transform);
+            _bufferLocation.Set(_rigidBody.transform);
+
+            return _bufferLocation;
         }
 
-        public StationaryLocation GetInstantLocation()
+        public Location GetInstantLocation()
         {
-            return new StationaryLocation(GetPosition());
+            _bufferLocation.Set(GetPosition());
+
+            return _bufferLocation;
         }
 
         public Vector2 GetVelocity()
@@ -164,7 +166,7 @@ namespace OldAI
 
         void OnDrawGizmosSelected()
         {
-            if(_rigidBody == null)
+            if (_rigidBody == null)
                 return;
 
             Gizmos.color = Color.magenta;
