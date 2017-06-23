@@ -90,7 +90,6 @@ namespace MapEditorEditor
 
             _mapEditor = GameObject.FindObjectOfType<MapEditorModel>();
 
-            // todo check if there is a data
             _data = _mapEditor.Data;
 
             _showContentColors = new AnimBool(false);
@@ -160,7 +159,7 @@ namespace MapEditorEditor
 
         private void DrawGridSettings()
         {
-            EditorGUILayout.HelpBox("Modify this regenerate the grid.", MessageType.Info);
+            EditorGUILayout.HelpBox("Modify this regenerate the grid in realtime.", MessageType.Info);
 
             Vector2 newSize = EditorGUILayout.Vector2Field("Grid Size", _data.Grid.Size);
             float newCaseSize = EditorGUILayout.FloatField("Case size", _data.Grid.CaseSize);
@@ -180,6 +179,8 @@ namespace MapEditorEditor
                 }
 
                 _data.Grid.Bufferize();
+
+                SceneView.RepaintAll();
             }
         }
 
