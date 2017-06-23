@@ -30,6 +30,8 @@ namespace MapEditorEditor
         private static Vector2 mousePosition;
         private static MapEditorWindow _instance;
 
+        private Vector2 _scrollPosition;
+
         private readonly string folder = "Assets/Resources/Output";
 
         [MenuItem("Window/Map Editor/Create Window")]
@@ -102,6 +104,9 @@ namespace MapEditorEditor
 
         void OnGUI()
         {
+            EditorGUILayout.BeginHorizontal();
+            _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
+
             if (_data != null)
             {
                 _serializedData = new SerializedObject(_data);
@@ -148,6 +153,9 @@ namespace MapEditorEditor
                     Bake();
                 }
             }
+
+            EditorGUILayout.EndScrollView();
+            EditorGUILayout.EndHorizontal();
         }
 
         private void DrawGridSettings()
