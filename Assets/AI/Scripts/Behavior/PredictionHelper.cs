@@ -8,7 +8,7 @@ namespace AI
 {
     public static partial class Behavior
     {
-        private static Vector2 PredictTargetDeplacement(StaticBody character, StaticBody target, float maxPredictionTime)
+        private static Vector2 PredictTargetDeplacement(KinematicBody character, KinematicBody target, float maxPredictionTime)
         {
             // Work out the distance to target
             Vector2 direction = target.GetPosition() - character.GetPosition();
@@ -16,7 +16,7 @@ namespace AI
             float distance = direction.magnitude;
 
             // Work out our current speed
-            float currentSpeed = character.GetVelocity().magnitude;
+            float currentSpeed = character.velocity.magnitude;
 
             float prediction = maxPredictionTime;
 
@@ -29,7 +29,7 @@ namespace AI
 
             // Put the target together
             Vector2 targetPosition = target.GetPosition();
-            targetPosition += target.GetVelocity() * prediction;
+            targetPosition += target.velocity * prediction;
 
             return targetPosition;
         }

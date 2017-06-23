@@ -19,11 +19,6 @@ namespace AI
             set { AngularInDegree = value * Mathf.Rad2Deg; }
         }
 
-        //public SteeringOutput()
-        //{
-        //    Reset();
-        //}
-
         public SteeringOutput(Vector2 linear, float angularInDegree)
         {
             Linear = linear;

@@ -9,35 +9,8 @@ namespace AI
 {
     public class StaticBody : Body
     {
-        public float MaxSpeed;
-        public float OrientationInDegree;
-
-        public float OrientationInRadian
-        {
-            get { return OrientationInDegree * Mathf.Deg2Rad; }
-            set { OrientationInDegree = value * Mathf.Rad2Deg; }
-        }
-
-        public float SqrMaxSpeed
-        {
-            get { return MaxSpeed * MaxSpeed; }
-        }
-
-        public bool isMoving
-        {
-            get
-            {
-                return -float.Epsilon > _rigidBody.velocity.x || _rigidBody.velocity.x > float.Epsilon
-                    || -float.Epsilon > _rigidBody.velocity.y || _rigidBody.velocity.y > float.Epsilon;
-            }
-        }
-
         [SerializeField]
         private float _rotationInDegree;
-
-        private Rigidbody2D _rigidBody;
-
-        private Location _bufferLocation = new Location();
 
         private float _rotationInRadian
         {
@@ -45,15 +18,14 @@ namespace AI
             set { _rotationInDegree = value * Mathf.Rad2Deg; }
         }
 
-        private void Start()
+        protected override void Start()
         {
-            OrientationInDegree = 0;
+            base.Start();
+            
             _rotationInDegree = 0;
-
-            _rigidBody = GetComponent<Rigidbody2D>();
         }
 
-        public void Actualize(SteeringOutput steering, float deltaTime)
+        public override void Actualize(SteeringOutput steering, float deltaTime)
         {
             if (steering.IsInstantOrientation)
             {
@@ -83,13 +55,13 @@ namespace AI
 
         public void ResetVelocity()
         {
-            _rigidBody.velocity = Vector2.zero;
-            _rigidBody.angularVelocity = 0f;
+            _rigidbody.velocity = Vector2.zero;
+            _rigidbody.angularVelocity = 0f;
         }
 
         private void ActualizeOrientation()
         {
-            _rigidBody.rotation = OrientationInDegree;
+            _rigidbody.rotation = OrientationInDegree;
         }
 
         private void Rotate(float angularInDegree, float deltaTime)
@@ -104,20 +76,20 @@ namespace AI
 
         private void CapVelocity()
         {
-            Vector2 velocity = _rigidBody.velocity;
+            Vector2 velocity = _rigidbody.velocity;
 
             if (velocity.sqrMagnitude > SqrMaxSpeed)
             {
                 velocity.Normalize();
                 velocity *= MaxSpeed;
 
-                _rigidBody.velocity = velocity;
+                _rigidbody.velocity = velocity;
             }
         }
 
         private void Move(Vector2 velocity)
         {
-            _rigidBody.velocity += velocity;
+            _rigidbody.velocity += velocity;
         }
 
         private Vector2 ApplyRotation(Vector2 movement)
@@ -127,12 +99,12 @@ namespace AI
 
         public Vector2 GetPosition()
         {
-            return _rigidBody.position;
+            return _rigidbody.position;
         }
 
         public Location GetDynamicLocation()
         {
-            _bufferLocation.Set(_rigidBody.transform);
+            _bufferLocation.Set(_rigidbody.transform);
 
             return _bufferLocation;
         }
@@ -146,7 +118,7 @@ namespace AI
 
         public Vector2 GetVelocity()
         {
-            return _rigidBody.velocity;
+            return _rigidbody.velocity;
         }
 
         private void FaceMovementDirection()
@@ -166,7 +138,7 @@ namespace AI
 
         void OnDrawGizmosSelected()
         {
-            if (_rigidBody == null)
+            if (_rigidbody == null)
                 return;
 
             Gizmos.color = Color.magenta;
@@ -181,7 +153,7 @@ namespace AI
 
         public override string ToString()
         {
-            return _rigidBody.name;
+            return _rigidbody.name;
         }
     }
 }

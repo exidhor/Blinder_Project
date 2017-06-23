@@ -33,7 +33,7 @@ namespace AI
             }
         }
 
-        public Steering GetFreeSteering(ESteeringType type, StaticBody character, SteeringSpecs specs, Location target = null)
+        public Steering GetFreeSteering(ESteeringType type, KinematicBody character, SteeringSpecs specs, Location target = null)
         {
             if (type == ESteeringType.None)
             {

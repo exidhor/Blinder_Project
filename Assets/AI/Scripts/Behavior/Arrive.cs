@@ -8,7 +8,7 @@ namespace AI
 {
     public static partial class Behavior
     {
-        public static SteeringOutput Arrive(StaticBody character, 
+        public static SteeringOutput Arrive(KinematicBody character, 
             Vector2 target, 
             float radiusMarginError, 
             float speed,

@@ -6,12 +6,12 @@ namespace AI
     public abstract class Steering : UnityPoolObject
     {
         [SerializeField] protected ESteeringType _type;
-        [SerializeField] protected StaticBody _character;
+        [SerializeField] protected KinematicBody _character;
         [SerializeField] protected Location _target = new Location();
 
         [SerializeField] protected SteeringSpecs _specs;
 
-        public void Init(StaticBody character, SteeringSpecs specs, Location target)
+        public void Init(KinematicBody character, SteeringSpecs specs, Location target)
         {
             _character = character;
             _specs = specs;

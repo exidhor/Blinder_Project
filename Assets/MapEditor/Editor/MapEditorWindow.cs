@@ -88,6 +88,7 @@ namespace MapEditorEditor
 
             _mapEditor = GameObject.FindObjectOfType<MapEditorModel>();
 
+            // todo check if there is a data
             _data = _mapEditor.Data;
 
             _showContentColors = new AnimBool(false);

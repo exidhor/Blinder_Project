@@ -28,7 +28,7 @@ namespace AI
                         return _transform != null;
 
                     case ELocationType.StaticBody:
-                        return _staticBody != null;
+                        return _kinematicBody != null;
 
                     default:
                         return true;
@@ -46,7 +46,7 @@ namespace AI
                         return _transform.position;
 
                     case ELocationType.StaticBody:
-                        return _staticBody.GetPosition();
+                        return _kinematicBody.GetPosition();
 
                     default:
                         return _position;
@@ -61,7 +61,7 @@ namespace AI
                 switch (_type)
                 {
                     case ELocationType.StaticBody:
-                        return _staticBody.transform;
+                        return _kinematicBody.transform;
 
                     default:
                         return _transform;
@@ -69,9 +69,9 @@ namespace AI
             }
         }
 
-        public StaticBody staticBody
+        public StaticBody kinematicBody
         {
-            get { return _staticBody; }
+            get { return _kinematicBody; }
         }
 
         [SerializeField] private bool _isSet;
@@ -82,7 +82,7 @@ namespace AI
 
         [SerializeField] private Vector2 _position;
         [SerializeField] private Transform _transform;
-        [SerializeField] private StaticBody _staticBody;
+        [SerializeField] private StaticBody _kinematicBody;
 
         public Location()
         {
@@ -99,9 +99,9 @@ namespace AI
             Set(transform);
         }
 
-        public Location(StaticBody staticBody)
+        public Location(StaticBody kinematicBody)
         {
-            Set(staticBody);
+            Set(kinematicBody);
         }
 
         public void Copy(Location otherLocation)
@@ -112,7 +112,7 @@ namespace AI
 
             _position = otherLocation._position;
             _transform = otherLocation._transform;
-            _staticBody = otherLocation._staticBody;
+            _kinematicBody = otherLocation._kinematicBody;
         }
 
         public void Unset()
@@ -121,7 +121,7 @@ namespace AI
 
             _position = new Vector2();
             _transform = null;
-            _staticBody = null;
+            _kinematicBody = null;
         }
 
         public void Set(Vector2 position)
@@ -132,7 +132,7 @@ namespace AI
 
             _position = position;
             _transform = null;
-            _staticBody = null;
+            _kinematicBody = null;
         }
 
         public void Set(Transform transform)
@@ -143,10 +143,10 @@ namespace AI
 
             _position = new Vector2();
             _transform = transform;
-            _staticBody = null;
+            _kinematicBody = null;
         }
 
-        public void Set(StaticBody staticBody)
+        public void Set(StaticBody kinematicBody)
         {
             _isSet = true;
 
@@ -154,7 +154,7 @@ namespace AI
 
             _position = new Vector2();
             _transform = null;
-            _staticBody = staticBody;
+            _kinematicBody = kinematicBody;
         }
     }
 }
