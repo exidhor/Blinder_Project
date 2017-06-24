@@ -16,7 +16,7 @@ namespace AI
             output.IsOriented = false;
 
             // work out the direction to target
-            Vector2 direction = target - character.GetPosition();
+            Vector2 direction = target - character.position;
 
             // Check for a zero direction, and make no change if so
             if (direction.sqrMagnitude < float.Epsilon*float.Epsilon)

@@ -18,7 +18,7 @@ namespace AI
 
             // First work out the direction
             output.Linear = target;
-            output.Linear -= character.GetPosition();
+            output.Linear -= character.position;
 
             float squareDistance = output.Linear.SqrMagnitude();
 

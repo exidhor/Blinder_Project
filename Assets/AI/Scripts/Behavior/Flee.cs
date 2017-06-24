@@ -14,7 +14,7 @@ namespace AI
             SteeringOutput output = new SteeringOutput();
 
             // First work out the direction
-            output.Linear = character.GetPosition();
+            output.Linear = character.position;
             output.Linear -= target;
 
             // If there is no direction, do nothing

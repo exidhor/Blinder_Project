@@ -21,7 +21,7 @@ namespace AI
 
         public float OrientationInDegree
         {
-            get { return _rigidBody.rotation; }
+            get { return _rigidbody.rotation; }
         }
 
         public float OrientationInRadian
@@ -35,21 +35,26 @@ namespace AI
             get { return MaxSpeed * MaxSpeed; }
         }
 
+        public Vector2 position
+        {
+            get { return _rigidbody.position; }
+        }
+
         public Vector2 velocity
         {
-            get { return _rigidBody.velocity; }
+            get { return _rigidbody.velocity; }
         }
 
         public bool isMoving
         {
             get
             {
-                return -float.Epsilon > _rigidBody.velocity.x || _rigidBody.velocity.x > float.Epsilon
-                    || -float.Epsilon > _rigidBody.velocity.y || _rigidBody.velocity.y > float.Epsilon;
+                return -float.Epsilon > _rigidbody.velocity.x || _rigidbody.velocity.x > float.Epsilon
+                    || -float.Epsilon > _rigidbody.velocity.y || _rigidbody.velocity.y > float.Epsilon;
             }
         }
 
-        private Rigidbody2D _rigidBody;
+        private Rigidbody2D _rigidbody;
 
         private float _angularVelocity;
 
@@ -61,7 +66,7 @@ namespace AI
 
         void Awake()
         {
-            _rigidBody = GetComponent<Rigidbody2D>();
+            _rigidbody = GetComponent<Rigidbody2D>();
         }
 
         private void Start()
@@ -103,16 +108,22 @@ namespace AI
             {
                 CapLinearAcceleration(deltaTime, inverseTime);
 
+                // we actualize the orientation to face the movement, if there is one
+                FaceMovementDirection(_rigidbody.velocity);
+
                 ComputeAngularVelocity(inverseTime);
                 CapAngularAcceleration(deltaTime, inverseTime);
+
+                // we actualize the orientation to face the movement, if there is one
+                FaceMovementDirection(_rigidbody.velocity);
             }
             else
             {
+                // we actualize the orientation to face the movement, if there is one
+                FaceMovementDirection(_rigidbody.velocity);
+
                 ComputeAngularVelocity(inverseTime);
             }
-
-            // we actualize the orientation to face the movement, if there is one
-            FaceMovementDirection(_rigidBody.velocity);
 
             // we verify that the velocity is not greater than the max speed
             CapVelocity();
@@ -121,43 +132,43 @@ namespace AI
         public void PrepareForUpdate()
         {
             // buffer last values
-            _oldVelocity = _rigidBody.velocity;
+            _oldVelocity = _rigidbody.velocity;
             _oldAngularVelocity = _angularVelocity;
-            _oldOrientation = _rigidBody.rotation;
+            _oldOrientation = _rigidbody.rotation;
 
-            _rigidBody.velocity = Vector2.zero;
-            _rigidBody.angularVelocity = 0;
+            _rigidbody.velocity = Vector2.zero;
+            _rigidbody.angularVelocity = 0;
             _angularVelocity = 0f;
         }
 
         private void ResetOrientation(float newOrientation)
         {
-            _rigidBody.rotation = newOrientation;
+            _rigidbody.rotation = newOrientation;
 
             _angularVelocity = 0f;
         }
 
         private void Rotate(float angularInDegree, float deltaTime)
         {
-            _rigidBody.rotation += angularInDegree * deltaTime;
+            _rigidbody.rotation += angularInDegree * deltaTime;
         }
 
         private void CapVelocity()
         {
-            Vector2 velocity = _rigidBody.velocity;
+            Vector2 velocity = _rigidbody.velocity;
 
             if (velocity.sqrMagnitude > SqrMaxSpeed)
             {
                 velocity.Normalize();
                 velocity *= MaxSpeed;
 
-                _rigidBody.velocity = velocity;
+                _rigidbody.velocity = velocity;
             }
         }
 
         private void CapLinearAcceleration(float deltaTime, float inverseTime)
         {
-            float currentSpeed = _rigidBody.velocity.magnitude;
+            float currentSpeed = _rigidbody.velocity.magnitude;
             float lastSpeed = _oldVelocity.magnitude;
 
             float accelerationDelta = (currentSpeed - lastSpeed);
@@ -172,12 +183,12 @@ namespace AI
             {
                 float targetSpeed = LinearAcceleration*deltaTime + lastSpeed;
 
-                Vector2 velocity = _rigidBody.velocity;
+                Vector2 velocity = _rigidbody.velocity;
 
                 velocity.Normalize();
                 velocity *= targetSpeed;
 
-                _rigidBody.velocity = velocity;
+                _rigidbody.velocity = velocity;
             }
         }
 
@@ -204,18 +215,13 @@ namespace AI
                     validAngularVelocity = -MaxRotation;
                 }
 
-                //float delta = _angularVelocity - validAngularVelocity;
-                //float newOrientation = delta*deltaTime;
-                //float rotation = newOrientation - _rigidBody.rotation;
-
-                float speed = _rigidBody.velocity.magnitude;
-
-                _oldVelocity.Normalize();
-                _oldVelocity *= speed;
-
+                float speed = _rigidbody.velocity.magnitude;
                 float rotation = validAngularVelocity*deltaTime;
 
-                _rigidBody.velocity = MathHelper.RotateVector(_oldVelocity, rotation);
+                Vector2 direction = MathHelper.GetDirectionFromAngle(rotation);
+                direction *= speed;
+
+                _rigidbody.velocity = direction;
 
                 _angularVelocity = validAngularVelocity;
             }
@@ -223,24 +229,24 @@ namespace AI
 
         private void Move(Vector2 velocity)
         {
-            _rigidBody.velocity = velocity;
+            _rigidbody.velocity = velocity;
         }
 
-        public Vector2 GetPosition()
-        {
-            return _rigidBody.position;
-        }
+        //public Vector2 GetPosition()
+        //{
+        //    return _rigidBody.position;
+        //}
 
         public Location GetDynamicLocation()
         {
-            _bufferLocation.Set(_rigidBody.transform);
+            _bufferLocation.Set(_rigidbody.transform);
 
             return _bufferLocation;
         }
 
         public Location GetInstantLocation()
         {
-            _bufferLocation.Set(GetPosition());
+            _bufferLocation.Set(position);
 
             return _bufferLocation;
         }
@@ -252,7 +258,7 @@ namespace AI
             if (movement.sqrMagnitude > EPSILON * EPSILON)
             {
                 float orientationInRadian = Mathf.Atan2(movement.y, movement.x);
-                _rigidBody.rotation = orientationInRadian * Mathf.Rad2Deg;
+                _rigidbody.rotation = orientationInRadian * Mathf.Rad2Deg;
             }
         }
 
@@ -263,9 +269,9 @@ namespace AI
 
         private void ComputeAngularVelocity(float inverseTime)
         {
-            float delta = _rigidBody.rotation - _oldOrientation;
+            float delta = _rigidbody.rotation - _oldOrientation;
 
-            if (-EPSILON < delta && delta > EPSILON)
+            if (-EPSILON < delta || delta > EPSILON)
             {
                 _angularVelocity = delta * inverseTime;
             }
@@ -277,14 +283,14 @@ namespace AI
 
         void OnDrawGizmosSelected()
         {
-            if (_rigidBody == null)
+            if (_rigidbody == null)
                 return;
 
             Gizmos.color = Color.magenta;
 
             Vector2 direction = GetOrientationAsVector();
 
-            Vector2 first = GetPosition();
+            Vector2 first = position;
             Vector2 second = first + direction;
 
             Gizmos.DrawLine(first, second);
@@ -292,7 +298,7 @@ namespace AI
 
         public override string ToString()
         {
-            return _rigidBody.name;
+            return _rigidbody.name;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace AI
 
             // First work out the direction
             output.Linear = target;
-            output.Linear -= character.GetPosition();
+            output.Linear -= character.position;
 
             // If there is no direction, do nothing
             output.Linear = MathHelper.GetKinematicMovement_MinCheck(output.Linear, speed, 0.01f);

@@ -41,7 +41,7 @@ namespace AI
             // check if the character has reached the targetNode
             if (_currentNodeIndex < _smoothPath.Count && _smoothPath.Count > 0)
             {
-                Vector2i? coord = Map.instance.navGrid.GetCoordAt(_character.GetPosition());
+                Vector2i? coord = Map.instance.navGrid.GetCoordAt(_character.position);
 
                 if (!coord.HasValue)
                 {
@@ -103,14 +103,19 @@ namespace AI
 
             NavGrid navGrid = Map.instance.navGrid;
 
-            _coordPath = Pathfinder.A_Star(_character.GetPosition(), _target.position);
+            // We first try to see if we can reach the target straightly without 
+            // needed a pathfinding
+
+            // to see that, we look for a clear line between the character and the target
+            if (CanReachTargetDirectly())
+                return;
+
+            _coordPath = Pathfinder.A_Star(_character.position, _target.position);
 
             for (int i = 0; i < _coordPath.Count; i++)
             {
                 _path.Add(navGrid.GetCasePosition(_coordPath[i]));
             }
-
-            //_currentNodeIndex = _coordPath.Count - 1;
 
             _smoothCoordPath = PathSmoother.SmoothPath(_coordPath);
 
@@ -118,6 +123,21 @@ namespace AI
             {
                 _smoothPath.Add(navGrid.GetCasePosition(_smoothCoordPath[i]));
             }
+        }
+
+        private bool CanReachTargetDirectly()
+        {
+            NavGrid navGrid = Map.instance.navGrid;
+
+            Vector2i? characterCoord = navGrid.GetCoordAt(_character.position);
+            Vector2i? targetCoord = navGrid.GetCoordAt(_target.position);
+
+            if (characterCoord == null || targetCoord == null)
+            {
+                return false;
+            }
+
+            return navGrid.IsClearLine(characterCoord.Value, targetCoord.Value);
         }
 
         public List<Vector2> GetDebugPath()

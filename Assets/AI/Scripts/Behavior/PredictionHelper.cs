@@ -11,7 +11,7 @@ namespace AI
         private static Vector2 PredictTargetDeplacement(KinematicBody character, KinematicBody target, float maxPredictionTime)
         {
             // Work out the distance to target
-            Vector2 direction = target.GetPosition() - character.GetPosition();
+            Vector2 direction = target.position - character.position;
 
             float distance = direction.magnitude;
 
@@ -28,7 +28,7 @@ namespace AI
             }
 
             // Put the target together
-            Vector2 targetPosition = target.GetPosition();
+            Vector2 targetPosition = target.position;
             targetPosition += target.velocity * prediction;
 
             return targetPosition;
