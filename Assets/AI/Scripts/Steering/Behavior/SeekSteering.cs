@@ -16,11 +16,11 @@ namespace AI
         [SerializeField, UnityReadOnly] private float _currentTime;
 
         // for the path
-        [SerializeField] private int _currentNodeIndex;
-        [SerializeField] private List<Vector2> _path = new List<Vector2>();
-        [SerializeField] private List<Vector2> _smoothPath = new List<Vector2>();
-        [SerializeField] private List<Vector2i> _smoothCoordPath = new List<Vector2i>();
-        [SerializeField] private List<Vector2i> _coordPath = new List<Vector2i>();
+        [SerializeField] protected int _currentNodeIndex;
+        [SerializeField] protected List<Vector2> _path = new List<Vector2>();
+        [SerializeField] protected List<Vector2> _smoothPath = new List<Vector2>();
+        [SerializeField] protected List<Vector2i> _smoothCoordPath = new List<Vector2i>();
+        [SerializeField] protected List<Vector2i> _coordPath = new List<Vector2i>();
 
         public override void Recompute()
         {

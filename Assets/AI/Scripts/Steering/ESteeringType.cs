@@ -11,7 +11,7 @@ namespace AI
         Flee,
         Wander,
         Pursue,
-
+        Patrol,
 
         None // this has to be the last because we map the enum index
              // into the pool list (see SteeringTable) 
