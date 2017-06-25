@@ -17,7 +17,7 @@ namespace AI
         public float AngularAcceleration;
 
         public float MaxSpeed;
-        public float MaxRotation;
+        public float MaxAngularSpeed;
 
         public float OrientationInDegree
         {
@@ -77,57 +77,76 @@ namespace AI
 
         public void Actualize(SteeringOutput steering, float deltaTime)
         {
-            float inverseTime = 1/deltaTime;
+            Vector2 velocity = _rigidbody.velocity;
 
-            // 1 - we handle the rotation and orientation
-            if (steering.IsInstantOrientation)
+            velocity += steering.Linear*deltaTime;
+            _rigidbody.rotation += steering.AngularInDegree*deltaTime;
+
+            if (velocity.sqrMagnitude > MaxSpeed*MaxSpeed)
             {
-                // if it's an instant orientation, we reset the orientation
-                ResetOrientation(steering.AngularInDegree);
-            }
-            // else we increment the current rotation with the angular value
-            else
-            {
-                Rotate(steering.AngularInDegree, deltaTime);
+                velocity.Normalize();
+                velocity *= MaxSpeed;
             }
 
-            // 2 - we move the object from the linear value
-            Vector2 movement = steering.Linear;
+            _rigidbody.velocity = velocity;
 
-            // if the movement is orientated, we rotate first the vector
-            // (it's a movement on the local coordinate)
-            if (steering.IsOriented)
-            {
-                movement = MathHelper.RotateVector(movement, OrientationInRadian);
-            }
-
-            // we actualize the velocity of the rigidbody
-            Move(movement);
-
-            if (IsDynamic)
-            {
-                CapLinearAcceleration(deltaTime, inverseTime);
-
-                // we actualize the orientation to face the movement, if there is one
-                FaceMovementDirection(_rigidbody.velocity);
-
-                ComputeAngularVelocity(inverseTime);
-                CapAngularAcceleration(deltaTime, inverseTime);
-
-                // we actualize the orientation to face the movement, if there is one
-                FaceMovementDirection(_rigidbody.velocity);
-            }
-            else
-            {
-                // we actualize the orientation to face the movement, if there is one
-                FaceMovementDirection(_rigidbody.velocity);
-
-                ComputeAngularVelocity(inverseTime);
-            }
-
-            // we verify that the velocity is not greater than the max speed
-            CapVelocity();
+            FaceMovementDirection(velocity);
         }
+
+
+        //public void Actualize(SteeringOutput steering, float deltaTime)
+        //{
+        //    float inverseTime = 1/deltaTime;
+
+        //    // 1 - we handle the rotation and orientation
+        //    if (steering.IsInstantOrientation)
+        //    {
+        //        // if it's an instant orientation, we reset the orientation
+        //        ResetOrientation(steering.AngularInDegree);
+        //    }
+        //    // else we increment the current rotation with the angular value
+        //    else
+        //    {
+        //        Rotate(steering.AngularInDegree, deltaTime);
+        //    }
+
+        //    // 2 - we compute the movement from the linear value
+        //    Vector2 movement = steering.Linear;
+
+        //    // if the movement is orientated, we rotate first the vector
+        //    // (it's a movement on the local coordinate)
+        //    if (steering.IsOriented)
+        //    {
+        //        movement = MathHelper.RotateVector(movement, OrientationInRadian);
+        //    }
+
+        //    // we actualize the velocity of the rigidbody
+        //    Move(movement);
+
+        //    if (IsDynamic)
+        //    {
+        //        CapLinearAcceleration(deltaTime, inverseTime);
+
+        //        // we actualize the orientation to face the movement, if there is one
+        //        FaceMovementDirection(_rigidbody.velocity);
+
+        //        ComputeAngularVelocity(inverseTime);
+        //        CapAngularAcceleration(deltaTime, inverseTime);
+
+        //        // we actualize the orientation to face the movement, if there is one
+        //        FaceMovementDirection(_rigidbody.velocity);
+        //    }
+        //    else
+        //    {
+        //        // we actualize the orientation to face the movement, if there is one
+        //        FaceMovementDirection(_rigidbody.velocity);
+
+        //        ComputeAngularVelocity(inverseTime);
+        //    }
+
+        //    // we verify that the velocity is not greater than the max speed
+        //    CapVelocity();
+        //}
 
         public void PrepareForUpdate()
         {
@@ -136,9 +155,9 @@ namespace AI
             _oldAngularVelocity = _angularVelocity;
             _oldOrientation = _rigidbody.rotation;
 
-            _rigidbody.velocity = Vector2.zero;
+            //_rigidbody.velocity = Vector2.zero;
             _rigidbody.angularVelocity = 0;
-            _angularVelocity = 0f;
+            //_angularVelocity = 0f;
         }
 
         private void ResetOrientation(float newOrientation)
@@ -171,12 +190,12 @@ namespace AI
             float currentSpeed = _rigidbody.velocity.magnitude;
             float lastSpeed = _oldVelocity.magnitude;
 
-            float accelerationDelta = (currentSpeed - lastSpeed);
+            float speedDelta = (currentSpeed - lastSpeed);
             float currentAcceleration = 0f;
 
-            if (accelerationDelta > EPSILON)
+            if (speedDelta > EPSILON)
             {
-                currentAcceleration = accelerationDelta * inverseTime;
+                currentAcceleration = speedDelta * inverseTime;
             }
 
             if (currentAcceleration > LinearAcceleration)
@@ -194,34 +213,36 @@ namespace AI
 
         private void CapAngularAcceleration(float deltaTime, float inverseTime)
         {
-            float accelerationDelta = (_angularVelocity - _oldAngularVelocity);
+            float speedDelta = Mathf.Abs(_angularVelocity - _oldAngularVelocity);
             float currentAcceleration = 0f;
 
-            if (accelerationDelta > EPSILON)
+            if (speedDelta > EPSILON)
             {
-                currentAcceleration = Mathf.Abs(accelerationDelta)*inverseTime;
+                currentAcceleration = Mathf.Abs(speedDelta)*inverseTime;
             }
 
             if (currentAcceleration > AngularAcceleration)
             {
-                float validAngularVelocity = AngularAcceleration * deltaTime + _oldAngularVelocity;
+                float validAngularVelocity = AngularAcceleration * deltaTime * Mathf.Sign(_angularVelocity) + _oldAngularVelocity;
 
-                if (validAngularVelocity > MaxRotation)
+                if (validAngularVelocity > MaxAngularSpeed)
                 {
-                    validAngularVelocity = MaxRotation;
+                    validAngularVelocity = MaxAngularSpeed;
                 }
-                else if (validAngularVelocity < -MaxRotation)
+                else if (validAngularVelocity < -MaxAngularSpeed)
                 {
-                    validAngularVelocity = -MaxRotation;
+                    validAngularVelocity = -MaxAngularSpeed;
                 }
 
-                float speed = _rigidbody.velocity.magnitude;
+                float linearSpeed = _rigidbody.velocity.magnitude;
                 float rotation = validAngularVelocity*deltaTime;
 
-                Vector2 direction = MathHelper.GetDirectionFromAngle(rotation);
-                direction *= speed;
+                Vector2 movement = _oldVelocity;
+                movement.Normalize();
+                movement = MathHelper.RotateVector(movement, rotation);
+                movement *= linearSpeed;
 
-                _rigidbody.velocity = direction;
+                _rigidbody.velocity = movement;
 
                 _angularVelocity = validAngularVelocity;
             }
