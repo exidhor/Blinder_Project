@@ -4,53 +4,111 @@ using System.Collections.Generic;
 using Tools;
 using MapEditor;
 using UnityEngine;
+using System;
+using Pathfinding;
 
 namespace AI
 {
-    public class PatrolSteering : SeekSteering
+    public class PatrolSteering : Steering
     {
+        [UnityReadOnly]
+        public int currentPatrolIndex = 0;
+
+        [UnityReadOnly]
+        public Transform currentTransform;
+
+        [Tooltip("List of passage points for the patrol")]
+        public Transform[] patrolPoints;
+
+        [Tooltip("Tells if the patrol is repeated")]
+        public bool repeat = true;
+        public bool DrawDebugPath = true;
+
+        //private List< List <Vector2> > _path       = new List<List<Vector2>>();
+        //private List< List <Vector2i> > _coordPath = new List<List<Vector2i>>();
+
+        private int _currentPathIndex        = 0;
+        [SerializeField]  private List < Vector2 > _path       = new List<Vector2> ();
+        [SerializeField]  private List < Vector2i> _coordPath  = new List<Vector2i>();
+
+        public PatrolSteering()
+        {
+           // ConstructPath(ref _path, out _coordPath, _character.position, patrolPoints[0].position);
+        }
+
+        private int GetNearestPatrolPoint()
+        {
+            // TODO
+
+            return 0;
+        }
+
+        private void ConstructAllPath()
+        {
+           //for(int nIndex = 0; nIndex < patrolPoints.Length; ++nIndex)
+           //{
+           //
+           //    ConstructPath(_path[nIndex], _coordPath[nIndex], _character.)
+           //}
+        }
+
+        private void ConstructPath(ref List <Vector2> path, out List<Vector2i> coordPath, Vector2 start, Vector2 end) 
+        {
+            coordPath = Pathfinder.A_Star(start, end);
+            coordPath.Add(Map.instance.navGrid.GetCoordAt(end).Value);
+
+            path.Clear();
+            foreach(Vector2i coord in coordPath)
+            {
+                path.Add(Map.instance.navGrid.GetCasePosition(coord));
+            }
+        }
+
         public override SteeringOutput GetOutput()
         {
-            if (!_target.isSet)
+            Vector2i? currentCoordinates = Map.instance.navGrid.GetCoordAt(_character.position);
+            // Vector2i? targetCoordinates =  Map.instance.navGrid.GetCoordAt(patrolPoints[currentIndex].position);
+
+            if(currentCoordinates == null /*|| targetCoordinates == null*/)
+            {
+                Debug.LogWarning("The character exit the map");
+                return new SteeringOutput();
+            }
+
+            if(_coordPath.Count == 0)
             {
                 return new SteeringOutput();
             }
 
-            // check if the character has reached the targetNode
-            if (_currentNodeIndex < _smoothPath.Count && _smoothPath.Count > 0)
+            if (currentCoordinates == _coordPath[_currentPathIndex])
             {
-                Vector2i? coord = Map.instance.navGrid.GetCoordAt(_character.position);
+                _currentPathIndex++;
 
-                if (!coord.HasValue)
+                if(_currentPathIndex >= _coordPath.Count)
                 {
-                    Debug.LogWarning("The character exit the map");
-                    _smoothPath.Clear();
-                    _currentNodeIndex = 0;
+                    currentPatrolIndex++;
+                    _currentPathIndex = 0;
 
-                    return new SteeringOutput();
-                }
+                    if (currentPatrolIndex >= patrolPoints.Length)
+                    {
+                        currentPatrolIndex = 0;
+                    }
 
-                if (_currentNodeIndex < 0 || _currentNodeIndex >= _smoothCoordPath.Count)
-                {
-                    Debug.Break();
-                }
-
-                if (_smoothCoordPath[_currentNodeIndex] == coord.Value)
-                {
-                    _currentNodeIndex++;
+                    ConstructPath(ref _path, out _coordPath, _character.position, patrolPoints[currentPatrolIndex].position);
                 }
             }
 
-            Vector2 targetPosition;
+            return Behavior.Seek(_character, _path[_currentPathIndex], _specs.speed);
+        }
 
-            if (_currentNodeIndex >= _smoothPath.Count || _smoothPath.Count == 0)
-            {
-                targetPosition = _target.position;
-                return Behavior.Arrive(_character, targetPosition, _specs.radiusMarginError, _specs.speed, _specs.slowRadius);
-            }
+        public override void Recompute()
+        {
+            ConstructPath(ref _path, out _coordPath, _character.position, patrolPoints[0].position);
+        }
 
-            targetPosition = _smoothPath[_currentNodeIndex];
-            return Behavior.Seek(_character, targetPosition, _specs.speed);
+        public List<Vector2> GetDebugPath()
+        {
+            return _path;
         }
     }
 }
