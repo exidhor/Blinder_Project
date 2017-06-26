@@ -58,6 +58,51 @@ namespace Tools
             return Mathf.Atan2(vector2.y, vector2.x) * Mathf.Rad2Deg;
         }
 
+        /// <summary>
+        /// Wraps a value around some significant range.
+        ///
+        /// Similar to modulo, but works in a unary direction over any range (including negative values).
+        ///
+        /// ex:
+        /// Wrap(8,6,2) == 4
+        /// Wrap(4,2,0) == 0
+        /// Wrap(4,2,-2) == -2
+        /// </summary>
+        /// <param name="value">value to wrap</param>
+        /// <param name="max">max in range</param>
+        /// <param name="min">min in range</param>
+        /// <returns>A value wrapped around min to max</returns>
+        /// <remarks></remarks>
+        public static float Wrap(float value, float max, float min)
+        {
+            value -= min;
+            max -= min;
+            if (max == 0)
+                return min;
+
+            value = value % max;
+            value += min;
+            while (value < min)
+            {
+                value += max;
+            }
+
+            return value;
+
+        }
+
+        /// <summary>
+        /// set an angle with in the bounds of -PI to PI
+        /// </summary>
+        /// <param name="angle"></param>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        public static float NormalizeAngle(float angle, bool useRadians)
+        {
+            float rd = (useRadians ? Mathf.PI : 180);
+            return Wrap(angle, rd, -rd);
+        }
+
         /*!
          * \brief   Put a point forward a segment (same trajectory)
          * \param   origin this point will determine the sens of the projection

@@ -9,7 +9,7 @@
 //{
 //    public static partial class Behavior
 //    {
-//        public static void Wander(Kinematic character)
+//        public static void KinematicWander(Kinematic character)
 //        {
 //            //output.IsOriented = true;
 

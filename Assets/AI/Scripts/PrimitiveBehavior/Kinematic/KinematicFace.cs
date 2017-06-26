@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace AI
 {
-    public static partial class Behavior
+    public static partial class PrimitiveBehavior
     {
-        public static SteeringOutput Face(KinematicBody character, Vector2 target)
+        public static SteeringOutput KinematicFace(KinematicBody character, Vector2 target)
         {
             SteeringOutput output = new SteeringOutput();
 

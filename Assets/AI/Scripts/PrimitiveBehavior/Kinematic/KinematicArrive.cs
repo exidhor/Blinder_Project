@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace AI
 {
-    public static partial class Behavior
+    public static partial class PrimitiveBehavior
     {
-        public static SteeringOutput Arrive(KinematicBody character, 
+        public static SteeringOutput KinematicArrive(KinematicBody character, 
             Vector2 target, 
-            float radiusMarginError, 
+            float targetRadius, 
             float speed,
             float slowRadius)
         {
@@ -23,7 +19,7 @@ namespace AI
             float squareDistance = output.Linear.SqrMagnitude();
 
             // If there is no direction, do nothing
-            if (squareDistance < radiusMarginError * radiusMarginError)
+            if (squareDistance < targetRadius * targetRadius)
             {
                 output.Linear = Vector2.zero;
             }

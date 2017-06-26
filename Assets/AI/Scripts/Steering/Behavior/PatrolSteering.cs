@@ -98,7 +98,7 @@ namespace AI
                 }
             }
 
-            return Behavior.Seek(_character, _path[_currentPathIndex], _specs.speed);
+            return PrimitiveBehavior.KinematicSeek(_character, _path[_currentPathIndex], _specs.maxSpeed);
         }
 
         public override void Recompute()

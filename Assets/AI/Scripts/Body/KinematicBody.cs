@@ -19,18 +19,23 @@ namespace AI
         public float MaxSpeed;
         public float MaxAngularSpeed;
 
-        public float OrientationInDegree
+        public float orientationInDegree
         {
             get { return _rigidbody.rotation; }
         }
 
-        public float OrientationInRadian
+        public float orientationInRadian
         {
-            get { return OrientationInDegree * Mathf.Deg2Rad; }
+            get { return orientationInDegree * Mathf.Deg2Rad; }
             //set { OrientationInDegree = value * Mathf.Rad2Deg; }
         }
 
-        public float SqrMaxSpeed
+        public float rotation
+        {
+            get { return _rigidbody.angularVelocity; }
+        }
+
+        public float sqrMaxSpeed
         {
             get { return MaxSpeed * MaxSpeed; }
         }
@@ -80,7 +85,8 @@ namespace AI
             Vector2 velocity = _rigidbody.velocity;
 
             velocity += steering.Linear*deltaTime;
-            _rigidbody.rotation += steering.AngularInDegree*deltaTime;
+            //_rigidbody.rotation += steering.AngularInDegree*deltaTime;
+            _rigidbody.angularVelocity += steering.AngularInDegree;
 
             if (velocity.sqrMagnitude > MaxSpeed*MaxSpeed)
             {
@@ -176,7 +182,7 @@ namespace AI
         {
             Vector2 velocity = _rigidbody.velocity;
 
-            if (velocity.sqrMagnitude > SqrMaxSpeed)
+            if (velocity.sqrMagnitude > sqrMaxSpeed)
             {
                 velocity.Normalize();
                 velocity *= MaxSpeed;
@@ -285,7 +291,7 @@ namespace AI
 
         public Vector2 GetOrientationAsVector()
         {
-            return MathHelper.GetDirectionFromAngle(OrientationInRadian);
+            return MathHelper.GetDirectionFromAngle(orientationInRadian);
         }
 
         private void ComputeAngularVelocity(float inverseTime)

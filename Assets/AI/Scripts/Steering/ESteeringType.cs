@@ -12,6 +12,7 @@ namespace AI
         Wander,
         Pursue,
         Patrol,
+        Face,
 
         None // this has to be the last because we map the enum index
              // into the pool list (see SteeringTable) 

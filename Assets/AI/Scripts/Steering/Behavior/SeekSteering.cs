@@ -8,8 +8,6 @@ namespace AI
 {
     public class SeekSteering : Steering
     {
-        //[SerializeField] private Location _target;
-
         public bool DrawDebugSmoothPath = true;
         public bool DrawDebugPath = true;
 
@@ -64,11 +62,15 @@ namespace AI
             if (_currentNodeIndex >= _smoothPath.Count || _smoothPath.Count == 0)
             {
                 targetPosition = _target.position;
-                return Behavior.Arrive(_character, targetPosition, _specs.radiusMarginError, _specs.speed, _specs.slowRadius);
+
+                return PrimitiveBehavior.Arrive(_character, 
+                    targetPosition, 
+                    _specs);
             }
             
             targetPosition = _smoothPath[_currentNodeIndex];
-            return Behavior.Seek(_character, targetPosition, _specs.speed);
+
+            return PrimitiveBehavior.Seek(_character, targetPosition, _specs);
         }
 
         void Update()

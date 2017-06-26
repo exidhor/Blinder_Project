@@ -13,22 +13,34 @@ namespace AI
         [SerializeField] private string _name;
         public string name { get { return _name; } }
 
-        // global specs
-        //[SerializeField, UnityReadOnly] private Kinematic _character;
-        //public Kinematic character { get { return _character; } }
+        [SerializeField] private float _maxSpeed;
+        public float maxSpeed { get { return _maxSpeed; } }
 
-        //[SerializeField] private Location _target;
-        //public Location target { get { return _target; } }
+        [SerializeField] private float _maxAcceleration;
+        public float maxAcceleration {  get { return _maxAcceleration; } }
 
-        [SerializeField] private float _speed;
-        public float speed { get { return _speed; } }
+        [SerializeField] private float _maxRotation;
+        public float maxRotation { get { return _maxRotation; } }
+
+        [SerializeField] private float _maxAngularAcceleration;
+        public float maxAngularAcceleration { get { return _maxAngularAcceleration; } }
 
         // Arrive specs
-        [SerializeField] private float _radiusMarginError;
-        public float radiusMarginError { get { return _radiusMarginError; } }
+        [SerializeField] private float _targetRadius;
+        public float targetRadius { get { return _targetRadius; } }
 
         [SerializeField] private float _slowRadius;
         public float slowRadius { get { return _slowRadius; } }
+
+        [SerializeField] private float _timeToTarget;
+        public float timeToTarget { get { return _timeToTarget; } }
+
+        // Face specs
+        [SerializeField] private float _targetAngularRadius;
+        public float targetAngularRadius { get { return _targetAngularRadius; } }
+
+        [SerializeField] private float _slowAngularRadius;
+        public float slowAngularRadius { get { return _slowAngularRadius; } }
 
         // Pathfinding specs
         [SerializeField] private float _refreshPathTime;

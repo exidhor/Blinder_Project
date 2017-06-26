@@ -41,15 +41,6 @@ namespace Tools
             }
         }
 
-        //protected virtual void Awake()
-        //{
-        //    // we register this instance if it is created in the editor
-        //    if (_instance == null)
-        //    {
-        //        _instance = GameObject.FindObjectOfType<T>();
-        //    }
-        //}
-
         protected virtual void OnDestroy()
         {
             _instance = null;

@@ -7,15 +7,15 @@ using UnityEngine;
 
 namespace AI
 {
-    public static partial class Behavior
+    public static partial class PrimitiveBehavior
     {
-        public static SteeringOutput Flee(KinematicBody character, Vector2 target, float speed)
+        public static SteeringOutput KinematicSeek(KinematicBody character, Vector2 target, float speed)
         {
             SteeringOutput output = new SteeringOutput();
 
             // First work out the direction
-            output.Linear = character.position;
-            output.Linear -= target;
+            output.Linear = target;
+            output.Linear -= character.position;
 
             // If there is no direction, do nothing
             output.Linear = MathHelper.GetKinematicMovement_MinCheck(output.Linear, speed, 0.01f);
