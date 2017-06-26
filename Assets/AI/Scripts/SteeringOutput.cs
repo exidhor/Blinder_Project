@@ -6,11 +6,13 @@ namespace AI
     [Serializable]
     public struct SteeringOutput
     {
-        public bool IsOriented;
-        public bool IsInstantOrientation;
+        //public bool IsOriented;
+        //public bool IsInstantOrientation;
+
+        public bool StopVelocity;
+        public bool StopRotation;
 
         public Vector2 Linear;
-
         public float AngularInDegree;
 
         public float AngularInRadian
@@ -24,16 +26,19 @@ namespace AI
             Linear = linear;
             AngularInDegree = angularInDegree;
 
-            IsOriented = false;
-            IsInstantOrientation = false;
+            StopVelocity = false;
+            StopRotation = false;
+
+            //IsOriented = false;
+            //IsInstantOrientation = false;
         }
 
         public void Reset()
         {
             Linear = Vector2.zero;
             AngularInDegree = 0;
-            IsOriented = false;
-            IsInstantOrientation = false;
+            //IsOriented = false;
+            //IsInstantOrientation = false;
         }
 
         public bool IsFilled()

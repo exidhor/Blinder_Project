@@ -27,30 +27,30 @@ namespace AI
 
         public override void Actualize(SteeringOutput steering, float deltaTime)
         {
-            if (steering.IsInstantOrientation)
-            {
-                OrientationInDegree = steering.AngularInDegree;
-                _rotationInDegree = 0;
+            //if (steering.IsInstantOrientation)
+            //{
+            //    OrientationInDegree = steering.AngularInDegree;
+            //    _rotationInDegree = 0;
 
-                ActualizeOrientation();
-            }
-            else
-            {
-                Rotate(steering.AngularInDegree, deltaTime);
-            }
+            //    ActualizeOrientation();
+            //}
+            //else
+            //{
+            //    Rotate(steering.AngularInDegree, deltaTime);
+            //}
 
-            Vector2 movement = steering.Linear;
+            //Vector2 movement = steering.Linear;
 
-            if (steering.IsOriented)
-            {
-                movement = ApplyRotation(movement);
-            }
+            //if (steering.IsOriented)
+            //{
+            //    movement = ApplyRotation(movement);
+            //}
 
-            Move(movement);
+            //Move(movement);
 
-            CapVelocity();
+            //CapVelocity();
 
-            FaceMovementDirection();
+            //FaceMovementDirection();
         }
 
         public void ResetVelocity()

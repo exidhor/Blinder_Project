@@ -20,34 +20,35 @@ namespace AI
             if (squareDistance < specs.targetRadius * specs.targetRadius)
             {
                 output.Linear = Vector2.zero;
+                output.StopVelocity = true;
+
+                return output;
+            }
+            
+            output.Linear.Normalize();
+            output.Linear *= specs.maxSpeed;
+
+            // if we are outside the slowRadius, then go maxSpeed (and no changement)
+            // Otherwise calculate a scaled speed
+            if (squareDistance < specs.slowRadius * specs.slowRadius)
+            {
+                output.Linear *= Mathf.Sqrt(squareDistance) / specs.slowRadius;
+            }
+
+            // acceleration tries to get to the target velocity
+            output.Linear -= character.velocity;
+
+            if (specs.timeToTarget == 0f)
+            {
+                output.Linear *= specs.maxAcceleration;
             }
             else
             {
-                output.Linear.Normalize();
-                output.Linear *= specs.maxSpeed;
-
-                // if we are outside the slowRadius, then go maxSpeed (and no changement)
-                // Otherwise calculate a scaled speed
-                if (squareDistance < specs.slowRadius * specs.slowRadius)
-                {
-                    output.Linear *= Mathf.Sqrt(squareDistance) / specs.slowRadius;
-                }
-
-                // acceleration tries to get to the target velocity
-                output.Linear -= character.velocity;
-
-                if (specs.timeToTarget == 0f)
-                {
-                    output.Linear *= specs.maxAcceleration;
-                }
-                else
-                {
-                    output.Linear /= specs.timeToTarget;
-                }
-
-                // If that is too fast, then clip the speed
-                output.Linear = Vector2.ClampMagnitude(output.Linear, specs.maxAcceleration);
+                output.Linear /= specs.timeToTarget;
             }
+
+            // If that is too fast, then clip the speed
+            output.Linear = Vector2.ClampMagnitude(output.Linear, specs.maxAcceleration);
 
             return output;
         }

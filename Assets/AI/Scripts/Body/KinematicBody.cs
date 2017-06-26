@@ -82,21 +82,40 @@ namespace AI
 
         public void Actualize(SteeringOutput steering, float deltaTime)
         {
-            Vector2 velocity = _rigidbody.velocity;
-
-            velocity += steering.Linear*deltaTime;
-            //_rigidbody.rotation += steering.AngularInDegree*deltaTime;
-            _rigidbody.angularVelocity += steering.AngularInDegree;
-
-            if (velocity.sqrMagnitude > MaxSpeed*MaxSpeed)
+            if (steering.StopVelocity)
             {
-                velocity.Normalize();
-                velocity *= MaxSpeed;
+                _rigidbody.velocity = Vector2.zero;
             }
+            else
+            {
+                Vector2 currentVelocity = _rigidbody.velocity;
 
-            _rigidbody.velocity = velocity;
+                currentVelocity += steering.Linear * deltaTime;
 
-            FaceMovementDirection(velocity);
+                if (currentVelocity.sqrMagnitude > MaxSpeed * MaxSpeed)
+                {
+                    currentVelocity.Normalize();
+                    currentVelocity *= MaxSpeed;
+                }
+
+                _rigidbody.velocity = currentVelocity;
+                FaceMovementDirection(currentVelocity);
+            }
+            
+            if (steering.StopRotation)
+            {
+                _rigidbody.angularVelocity = 0;
+            }
+            else
+            {
+                _rigidbody.angularVelocity += steering.AngularInDegree;
+            }
+        }
+
+        public void ResetBody()
+        {
+            _rigidbody.angularVelocity = 0f;
+            _rigidbody.velocity = Vector2.zero;
         }
 
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BlinderProject;
 using UnityEngine;
 using Tools;
 
@@ -16,14 +17,21 @@ namespace AI
 
         private KinematicBody _kinematic;
 
-        private void Awake()
+        void Awake()
         {
             _kinematic = GetComponent<KinematicBody>();
         }
 
+        void Start()
+        {
+            // tmp
+            SetSpecs("Human");
+            SetSteering(ESteeringType.Seek, new Location(GameManager.instance.player.transform));
+        }
+
         public void ApplyOnKinematic(float deltaTime)
         {
-            _kinematic.PrepareForUpdate();
+            // _kinematic.PrepareForUpdate();
 
             if (_steering != null)
             {
@@ -57,6 +65,8 @@ namespace AI
             }
 
             _steering = SteeringTable.instance.GetFreeSteering(type, _kinematic, _steeringSpecs, target);
+
+            _kinematic.ResetBody();
         }
 
         void FixedUpdate()

@@ -23,17 +23,18 @@ namespace AI
             float rotationSize = Mathf.Abs(rotation);
 
             // check if we are already there, is yes, return a void output
-            if (rotationSize < specs.targetRadius)
+            if (rotationSize < specs.targetAngularRadius)
             {
+                output.StopRotation = true;
                 return output;
             }
 
             float targetRotation = specs.maxRotation;
 
             // if we are inside the slowRadius, then we calculate a scaled rotation
-            if (rotationSize < specs.slowRadius)
+            if (rotationSize < specs.slowAngularRadius)
             {
-                targetRotation *= rotationSize/ specs.slowRadius;
+                targetRotation *= rotationSize/ specs.slowAngularRadius;
             }
 
             // the final target rotation combines speed (already in the variable)

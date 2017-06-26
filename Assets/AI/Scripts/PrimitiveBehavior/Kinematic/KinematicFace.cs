@@ -12,8 +12,8 @@ namespace AI
         {
             SteeringOutput output = new SteeringOutput();
 
-            output.IsInstantOrientation = true;
-            output.IsOriented = false;
+            //output.IsInstantOrientation = true;
+            //output.IsOriented = false;
 
             // work out the direction to target
             Vector2 direction = target - character.position;
