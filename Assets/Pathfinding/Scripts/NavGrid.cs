@@ -257,7 +257,7 @@ namespace Pathfinding
         {
             _cases = new List<List<NodeRecord>>();
 
-            Copy(caseContentGrid);
+            ResizeFrom(caseContentGrid);
 
             for (int i = 0; i < caseContentGrid.width; i++)
             {

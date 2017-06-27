@@ -1,16 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Tools
 {
+    /// <summary>
+    /// Gather all the usefull methods around globalbounds
+    /// </summary>
     public static class GlobalBoundsHelper
     {
         private static bool _globalBoundsIsFilled;
         private static Bounds _globalBounds;
 
+        /// <summary>
+        /// Return the smallest rect wich contains this two points.
+        /// </summary>
+        /// <param name="firstPoint">a point</param>
+        /// <param name="secondPoint">another point</param>
+        /// <returns></returns>
         public static Rect GetGlobalRect(Vector2 firstPoint, Vector2 secondPoint)
         {
             Vector2 min, max;
@@ -38,23 +43,35 @@ namespace Tools
             }
 
             Vector2 size = max - min;
-            //size.x = Mathf.Abs(size.x);
-            //size.y = Mathf.Abs(size.y);
 
             return new Rect(min, size);
         }
 
+        /// <summary>
+        /// Search recursivly all the bounds from the given type.
+        /// It merge it to get the global bounds of an object and all his descendants together.
+        /// </summary>
+        /// <param name="gameObject">The GO parent</param>
+        /// <param name="type">The type to look for</param>
+        /// <returns></returns>
         public static Bounds FindGlobalBounds(GameObject gameObject, EBoundsType type)
         {
-            _globalBoundsIsFilled = false;
+            _globalBoundsIsFilled = false; // this flag is here to tell that the globalBounds buffer content is irelevant.
 
             AddGameObjectToGlobalBounds(gameObject, type);
 
-            return _globalBounds;
+            return _globalBounds; // this buffer is filled in "AddGameObjectToGlobalBounds
         }
 
+        /// <summary>
+        /// Add a GameObject bounds to the static global bounds buffer, and then call this method
+        /// for his children
+        /// </summary>
+        /// <param name="gameObject"></param>
+        /// <param name="type"></param>
         private static void AddGameObjectToGlobalBounds(GameObject gameObject, EBoundsType type)
         {
+            // we only look for the given type
             switch (type)
             {
                 case EBoundsType.Collider:
@@ -76,12 +93,17 @@ namespace Tools
                     break;
             }
 
+            // we recursivly call this method on every child
             for (int i = 0; i < gameObject.transform.childCount; i++)
             {
                 AddGameObjectToGlobalBounds(gameObject.transform.GetChild(i).gameObject, type);
             }
         }
 
+        /// <summary>
+        /// Set the bounds if there is any, Encapsulate the new bounds if not.
+        /// </summary>
+        /// <param name="bounds">The new bounds to add</param>
         private static void AddBounds(Bounds bounds)
         {
             if (_globalBoundsIsFilled)
@@ -90,6 +112,8 @@ namespace Tools
             }
             else
             {
+                // if there is any, we have to set the globalBounds to the first bounds
+                // to avoid the encapsulation of the point (0,0) (the default position of a void bounds)
                 _globalBounds = bounds;
 
                 _globalBoundsIsFilled = true;

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Tools
 {
+    /// <summary>
+    /// Let the target, inside the Bounds, and move the attached GameObject
+    /// if it's not the case anymore.
+    /// </summary>
     public class CameraFollow : MonoBehaviour
     {
         public Transform TargetToFollow;

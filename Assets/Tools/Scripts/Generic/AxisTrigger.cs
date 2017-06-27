@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace Tools
 {
+    /// <summary>
+    /// Store a float, and a trigger flag when this float is modified
+    /// </summary>
     public class AxisTrigger
     {
         public static implicit operator float(AxisTrigger axisTrigger)
@@ -32,7 +31,11 @@ namespace Tools
 
         private float _axis = 0f;
         private bool _isChecked = false;
-
+        
+        /// <summary>
+        /// Reset the trigger mecanism, 
+        /// and set the value of the axis to 0 
+        /// </summary>
         public void Reset()
         {
             _axis = 0f;

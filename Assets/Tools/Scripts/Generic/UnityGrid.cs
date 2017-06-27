@@ -21,9 +21,9 @@ namespace Tools
         [SerializeField, UnityReadOnly] private float _halfCaseSize;
         [SerializeField, UnityReadOnly] private float _caseInverse;
 
-        public override void Copy<U>(Grid<U> otherGrid)
+        public override void ResizeFrom<U>(Grid<U> otherGrid)
         {
-            base.Copy(otherGrid);
+            base.ResizeFrom(otherGrid);
 
             UnityGrid<U> otherUnityGrid = otherGrid as UnityGrid<U>;
 
