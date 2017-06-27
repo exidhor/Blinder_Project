@@ -18,7 +18,7 @@ namespace AI
             output.Linear -= character.position;
 
             // If there is no direction, do nothing
-            output.Linear = MathHelper.GetKinematicMovement_MinCheck(output.Linear, speed, 0.01f);
+            output.Linear = MathHelper.ConstructMovement(output.Linear, speed, 0.01f);
 
             return output;
         }

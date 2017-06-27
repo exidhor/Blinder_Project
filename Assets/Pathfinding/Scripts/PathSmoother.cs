@@ -20,7 +20,7 @@ namespace Pathfinding
             }
 
             // To keep the current path structure, we need
-            // to keep the start and the end.
+            // to keep the start and the end nodes in the smoothed path
             smoothPath.Add(path[0]);
 
             NavGrid navGrid = Map.instance.navGrid;
@@ -45,19 +45,14 @@ namespace Pathfinding
                     bestClearIndex = j;
                 }
 
-                // We don't want the last clear line, because it means that it's
-                // really close to an obstacle.
-                // In place, we want the previous last clear line, to be sure that
-                // the character can easly reach it
-                // bestClearIndex--;
-
-                // This mean that the actual index point out a next node, and
-                // node the current node or a previous node.
-                if (bestClearIndex > i)
+                // If it's true, this means that we found a shortcut, then we can
+                // directly add the found index
+                if (bestClearIndex > 0)
                 {
                     smoothPath.Add(path[bestClearIndex]);
 
-                    // we want to try start at the last added node
+                    // we want to restart at the last added node
+                    // -1 : to count the for-incrementation
                     i = bestClearIndex - 1;
                 }
                 else // if (i < path.Count - 3)
@@ -67,9 +62,12 @@ namespace Pathfinding
                 }
             }
 
-            // we add the last node to be sure that the smmoth path has
-            // the same destination as the previous path
-            //smoothPath.Add(path.Last());
+            // The last node doesn't need to be add because it's necessarily added to the smoothed path.
+            // When i = path.count - 2, j = i + 2
+            //  then j > path.count
+            //      then bestclearindex still is -1
+            //          then we add the i + 1 = path.count - 1 which is the last node
+            //              [end of the demonstration]
             
             return smoothPath;
         } 

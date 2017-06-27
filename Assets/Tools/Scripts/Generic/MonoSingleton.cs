@@ -6,6 +6,10 @@ using UnityEngine;
 
 namespace Tools
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class MonoSingleton<T> : MonoBehaviour
         where T : MonoBehaviour
     {
