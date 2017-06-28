@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace Tools
 {
+    /// <summary>
+    /// Used to define MinMaxAttribute
+    /// See also MinMaxDrawer to see how it is render in the inspector
+    /// </summary>
     public class MinMaxAttribute : PropertyAttribute
     {
         public float min;

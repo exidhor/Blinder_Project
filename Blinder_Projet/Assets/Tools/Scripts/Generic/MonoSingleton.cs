@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Tools
 {
     /// <summary>
-    /// 
+    /// Use to implement Singleton Pattern with Unity MonoBehaviour
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public abstract class MonoSingleton<T> : MonoBehaviour
@@ -15,6 +11,12 @@ namespace Tools
     {
         private static T _instance;
 
+        /// <summary>
+        /// Access to the instance.
+        /// This may create the object if there is none.
+        /// Use <see cref="internalInstance"/> if you want
+        /// to access to the instance whithout modify the value
+        /// </summary>
         public static T instance
         {
             get
@@ -37,6 +39,9 @@ namespace Tools
             }
         }
 
+        /// <summary>
+        /// If you want to check instance without modify it
+        /// </summary>
         public static T internalInstance
         {
             get

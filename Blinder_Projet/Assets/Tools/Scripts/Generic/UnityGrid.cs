@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 
 namespace Tools
 {
+    /// <summary>
+    /// This is a grid with a case size.
+    /// This allows to compute collisions.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [Serializable]
     public class UnityGrid<T> : Grid<T>
     {
@@ -21,12 +23,21 @@ namespace Tools
         [SerializeField, UnityReadOnly] private float _halfCaseSize;
         [SerializeField, UnityReadOnly] private float _caseInverse;
 
+        /// <summary>
+        /// Resize the grid, and make it the same as the model.
+        /// This metohd doesn't copy the case content, only the grid structure
+        /// (size, width, etc ...).
+        /// Thank's to polymorphism, this can copy Grid or UnityGrid.
+        /// </summary>
+        /// <typeparam name="U"></typeparam>
+        /// <param name="otherGrid">The grid model</param>
         public override void ResizeFrom<U>(Grid<U> otherGrid)
         {
             base.ResizeFrom(otherGrid);
 
             UnityGrid<U> otherUnityGrid = otherGrid as UnityGrid<U>;
 
+            // if the grid is a UnityGrid, then the ref is not null
             if (otherUnityGrid != null)
             {
                 Position = otherUnityGrid.Position;
@@ -35,9 +46,14 @@ namespace Tools
                 Color = otherUnityGrid.Color;
             }
 
+            // we dont forget to reload the buffer
             Bufferize();
         }
 
+        /// <summary>
+        /// The precompute some divisions to optimize
+        /// often called methods.
+        /// </summary>
         public void Bufferize()
         {
             _halfSize = Size/2;
@@ -45,44 +61,117 @@ namespace Tools
             _caseInverse = 1/CaseSize;
         }
 
+        /// <summary>
+        /// Check if the point is inside the grid or not
+        /// </summary>
+        /// <param name="x">The abs of the point</param>
+        /// <param name="y">the ord of the point</param>
+        /// <returns>True if the point if inside the grid,
+        /// false otherwise.</returns>
+        public bool PointIsInGrid(float x, float y)
+        {
+            return !(x < Position.x - _halfSize.x
+                     || x > Position.x + _halfSize.x
+                     || y < Position.y - _halfSize.y
+                     || y > Position.y + _halfSize.y);
+        }
+
+        /// <summary>
+        /// Check if the point is inside the grid or not
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns>True if the point if inside the grid,
+        /// false otherwise.</returns>
         public bool PointIsInGrid(Vector2 point)
         {
-            return !(point.x < Position.x - _halfSize.x
-                     || point.x > Position.x + _halfSize.x
-                     || point.y < Position.y - _halfSize.y
-                     || point.y > Position.y + _halfSize.y);
+            return PointIsInGrid(point.x, point.y);
         }
 
+        /// <summary>
+        /// Try to find the case coordinate where the point is.
+        /// This method check if the point is inside the grid,
+        /// and return null if not. This operator can be avoid
+        /// by calling <see cref="GetCoordAt_WithoutCheck(float,float)"/>
+        /// </summary>
+        /// <param name="x">The abs of the point</param>
+        /// <param name="y">the ord of the point</param>
+        /// <returns></returns>
         public Vector2i? GetCoordAt(float x, float y)
         {
-            return GetCoordAt(new Vector2(x, y));
-        }
-
-        public Vector2i? GetCoordAt(Vector2 point)
-        {
-            if (!PointIsInGrid(point))
+            if (!PointIsInGrid(x, y))
             {
                 return null;
             }
 
-            float dist_x = Mathf.Abs(Position.x - _halfSize.x - point.x);
-            float dist_y = Mathf.Abs(Position.y - _halfSize.y - point.y);
-
-            int x = (int) (dist_x * _caseInverse);
-            int y = (int) (dist_y * _caseInverse);
-
-            return new Vector2i(x, y);
+            return GetCoordAt_WithoutCheck(x, y);
         }
 
+        /// <summary>
+        /// Try to find the case coordinate where the point is.
+        /// This method check if the point is inside the grid,
+        /// and return null if not. This operator can be avoid
+        /// by calling <see cref="GetCoordAt_WithoutCheck(float,float)"/>
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public Vector2i? GetCoordAt(Vector2 point)
+        {
+            return GetCoordAt(point.x, point.y);
+        }
+
+        /// <summary>
+        /// [UNSAFE] Quick method to get the case coordinate where the point is.
+        /// This method is unsafe because it doesn't check if the point is inside the grid.
+        /// To get the safe method, call <see cref="GetCoordAt(float,float)"/>
+        /// </summary>
+        /// <param name="x">The abs of the point</param>
+        /// <param name="y">the ord of the point</param>
+        /// <returns></returns>
+        public Vector2i GetCoordAt_WithoutCheck(float x, float y)
+        {
+            float dist_x = Mathf.Abs(Position.x - _halfSize.x - x);
+            float dist_y = Mathf.Abs(Position.y - _halfSize.y - y);
+
+            int coord_x = (int)(dist_x * _caseInverse);
+            int coord_y = (int)(dist_y * _caseInverse);
+
+            return new Vector2i(coord_x, coord_y);
+        }
+
+        /// <summary>
+        /// [UNSAFE] Quick method to get the case coordinate where the point is.
+        /// This method is unsafe because it doesn't check if the point is inside the grid.
+        /// To get the safe method, call <see cref="GetCoordAt(float,float)"/>
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public Vector2i GetCoordAt_WithoutCheck(Vector2 position)
+        {
+            return GetCoordAt_WithoutCheck(position.x, position.y);
+        }
+
+        /// <summary>
+        /// Return the case position (it center)
+        /// </summary>
+        /// <param name="coord">The case coordinate</param>
+        /// <returns></returns>
         public Vector2 GetCasePosition(Vector2i coord)
         {
             return GetCasePosition(coord.x, coord.y);
         }
 
+        /// <summary>
+        /// Return the case position (it center)
+        /// </summary>
+        /// <param name="x">The abs of the coordinate</param>
+        /// <param name="y">the ord of the coordinate</param>
+        /// <returns></returns>
         public Vector2 GetCasePosition(int x, int y)
         {
-            return new Vector2(x*CaseSize + _halfCaseSize - Position.x - _halfSize.x,
-                y*CaseSize + _halfCaseSize - Position.y - _halfSize.y);
+            float position_x = x*CaseSize + _halfCaseSize - Position.x - _halfSize.x;
+            float position_y = y*CaseSize + _halfCaseSize - Position.y - _halfSize.y;
+
+            return new Vector2(position_x, position_y);
         }
     }
 }
