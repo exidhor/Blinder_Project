@@ -7,6 +7,8 @@ using UnityEngine;
 
 namespace Pathfinding
 {
+    // not used yet, WIP
+
     [Serializable]
     public class CoordQuadTree : QuadTree<Vector2i>
     {

@@ -5,6 +5,10 @@ using System.Text;
 using Tools;
 using UnityEngine;
 
+
+// we dont want this on the release
+#if UNITY_EDITOR
+
 namespace MapEditor
 {
     [ExecuteInEditMode]
@@ -83,23 +87,9 @@ namespace MapEditor
 
                     transform.position = casePosition + _offset;
                 }
-
-                //float snapInverse = 1/snapValue;
-
-                //float x, y, z;
-
-                //x = Mathf.Floor(transform.position.x * snapInverse) * snapValue + _offset.x;
-                //y = Mathf.Floor(transform.position.y * snapInverse) * snapValue + _offset.y;
-                //z = transform.position.z;
-
-                ////// if snapValue = .5, x = 1.45 -> snapInverse = 2 -> x*2 => 2.90 -> round 2.90 => 3 -> 3/2 => 1.5
-                ////// so 1.45 to nearest .5 is 1.5
-                ////x = Mathf.Round(transform.position.x*snapInverse)/snapInverse;
-                ////y = Mathf.Round(transform.position.y*snapInverse)/snapInverse;
-                ////z = Depth; // depth from camera
-
-                //transform.position = new Vector3(x, y, z);
             }
         }
     }
 }
+
+#endif

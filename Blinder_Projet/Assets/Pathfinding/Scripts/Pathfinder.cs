@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using MapEditor;
 using Tools;
 using UnityEngine;
@@ -17,7 +14,9 @@ namespace Pathfinding
 
         private static Vector2 _floatCoordGoal;
 
-        public static List<Vector2i> A_Star(Vector2 startPosition, Vector2 goalPosition, EHeuristicType heuristicType = EHeuristicType.OctileDistance)
+        public static List<Vector2i> A_Star(Vector2 startPosition, 
+            Vector2 goalPosition, 
+            EHeuristicType heuristicType = EHeuristicType.OctileDistance)
         {
             _grid = Map.instance.navGrid;
 
