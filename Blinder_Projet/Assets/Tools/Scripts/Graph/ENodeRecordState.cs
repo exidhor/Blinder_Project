@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Tools
 {
+    /// <summary>
+    /// State used for pathfinding
+    /// </summary>
     public enum ENodeRecordState
     {
         Unvisited,
