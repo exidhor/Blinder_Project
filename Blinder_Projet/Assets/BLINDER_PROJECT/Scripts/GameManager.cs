@@ -54,14 +54,14 @@ namespace BlinderProject
 
         }
 
-        void Update()
-        {
-            Debug.Break();
+        //void Update()
+        //{
+        //    Debug.Break();
 
-            Profiler.BeginSample("fullraycast");
-            TestRaycastPerf();
-            Profiler.EndSample();
-        }
+        //    Profiler.BeginSample("fullraycast");
+        //    TestRaycastPerf();
+        //    Profiler.EndSample();
+        //}
 
 
 

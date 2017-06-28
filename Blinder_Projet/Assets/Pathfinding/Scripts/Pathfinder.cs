@@ -5,6 +5,7 @@ using System.Text;
 using MapEditor;
 using Tools;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Pathfinding
 {
@@ -41,7 +42,10 @@ namespace Pathfinding
             _floatCoordGoal = GetFloatCoordFrom(goalPosition);
 
             // prepare the record
+            Profiler.BeginSample("clear grid");
             _grid.ClearRecords();
+            Profiler.EndSample();
+
             PriorityQueue<NodeRecord, float> frontier = new PriorityQueue<NodeRecord, float>();
 
             start.EstimatedTotalCost = EstimatePosition(startPosition, heuristicType);
@@ -61,19 +65,22 @@ namespace Pathfinding
                     break;
                 }
 
+                Profiler.BeginSample("Get neighbour");
                 _neighbourList = _grid.GetNeighbour(current.Coord);
+                Profiler.EndSample();
 
                 for (int i = 0; i < _neighbourList.Count; i++)
                 {
                     NodeRecord currentNeighbour = _neighbourList[i].Node;
-
 
                     float newCost = current.CostSoFar + _neighbourList[i].ImmediateCost + currentNeighbour.NodeCost;
 
                     if (currentNeighbour.State == ENodeRecordState.Unvisited
                         ||  currentNeighbour.CostSoFar > newCost)
                     {
+                        Profiler.BeginSample("Estimate");
                         float estimateCost = EstimateCoord(currentNeighbour.Coord, heuristicType);
+                        Profiler.EndSample();
 
                         currentNeighbour.CostSoFar = newCost;
                         currentNeighbour.EstimatedTotalCost = newCost + estimateCost;
@@ -95,6 +102,7 @@ namespace Pathfinding
 
         private static List<Vector2i> ReconstructPath(NodeRecord end)
         {
+            Profiler.BeginSample("reconstruct_path");
             List<Vector2i> path = new List<Vector2i>();
 
             if (end != null)
@@ -111,6 +119,7 @@ namespace Pathfinding
 
             path.Reverse();
 
+            Profiler.EndSample();
             return path;
         }
 

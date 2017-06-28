@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MapEditor;
 using Tools;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Pathfinding
 {
@@ -34,11 +35,13 @@ namespace Pathfinding
 
         public bool IsClearLine(Vector2i start, Vector2i end)
         {
-            List<Vector2i> collidedCoords = LineCast(start, end);
+            return ClearRayTrace(start.x, start.y, end.x, end.y);
 
-            bool isClear = collidedCoords.Count == 0;
+            //List<Vector2i> collidedCoords = LineCast(start, end);
 
-            return isClear;
+            //bool isClear = collidedCoords.Count == 0;
+
+            //return isClear;
         }
 
         public List<Vector2i> LineCast(Vector2i start, Vector2i end)

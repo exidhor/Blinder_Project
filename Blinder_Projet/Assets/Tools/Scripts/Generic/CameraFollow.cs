@@ -12,7 +12,7 @@ namespace Tools
 
         public float Bounds;
 
-        void LateUpdate()
+        void FixedUpdate()
         {
             float distance = Vector2.Distance(TargetToFollow.position, transform.position);
 

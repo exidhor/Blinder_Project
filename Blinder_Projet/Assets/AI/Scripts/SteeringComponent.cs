@@ -5,6 +5,7 @@ using System.Text;
 using BlinderProject;
 using UnityEngine;
 using Tools;
+using UnityEngine.Profiling;
 
 namespace AI
 {
@@ -35,8 +36,12 @@ namespace AI
 
             if (_steering != null)
             {
+                Profiler.BeginSample("steering");
                 _outputBuffer = _steering.GetOutput();
+                Profiler.EndSample();
+                Profiler.BeginSample("kinematic");
                 _kinematic.Actualize(_outputBuffer, deltaTime);
+                Profiler.EndSample();
             }
         }
 
@@ -71,7 +76,9 @@ namespace AI
 
         void FixedUpdate()
         {
+            Profiler.BeginSample("naviguation");
             ApplyOnKinematic(Time.fixedDeltaTime);
+            Profiler.EndSample();
         }
 
         /// <summary>

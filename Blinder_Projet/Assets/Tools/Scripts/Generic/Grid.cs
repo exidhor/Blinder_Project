@@ -252,14 +252,14 @@ namespace Tools
         {
 
 
-#if UNITY_EDITOR // debug info
+//#if UNITY_EDITOR // debug info
 
-            if (x < 0 || x >= _cases.Count
-                || y < 0 || y >= _cases[x].Count)
-            {
-                Debug.LogError("invalid indices : x(" + x + "), y(" + y + "); Width = " + width + ", height = " + height);
-            }
-#endif
+//            if (x < 0 || x >= _cases.Count
+//                || y < 0 || y >= _cases[x].Count)
+//            {
+//                Debug.LogError("invalid indices : x(" + x + "), y(" + y + "); Width = " + width + ", height = " + height);
+//            }
+//#endif
 
             return this[x][y];
         }

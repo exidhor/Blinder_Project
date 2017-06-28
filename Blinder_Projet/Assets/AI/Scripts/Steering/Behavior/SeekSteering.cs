@@ -3,6 +3,7 @@ using MapEditor;
 using Pathfinding;
 using Tools;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace AI
 {
@@ -85,8 +86,10 @@ namespace AI
 
         private void RefreshPath()
         {
+            Profiler.BeginSample("pathfinding");
             _currentTime = 0;
             ConstructPath();
+            Profiler.EndSample();
         }
 
         private void ConstructPath()
@@ -108,14 +111,18 @@ namespace AI
             if (CanReachTargetDirectly())
                 return;
 
+            Profiler.BeginSample("A*");
             _coordPath = Pathfinder.A_Star(_character.position, _target.position);
+            Profiler.EndSample();
 
             for (int i = 0; i < _coordPath.Count; i++)
             {
                 _path.Add(navGrid.GetCasePosition(_coordPath[i]));
             }
 
+            Profiler.BeginSample("smooth");
             _smoothCoordPath = PathSmoother.SmoothPath(_coordPath);
+            Profiler.EndSample();
 
             for (int i = 0; i < _smoothCoordPath.Count; i++)
             {
