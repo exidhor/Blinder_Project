@@ -63,7 +63,7 @@ namespace MapEditor
         {
             if (Application.isPlaying)
             {
-                DontDestroyOnLoad(transform.gameObject);
+                //DontDestroyOnLoad(transform.gameObject);
             }
         }
 

@@ -216,26 +216,43 @@ namespace Tools
         /// <source>http://stackoverflow.com/questions/20453545/how-to-find-the-nearest-point-in-the-perimeter-of-a-rectangle-to-a-given-point</source>
         public static Vector2 ClosestPointToRect(Rect rect, Vector2 outsidePoint)
         {
-            outsidePoint.x = Mathf.Clamp(outsidePoint.x, rect.left, rect.right);
-            outsidePoint.y = Mathf.Clamp(outsidePoint.y, rect.top, rect.bottom);
+            return ClosestPointToRect(rect.xMin, rect.xMax, rect.yMax, rect.yMin, outsidePoint);
+        }
 
-            float deltaLeft = Mathf.Abs(outsidePoint.x - rect.left);
-            float deltaRight = Mathf.Abs(outsidePoint.x - rect.right);
-            float deltaTop = Mathf.Abs(outsidePoint.y - rect.top);
-            float deltaBottom = Mathf.Abs(outsidePoint.y - rect.bottom);
+        public static Vector2 ClosestPointToRect(float left, float right, float top, float bottom, Vector2 outsidePoint)
+        {
+            outsidePoint.x = Mathf.Clamp(outsidePoint.x, left, right);
+            outsidePoint.y = Mathf.Clamp(outsidePoint.y, bottom, top);
+
+            float deltaLeft = Mathf.Abs(outsidePoint.x - left);
+            float deltaRight = Mathf.Abs(outsidePoint.x - right);
+            float deltaTop = Mathf.Abs(outsidePoint.y - top);
+            float deltaBottom = Mathf.Abs(outsidePoint.y - bottom);
 
             float min = Mathf.Min(deltaLeft, deltaRight, deltaTop, deltaBottom);
 
             if (min == deltaTop)
-                return new Vector2(outsidePoint.x, rect.top);
+                return new Vector2(outsidePoint.x, top);
 
             if (min == deltaBottom)
-                return new Vector2(outsidePoint.x, rect.bottom);
+                return new Vector2(outsidePoint.x, bottom);
 
             if (min == deltaLeft)
-                return new Vector2(rect.left, outsidePoint.y);
+                return new Vector2(left, outsidePoint.y);
 
-            return new Vector2(rect.right, outsidePoint.y);
+            return new Vector2(right, outsidePoint.y);
+        }
+
+        /// <summary>
+        /// find the nearest point on the perimeter of the rectangle to the outside point
+        /// </summary>
+        /// <param name="rect">The rect</param>
+        /// <param name="outsidePoint"></param>
+        /// <returns></returns>
+        /// <source>http://stackoverflow.com/questions/20453545/how-to-find-the-nearest-point-in-the-perimeter-of-a-rectangle-to-a-given-point</source>
+        public static Vector2 ClosestPointToBounds(Bounds bounds, Vector2 outsidePoint)
+        {
+            return ClosestPointToRect(bounds.min.x, bounds.max.x, bounds.max.y, bounds.min.y, outsidePoint);
         }
     }
 }

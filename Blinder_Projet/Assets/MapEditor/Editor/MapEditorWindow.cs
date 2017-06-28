@@ -300,73 +300,83 @@ namespace MapEditorEditor
         private void AddBlockingCollider(BoxCollider2D boxCollider)
         {
             Bounds colliderBounds = boxCollider.bounds;
-            Bounds gridBounds = _mapEditor.bounds;
 
             // find bot left position in grid (case unit)
             Vector2 botLeft = colliderBounds.min;
-            Vector2i? coordBotLeft = FindCoordInGrid(botLeft, gridBounds);
+            Vector2i? coordBotLeft = FindCoordInGrid(botLeft);
 
             // find top right position in grid (case unit)
             Vector2 topRight = colliderBounds.max;
-            Vector2i? coordTopRight = FindCoordInGrid(topRight, gridBounds);
+            Vector2i? coordTopRight = FindCoordInGrid(topRight);
 
-            FillGrid(coordBotLeft, coordTopRight, boxCollider.name);
-        }
+            bool minIsOutside = coordBotLeft == null;
 
-        private Vector2i? FindCoordInGrid(Vector2 point, Bounds gridBounds)
-        {
-            //if (!gridBounds.Contains(point))
-            //{
-            //    return null;
-            //}
+            bool maxIsOutside = coordTopRight == null;
 
-            //Vector2i coord = new Vector2i();
-
-            //coord.x = (int) ((point.x + gridBounds.size.x/2)/_data.Grid.CaseSize);
-            //coord.y = (int) ((point.y + +gridBounds.size.y/2)/_data.Grid.CaseSize);
-
-            //return coord;
-
-            return _mapEditor.Data.Grid.GetCoordAt(point);
-        }
-
-        private void FillGrid(Vector2i? min, Vector2i? max, string objectName)
-        {
-            bool minIsOutside = min == null;
-
-            bool maxIsOutside = max == null;
-
-            if (minIsOutside && maxIsOutside)
+            if (minIsOutside && maxIsOutside && !colliderBounds.Intersects(_mapEditor.bounds))
             {
-                Debug.Log("Can't handle " + objectName
-                          + " because both the min and max bounds are outside the grid.");
+                Debug.Log("This object " + boxCollider.name
+                          + " is outside the grid.");
 
                 return;
             }
 
-            Vector2i start = min.Value;
-            Vector2i end = max.Value;
+            Bounds gridBounds = _mapEditor.bounds;
 
             if (minIsOutside)
             {
-                // todo
+                coordBotLeft = _mapEditor.Data.Grid.GetClosestCoord(botLeft);
             }
-            else if (maxIsOutside)
+            if (maxIsOutside)
             {
-                // todo
+                coordTopRight = _mapEditor.Data.Grid.GetClosestCoord(topRight);
             }
-            else
-            {
-                for (int i = start.x; i <= end.x; i++)
+
+            FillGrid(coordBotLeft.Value, coordTopRight.Value, boxCollider.name);
+        }
+
+        private Vector2i? FindCoordInGrid(Vector2 point)
+        {
+            return _mapEditor.Data.Grid.GetCoordAt(point);
+        }
+
+        private void FillGrid(Vector2i min, Vector2i max, string objectName)
+        {
+            //bool minIsOutside = min == null;
+
+            //bool maxIsOutside = max == null;
+
+            //if (minIsOutside && maxIsOutside)
+            //{
+            //    Debug.Log("Can't handle " + objectName
+            //              + " because both the min and max bounds are outside the grid.");
+
+            //    return;
+            //}
+
+            //Vector2i start = min.Value;
+            //Vector2i end = max.Value;
+
+            //if (minIsOutside)
+            //{
+            //    // todo
+            //}
+            //else if (maxIsOutside)
+            //{
+            //    // todo
+            //}
+            //else
+            //{
+                for (int i = min.x; i <= max.x; i++)
                 {
-                    for (int j = start.y; j <= end.y; j++)
+                    for (int j = min.y; j <= max.y; j++)
                     {
                         _data.Grid[i][j] = ECaseContent.Blocking;
 
                         //Debug.Log("Add blocking at " + i + ", " + j);
                     }
                 }
-            }
+            //}
         }
 
         private void DrawColorContents()

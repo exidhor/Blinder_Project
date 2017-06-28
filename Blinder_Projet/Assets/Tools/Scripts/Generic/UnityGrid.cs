@@ -13,6 +13,9 @@ namespace Tools
     {
         public bool DrawGrid;
 
+        /// <summary>
+        /// The center of the grid
+        /// </summary>
         public Vector2 Position;
         public Vector2 Size;
         public float CaseSize;
@@ -158,6 +161,36 @@ namespace Tools
         public Vector2 GetCasePosition(Vector2i coord)
         {
             return GetCasePosition(coord.x, coord.y);
+        }
+
+        public Vector2i GetClosestCoord(Vector2 point)
+        {
+            if (PointIsInGrid(point))
+            {
+                return GetCoordAt_WithoutCheck(point);
+            }
+
+            Vector2 closestPointInGrid = MathHelper.ClosestPointToBounds(new Bounds(Position, Size), point);
+
+            if (closestPointInGrid.x >= Position.x + _halfSize.x)
+            {
+                closestPointInGrid.x -= _halfCaseSize;
+            }
+            else if(closestPointInGrid.x <= Position.x - _halfSize.x)
+            {
+                closestPointInGrid.x += _halfCaseSize;
+            }
+
+            if (closestPointInGrid.y >= Position.y + _halfSize.y)
+            {
+                closestPointInGrid.y -= _halfCaseSize;
+            }
+            else if (closestPointInGrid.x <= Position.y - _halfSize.y)
+            {
+                closestPointInGrid.y += _halfCaseSize;
+            }
+
+            return GetCoordAt_WithoutCheck(closestPointInGrid);
         }
 
         /// <summary>
