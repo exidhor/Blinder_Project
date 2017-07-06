@@ -6,14 +6,15 @@ using Tools;
 using UnityEngine;
 
 
-// we dont want this on the release
-#if UNITY_EDITOR
+
 
 namespace MapEditor
 {
     [ExecuteInEditMode]
     public class EditModeGridSnap : MonoBehaviour
     {
+        // we dont want this on the release
+#if UNITY_EDITOR
         public bool ActiveSnap = true;
 
         public EBoundsType BoundsType;
@@ -66,6 +67,10 @@ namespace MapEditor
 
                 _offset = new Vector2(transform.position.x, transform.position.y) - casePosition;
             }
+            else
+            {
+                _offset = Vector2.zero;
+            }
         }
 
         void Update()
@@ -89,7 +94,7 @@ namespace MapEditor
                 }
             }
         }
-    }
-}
 
 #endif
+    }
+}

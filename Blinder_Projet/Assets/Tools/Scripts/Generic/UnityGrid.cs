@@ -18,19 +18,24 @@ namespace Tools
         /// </summary>
         public Vector2 Position;
 
+        public Vector2 WorldSize
+        {
+            get { return _worldSize; }
+        }
+
         /// <summary>
         /// The grid size in world unit (not case)
         /// </summary>
-        public Vector2 WorldSize
-        {
-            get { return Size * CaseSize; }    
-        }
+        [SerializeField, UnityReadOnly] private Vector2 _worldSize;
+        //{
+        //    get { return Size * CaseSize; }    
+        //}
 
         public float CaseSize;
 
         public Color Color;
 
-        [SerializeField, UnityReadOnly] private Vector2 _halfSize;
+        [SerializeField, UnityReadOnly] private Vector2 _halfWorldSize;
         [SerializeField, UnityReadOnly] private float _halfCaseSize;
         [SerializeField, UnityReadOnly] private float _caseInverse;
 
@@ -67,7 +72,8 @@ namespace Tools
         /// </summary>
         public void Bufferize()
         {
-            _halfSize = WorldSize/2;
+            _worldSize = Size * CaseSize;
+            _halfWorldSize = _worldSize/2;
             _halfCaseSize = CaseSize/2;
             _caseInverse = 1/CaseSize;
         }
@@ -81,10 +87,10 @@ namespace Tools
         /// false otherwise.</returns>
         public bool PointIsInGrid(float x, float y)
         {
-            return !(x < Position.x - _halfSize.x
-                     || x > Position.x + _halfSize.x
-                     || y < Position.y - _halfSize.y
-                     || y > Position.y + _halfSize.y);
+            return !(x < Position.x - _halfWorldSize.x
+                     || x > Position.x + _halfWorldSize.x
+                     || y < Position.y - _halfWorldSize.y
+                     || y > Position.y + _halfWorldSize.y);
         }
 
         /// <summary>
@@ -140,8 +146,8 @@ namespace Tools
         /// <returns></returns>
         public Vector2i GetCoordAt_WithoutCheck(float x, float y)
         {
-            float dist_x = Mathf.Abs(Position.x - _halfSize.x - x);
-            float dist_y = Mathf.Abs(Position.y - _halfSize.y - y);
+            float dist_x = Mathf.Abs(Position.x - _halfWorldSize.x - x);
+            float dist_y = Mathf.Abs(Position.y - _halfWorldSize.y - y);
 
             int coord_x = (int)(dist_x * _caseInverse);
             int coord_y = (int)(dist_y * _caseInverse);
@@ -186,22 +192,22 @@ namespace Tools
                 return GetCoordAt_WithoutCheck(point);
             }
 
-            Vector2 closestPointInGrid = MathHelper.ClosestPointToBounds(new Bounds(Position, WorldSize), point);
+            Vector2 closestPointInGrid = MathHelper.ClosestPointToBounds(new Bounds(Position, _worldSize), point);
 
-            if (closestPointInGrid.x >= Position.x + _halfSize.x)
+            if (closestPointInGrid.x >= Position.x + _halfWorldSize.x)
             {
                 closestPointInGrid.x -= _halfCaseSize;
             }
-            else if(closestPointInGrid.x <= Position.x - _halfSize.x)
+            else if(closestPointInGrid.x <= Position.x - _halfWorldSize.x)
             {
                 closestPointInGrid.x += _halfCaseSize;
             }
 
-            if (closestPointInGrid.y >= Position.y + _halfSize.y)
+            if (closestPointInGrid.y >= Position.y + _halfWorldSize.y)
             {
                 closestPointInGrid.y -= _halfCaseSize;
             }
-            else if (closestPointInGrid.x <= Position.y - _halfSize.y)
+            else if (closestPointInGrid.x <= Position.y - _halfWorldSize.y)
             {
                 closestPointInGrid.y += _halfCaseSize;
             }
@@ -217,8 +223,8 @@ namespace Tools
         /// <returns></returns>
         public Vector2 GetCasePosition(int x, int y)
         {
-            float position_x = x*CaseSize + _halfCaseSize - Position.x - _halfSize.x;
-            float position_y = y*CaseSize + _halfCaseSize - Position.y - _halfSize.y;
+            float position_x = x*CaseSize + _halfCaseSize - Position.x - _halfWorldSize.x;
+            float position_y = y*CaseSize + _halfCaseSize - Position.y - _halfWorldSize.y;
 
             return new Vector2(position_x, position_y);
         }

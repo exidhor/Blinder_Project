@@ -180,15 +180,22 @@ namespace MapEditorEditor
                 _data.Grid.Size = newSize;
                 _data.Grid.CaseSize = newCaseSize;
 
+                _data.Grid.Bufferize();
+
                 if (_data.Grid.CaseSize > 0)
                 {
                     //int width = (int)(_data.Grid.WorldSize.x / _data.Grid.CaseSize);
                     //int height = (int)(_data.Grid.WorldSize.y / _data.Grid.CaseSize);
 
                     //_data.Grid.Resize(width, height);
-                }
 
-                _data.Grid.Bufferize();
+                    EditModeGridSnap[] editModeList = GameObject.FindObjectsOfType<EditModeGridSnap>();
+
+                    for (int i = 0; i < editModeList.Length; i++)
+                    {
+                        editModeList[i].SaveOffset();
+                    }
+                }
 
                 SceneView.RepaintAll();
             }
