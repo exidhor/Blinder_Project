@@ -19,7 +19,7 @@ namespace MemoryManagement
         /// <summary>
         /// Called when the object exit the pool
         /// </summary>
-        public virtual void OnPoolExit()
+        protected internal virtual void OnPreUsing()
         {
             // nothing
         }
@@ -27,7 +27,7 @@ namespace MemoryManagement
         /// <summary>
         /// Called when the object come back to the pool
         /// </summary>
-        public virtual void OnPoolEnter()
+        public virtual void OnRelease()
         {
             // nothing
         }
