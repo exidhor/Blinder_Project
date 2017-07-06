@@ -186,7 +186,7 @@ namespace Pathfinding
 
             for (; n > 0; --n)
             {
-                if (this[x][y] != null)
+                if (this[x][y] == null)
                 {
                     return false;
                 }
@@ -201,20 +201,18 @@ namespace Pathfinding
                     y += y_inc;
                     error += dx;
                 }
-                //else if (n > 1) // error == 0
-                //{
-                //    int new_x = x + x_inc;
+                else if (n > 1) // error == 0
+                {
+                    int new_x = x + x_inc;
 
-                //    if (this[new_x][y] == null)
-                //    {
-                //        bufferArray[currentIndex].x = new_x;
-                //        bufferArray[currentIndex].y = y;
-                //        currentIndex++;
-                //    }
+                    if (this[new_x][y] == null)
+                    {
+                        currentIndex++;
+                    }
 
-                //    y += y_inc;
-                //    error += dx;
-                //}
+                    y += y_inc;
+                    error += dx;
+                }
             }
 
             return true;
