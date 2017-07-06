@@ -6,10 +6,12 @@ using MapEditor;
 using Tools;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace MapEditorEditor
 {
     [CustomEditor(typeof(EditModeGridSnap))]
+    [CanEditMultipleObjects]
     public class EditModeGridSnapInspector : Editor
     {
         private EditModeGridSnap _targetObject;
@@ -30,14 +32,24 @@ namespace MapEditorEditor
 
             if (GUILayout.Button("Auto Fit"))
             {
-                _globalBounds = GlobalBoundsHelper.FindGlobalBounds(_targetObject.gameObject, _targetObject.BoundsType);
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    EditModeGridSnap gridSnap = (EditModeGridSnap) targets[i];
 
-                _targetObject.Fit(_globalBounds);                
+                    Bounds globalBounds = GlobalBoundsHelper.FindGlobalBounds(gridSnap.gameObject, gridSnap.BoundsType);
+
+                    gridSnap.Fit(globalBounds);
+                }
             }
 
             if (GUILayout.Button("Save Offset"))
             {
-                _targetObject.SaveOffset();
+                for (int i = 0; i < targets.Length; i++)
+                {
+                    EditModeGridSnap gridSnap = (EditModeGridSnap)targets[i];
+
+                    gridSnap.SaveOffset();
+                }
             }
         }
     }

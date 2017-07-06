@@ -20,6 +20,8 @@ namespace MapEditor
         public EBoundsType BoundsType;
 
         [SerializeField] private Vector2 _offset;
+        [SerializeField] private Vector2i _coord;
+        [SerializeField] private Vector2 _oldPosition; // used to avoid floating error deplacement
 
         public void Fit(Bounds globalBounds)
         {
@@ -71,6 +73,8 @@ namespace MapEditor
             {
                 _offset = Vector2.zero;
             }
+
+            _oldPosition = transform.position;
         }
 
         void Update()
@@ -88,9 +92,21 @@ namespace MapEditor
 
                 if (coord.HasValue)
                 {
-                    Vector2 casePosition = MapEditorModel.instance.grid.GetCasePosition(coord.Value);
+                    if (_oldPosition.x != transform.position.x)
+                    {
+                        _coord.x = coord.Value.x;
+                    }
+
+                    if (_oldPosition.y != transform.position.y)
+                    {
+                        _coord.y = coord.Value.y;
+                    }
+
+                    Vector2 casePosition = MapEditorModel.instance.grid.GetCasePosition(_coord);
 
                     transform.position = casePosition + _offset;
+
+                    _oldPosition = transform.position;
                 }
             }
         }
