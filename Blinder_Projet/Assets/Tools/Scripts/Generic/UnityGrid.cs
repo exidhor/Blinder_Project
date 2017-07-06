@@ -163,6 +163,14 @@ namespace Tools
             return GetCasePosition(coord.x, coord.y);
         }
 
+        /// <summary>
+        /// Return the closest Coord to the target point.
+        /// This can handle points outside the grid, but is slower
+        /// than <see cref="GetCoordAt(float,float)"/>, which return
+        /// a null ref if the point is outside the grid.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
         public Vector2i GetClosestCoord(Vector2 point)
         {
             if (PointIsInGrid(point))

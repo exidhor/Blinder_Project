@@ -12,7 +12,13 @@ namespace MapEditorEditor
 {
     public class MapEditorWindow : EditorWindow
     {
-        private MapEditorModel _mapEditor;
+        //private MapEditorModel _mapEditor;
+
+        private MapEditorModel mapEditor
+        {
+            get { return GameObject.FindObjectOfType<MapEditorModel>(); }
+        }
+
         private MapEditorData _data;
 
         private AnimBool _showContentColors;
@@ -44,7 +50,17 @@ namespace MapEditorEditor
             _instance.Show();
         }
 
+        private void OnApplicationQuit()
+        {
+            Debug.Log("Quit");
+        }
+
         private static void OnScene(SceneView sceneview)
+        {
+            DrawMousePosition();
+        }
+
+        private static void DrawMousePosition()
         {
             mousePosition = Event.current.mousePosition;
             mousePosition.y = SceneView.currentDrawingSceneView.camera.pixelHeight - mousePosition.y;
@@ -52,7 +68,7 @@ namespace MapEditorEditor
             mousePosition.y = -mousePosition.y;
             mousePosition.y *= -1;
 
-            mouseCoord = _instance._mapEditor.Data.Grid.GetCoordAt(mousePosition);
+            mouseCoord = _instance.mapEditor.Data.Grid.GetCoordAt(mousePosition);
 
             //Debug.Log("Drawn : " + mousePosition);
 
@@ -63,7 +79,7 @@ namespace MapEditorEditor
 
             if (mouseCoord.HasValue)
             {
-                coordText = "Coord : " +  mouseCoord.Value.x + ", " + mouseCoord.Value.y;
+                coordText = "Coord : " + mouseCoord.Value.x + ", " + mouseCoord.Value.y;
             }
             else
             {
@@ -79,8 +95,8 @@ namespace MapEditorEditor
         {
             SceneView.onSceneGUIDelegate -= OnScene;
 
-            _mapEditor = GameObject.FindObjectOfType<MapEditorModel>();
-            _data = _mapEditor.Data;
+            //_mapEditor = GameObject.FindObjectOfType<MapEditorModel>();
+            //_data = _mapEditor.Data;
         }
 
         void OnEnable()
@@ -88,9 +104,7 @@ namespace MapEditorEditor
             _instance = this;
             SceneView.onSceneGUIDelegate += OnScene;
 
-            _mapEditor = GameObject.FindObjectOfType<MapEditorModel>();
-
-            _data = _mapEditor.Data;
+            _data = mapEditor.Data;
 
             _showContentColors = new AnimBool(false);
             _showContentColors.valueChanged.AddListener(Repaint);
@@ -103,7 +117,7 @@ namespace MapEditorEditor
 
         void OnGUI()
         {
-            EditorGUILayout.BeginHorizontal();
+            //EditorGUILayout.BeginHorizontal();
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition);
 
             if (_data != null)
@@ -154,7 +168,7 @@ namespace MapEditorEditor
             }
 
             EditorGUILayout.EndScrollView();
-            EditorGUILayout.EndHorizontal();
+            //EditorGUILayout.EndHorizontal();
         }
 
         private void DrawGridSettings()
@@ -232,11 +246,16 @@ namespace MapEditorEditor
 
         private void Load()
         {
-            _mapEditor = GameObject.FindObjectOfType<MapEditorModel>();
+            mapEditor.Data = _data;
+            mapEditor.Data.Grid.Bufferize();
+        }
 
-            _mapEditor.Data = _data;
+        private void Load(string fileName)
+        {
+            _data = AssetDatabase.LoadAssetAtPath<MapEditorData>(folder + "/" + fileName);
 
-            _mapEditor.Data.Grid.Bufferize();
+            mapEditor.Data = _data;
+            mapEditor.Data.Grid.Bufferize();
         }
 
         private void CreateNew(string name)
@@ -263,7 +282,7 @@ namespace MapEditorEditor
                 _data.Colors.Add(new ColorContent((ECaseContent) i));
             }
 
-            _mapEditor.Data = _data;
+            mapEditor.Data = _data;
 
             _serializedData = new SerializedObject(_data);
         }
@@ -313,7 +332,7 @@ namespace MapEditorEditor
 
             bool maxIsOutside = coordTopRight == null;
 
-            if (minIsOutside && maxIsOutside && !colliderBounds.Intersects(_mapEditor.bounds))
+            if (minIsOutside && maxIsOutside && !colliderBounds.Intersects(mapEditor.bounds))
             {
                 Debug.Log("This object " + boxCollider.name
                           + " is outside the grid.");
@@ -321,15 +340,15 @@ namespace MapEditorEditor
                 return;
             }
 
-            Bounds gridBounds = _mapEditor.bounds;
+            Bounds gridBounds = mapEditor.bounds;
 
             if (minIsOutside)
             {
-                coordBotLeft = _mapEditor.Data.Grid.GetClosestCoord(botLeft);
+                coordBotLeft = mapEditor.Data.Grid.GetClosestCoord(botLeft);
             }
             if (maxIsOutside)
             {
-                coordTopRight = _mapEditor.Data.Grid.GetClosestCoord(topRight);
+                coordTopRight = mapEditor.Data.Grid.GetClosestCoord(topRight);
             }
 
             FillGrid(coordBotLeft.Value, coordTopRight.Value, boxCollider.name);
@@ -337,7 +356,7 @@ namespace MapEditorEditor
 
         private Vector2i? FindCoordInGrid(Vector2 point)
         {
-            return _mapEditor.Data.Grid.GetCoordAt(point);
+            return mapEditor.Data.Grid.GetCoordAt(point);
         }
 
         private void FillGrid(Vector2i min, Vector2i max, string objectName)
