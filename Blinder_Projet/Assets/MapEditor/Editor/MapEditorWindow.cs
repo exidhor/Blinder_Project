@@ -24,6 +24,7 @@ namespace MapEditorEditor
         private AnimBool _showContentColors;
 
         private SerializedObject _serializedData;
+        private SerializedObject _serializedGrid;
 
         private string _bufferNewNameAsset;
 
@@ -48,11 +49,6 @@ namespace MapEditorEditor
             _instance.titleContent = new GUIContent("Map Editor");
 
             _instance.Show();
-        }
-
-        private void OnApplicationQuit()
-        {
-            Debug.Log("Quit");
         }
 
         private static void OnScene(SceneView sceneview)
@@ -175,7 +171,7 @@ namespace MapEditorEditor
         {
             EditorGUILayout.HelpBox("Modify this regenerate the grid in realtime.", MessageType.Info);
 
-            Vector2 newSize = EditorGUILayout.Vector2Field("Grid Size", _data.Grid.Size);
+            Vector2i newSize = (Vector2i) EditorGUILayout.Vector2Field("Case count", _data.Grid.Size);
             float newCaseSize = EditorGUILayout.FloatField("Case size", _data.Grid.CaseSize);
 
             if (newSize != _data.Grid.Size
@@ -186,10 +182,10 @@ namespace MapEditorEditor
 
                 if (_data.Grid.CaseSize > 0)
                 {
-                    int width = (int)(_data.Grid.Size.x / _data.Grid.CaseSize);
-                    int height = (int)(_data.Grid.Size.y / _data.Grid.CaseSize);
+                    //int width = (int)(_data.Grid.WorldSize.x / _data.Grid.CaseSize);
+                    //int height = (int)(_data.Grid.WorldSize.y / _data.Grid.CaseSize);
 
-                    _data.Grid.Resize(width, height);
+                    //_data.Grid.Resize(width, height);
                 }
 
                 _data.Grid.Bufferize();
@@ -285,6 +281,7 @@ namespace MapEditorEditor
             mapEditor.Data = _data;
 
             _serializedData = new SerializedObject(_data);
+            _serializedGrid = new SerializedObject(_data.Grid);
         }
 
         private void Bake()

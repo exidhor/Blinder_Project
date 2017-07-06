@@ -17,7 +17,15 @@ namespace Tools
         /// The center of the grid
         /// </summary>
         public Vector2 Position;
-        public Vector2 Size;
+
+        /// <summary>
+        /// The grid size in world unit (not case)
+        /// </summary>
+        public Vector2 WorldSize
+        {
+            get { return Size * CaseSize; }    
+        }
+
         public float CaseSize;
 
         public Color Color;
@@ -44,7 +52,7 @@ namespace Tools
             if (otherUnityGrid != null)
             {
                 Position = otherUnityGrid.Position;
-                Size = otherUnityGrid.Size;
+                //WorldSize = otherUnityGrid.WorldSize;
                 CaseSize = otherUnityGrid.CaseSize;
                 Color = otherUnityGrid.Color;
             }
@@ -54,12 +62,12 @@ namespace Tools
         }
 
         /// <summary>
-        /// The precompute some divisions to optimize
+        /// This precompute some divisions to optimize
         /// often called methods.
         /// </summary>
         public void Bufferize()
         {
-            _halfSize = Size/2;
+            _halfSize = WorldSize/2;
             _halfCaseSize = CaseSize/2;
             _caseInverse = 1/CaseSize;
         }
@@ -178,7 +186,7 @@ namespace Tools
                 return GetCoordAt_WithoutCheck(point);
             }
 
-            Vector2 closestPointInGrid = MathHelper.ClosestPointToBounds(new Bounds(Position, Size), point);
+            Vector2 closestPointInGrid = MathHelper.ClosestPointToBounds(new Bounds(Position, WorldSize), point);
 
             if (closestPointInGrid.x >= Position.x + _halfSize.x)
             {

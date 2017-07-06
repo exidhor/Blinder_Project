@@ -13,6 +13,12 @@ namespace Tools
     [Serializable]
     public class Grid<T> : ScriptableObject, ISerializationCallbackReceiver
     {
+        public Vector2i Size
+        {
+            get { return new Vector2i(width, height); }
+            set { Resize(value.x, value.y); }
+        }
+
         /// <summary>
         /// also the line size or the number of culumns
         /// </summary>

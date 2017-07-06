@@ -51,6 +51,11 @@ namespace Tools
             return new Vector2(c.x, c.y);
         }
 
+        public static explicit operator Vector2i(Vector2 c)
+        {
+            return new Vector2i((int) c.x, (int) c.y);
+        }
+
         public override string ToString()
         {
             return "Vector2i(" + x + ", " + y + ")";

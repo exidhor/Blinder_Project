@@ -14,7 +14,7 @@ namespace ToolsEditor
         {
             Gizmos.color = grid.Color;
 
-            Rect rect = new Rect(grid.Position - grid.Size / 2, grid.Size);
+            Rect rect = new Rect(grid.Position - grid.WorldSize / 2, grid.WorldSize);
 
             Vector2 startLine = rect.min;
             Vector2 endLine = new Vector2(rect.xMin, rect.yMax);

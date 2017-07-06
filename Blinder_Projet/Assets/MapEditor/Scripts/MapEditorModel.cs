@@ -37,7 +37,7 @@ namespace MapEditor
 
         public Bounds bounds
         {
-            get { return new Bounds(center, Data.Grid.Size); }
+            get { return new Bounds(center, Data.Grid.WorldSize); }
         }
 
         public Vector2 center
