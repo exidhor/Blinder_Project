@@ -4852,6 +4852,11 @@ Prefab:
       propertyPath: _maxPredictionTime
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 114820139540121864, guid: 8b78463799bcfbe46b4105d307a77a5d,
+        type: 2}
+      propertyPath: _maxAcceleration
+      value: 75
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8b78463799bcfbe46b4105d307a77a5d, type: 2}
   m_IsPrefabParent: 0

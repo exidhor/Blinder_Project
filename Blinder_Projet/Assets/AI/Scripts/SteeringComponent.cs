@@ -40,7 +40,7 @@ namespace AI
                 _outputBuffer = _steering.GetOutput();
                 Profiler.EndSample();
                 Profiler.BeginSample("kinematic");
-                _body.Actualize(_outputBuffer, deltaTime);
+                _body.Actualize(_outputBuffer, _steeringProperties.maxSpeed, deltaTime);
                 Profiler.EndSample();
             }
         }

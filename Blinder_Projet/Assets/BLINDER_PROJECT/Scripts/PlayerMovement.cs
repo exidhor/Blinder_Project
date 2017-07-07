@@ -51,7 +51,7 @@ namespace BlinderProject
 
             _steeringOutput.Linear = new Vector2(horizontal, vertical);
 
-            _body.Actualize(_steeringOutput, Time.fixedDeltaTime);
+            _body.Actualize(_steeringOutput, Speed, Time.fixedDeltaTime);
         }
     }
 }

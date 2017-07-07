@@ -16,7 +16,7 @@ namespace AI
         //public float LinearAcceleration;
         //public float AngularAcceleration;
 
-        public float MaxSpeed;
+        //public float MaxSpeed;
         //public float MaxAngularSpeed;
 
         public float orientationInDegree
@@ -35,10 +35,10 @@ namespace AI
             get { return _rigidbody.angularVelocity; }
         }
 
-        public float sqrMaxSpeed
-        {
-            get { return MaxSpeed * MaxSpeed; }
-        }
+        //public float sqrMaxSpeed
+        //{
+        //    get { return MaxSpeed * MaxSpeed; }
+        //}
 
         public Vector2 position
         {
@@ -80,7 +80,7 @@ namespace AI
         //_rotationInDegree = 0;
         //}
 
-        public void Actualize(SteeringOutput steeringOutput, float deltaTime)
+        public void Actualize(SteeringOutput steeringOutput, float maxSpeed, float deltaTime)
         {
             if (steeringOutput.StopVelocity)
             {
@@ -98,10 +98,10 @@ namespace AI
 
                     currentVelocity += steeringOutput.Linear * deltaTime;
 
-                    if (currentVelocity.sqrMagnitude > MaxSpeed * MaxSpeed)
+                    if (currentVelocity.sqrMagnitude > maxSpeed * maxSpeed)
                     {
                         currentVelocity.Normalize();
-                        currentVelocity *= MaxSpeed;
+                        currentVelocity *= maxSpeed;
                     }
 
                     _rigidbody.velocity = currentVelocity;
