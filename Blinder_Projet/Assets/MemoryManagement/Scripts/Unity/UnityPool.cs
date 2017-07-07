@@ -108,7 +108,7 @@ namespace MemoryManagement
                 Resources[index].IsUsed = true;
                 Resources[index].PoolObject.gameObject.SetActive(true);
                 
-                Resources[index].PoolObject.OnPoolExit();
+                Resources[index].PoolObject.OnPreUsing();
 
                 _firstFreeResource = index + 1;
 
@@ -124,7 +124,7 @@ namespace MemoryManagement
                 Resources[index].PoolObject.transform.position = StoredPosition;
                 Resources[index].PoolObject.transform.SetParent(transform);
 
-                Resources[index].PoolObject.OnPoolEnter();
+                Resources[index].PoolObject.OnRelease();
 
                 if (_firstFreeResource > index)
                 {

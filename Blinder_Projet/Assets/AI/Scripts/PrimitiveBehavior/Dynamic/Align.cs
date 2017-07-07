@@ -9,7 +9,7 @@ namespace AI
 {
     public static partial class PrimitiveBehavior
     {
-        public static SteeringOutput Align(KinematicBody character,
+        public static SteeringOutput Align(Body character,
                                            float targetOrientation,
                                            SteeringSpecs specs)
         {

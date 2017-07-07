@@ -4846,7 +4846,7 @@ Prefab:
     - target: {fileID: 114820139540121864, guid: 8b78463799bcfbe46b4105d307a77a5d,
         type: 2}
       propertyPath: _slowRadius
-      value: 2
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 114820139540121864, guid: 8b78463799bcfbe46b4105d307a77a5d,
         type: 2}
@@ -4857,6 +4857,11 @@ Prefab:
         type: 2}
       propertyPath: _maxSpeed
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114820139540121864, guid: 8b78463799bcfbe46b4105d307a77a5d,
+        type: 2}
+      propertyPath: _targetRadius
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8b78463799bcfbe46b4105d307a77a5d, type: 2}

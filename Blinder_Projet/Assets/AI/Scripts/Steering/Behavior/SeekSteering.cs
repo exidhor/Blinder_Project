@@ -12,6 +12,8 @@ namespace AI
         public bool DrawDebugSmoothPath = true;
         public bool DrawDebugPath = true;
 
+        public bool TargetIsTheEnd = true;
+
         [SerializeField, UnityReadOnly] private float _currentTime;
 
         // for the path
@@ -64,9 +66,14 @@ namespace AI
             {
                 targetPosition = _target.position;
 
-                return PrimitiveBehavior.Arrive(_character, 
-                    targetPosition, 
-                    _specs);
+                if (TargetIsTheEnd)
+                {
+                    return PrimitiveBehavior.Arrive(_character,
+                        targetPosition,
+                        _specs);
+                }
+
+                return PrimitiveBehavior.Seek(_character, targetPosition, _specs);
             }
             
             targetPosition = _smoothPath[_currentNodeIndex];

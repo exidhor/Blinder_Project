@@ -9,7 +9,7 @@ namespace AI
 {
     public static partial class PrimitiveBehavior
     {
-        public static SteeringOutput KinematicSeek(KinematicBody character, Vector2 target, float speed)
+        public static SteeringOutput KinematicSeek(Body character, Vector2 target, float speed)
         {
             SteeringOutput output = new SteeringOutput();
 

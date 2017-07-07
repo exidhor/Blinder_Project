@@ -4,7 +4,7 @@ namespace AI
 {
     public static partial class PrimitiveBehavior
     {
-        public static SteeringOutput Arrive(KinematicBody character,
+        public static SteeringOutput Arrive(Body character,
                                             Vector2 target,
                                             SteeringSpecs specs)
         {

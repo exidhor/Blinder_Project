@@ -8,7 +8,7 @@ namespace AI
 {
     public static partial class PrimitiveBehavior
     {
-        private static Vector2 KinematicPredictTargetDeplacement(KinematicBody character, KinematicBody target, float maxPredictionTime)
+        private static Vector2 KinematicPredictTargetDeplacement(Body character, Body target, float maxPredictionTime)
         {
             // Work out the distance to target
             Vector2 direction = target.position - character.position;

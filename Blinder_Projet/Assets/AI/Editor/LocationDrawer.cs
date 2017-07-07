@@ -66,7 +66,7 @@ namespace MapEditorEditor
                         break;
                     }
 
-                case ELocationType.StaticBody:
+                case ELocationType.Body:
                     {
                         EditorGUI.PropertyField(locationValuePosition, property.FindPropertyRelative("_staticBody"), GUIContent.none);
                         break;

@@ -9,18 +9,18 @@ using UnityEngine.Profiling;
 
 namespace AI
 {
-    [RequireComponent(typeof(KinematicBody))]
+    [RequireComponent(typeof(Body))]
     public class SteeringComponent : MonoBehaviour
     {
         [SerializeField, UnityReadOnly] private SteeringOutput _outputBuffer;
         [SerializeField, UnityReadOnly] private Steering _steering;
         [SerializeField, UnityReadOnly] private SteeringSpecs _steeringSpecs;
 
-        private KinematicBody _kinematic;
+        private Body _kinematic;
 
         void Awake()
         {
-            _kinematic = GetComponent<KinematicBody>();
+            _kinematic = GetComponent<Body>();
         }
 
         void Start()

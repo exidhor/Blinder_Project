@@ -9,6 +9,6 @@ namespace AI
     {
         Transform,
         Position,
-        StaticBody
+        Body
     }
 }
