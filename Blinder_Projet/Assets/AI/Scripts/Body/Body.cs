@@ -10,14 +10,14 @@ namespace AI
     [RequireComponent(typeof(Rigidbody2D))]
     public class Body : MonoBehaviour
     {
-        public readonly float EPSILON = 0.001f;  
-        
-        public bool IsDynamic;
-        public float LinearAcceleration;
-        public float AngularAcceleration;
+        public readonly float EPSILON = 0.001f;
+
+        //public bool IsDynamic;
+        //public float LinearAcceleration;
+        //public float AngularAcceleration;
 
         public float MaxSpeed;
-        public float MaxAngularSpeed;
+        //public float MaxAngularSpeed;
 
         public float orientationInDegree
         {
@@ -55,7 +55,7 @@ namespace AI
             get
             {
                 return -float.Epsilon > _rigidbody.velocity.x || _rigidbody.velocity.x > float.Epsilon
-                    || -float.Epsilon > _rigidbody.velocity.y || _rigidbody.velocity.y > float.Epsilon;
+                       || -float.Epsilon > _rigidbody.velocity.y || _rigidbody.velocity.y > float.Epsilon;
             }
         }
 
@@ -74,41 +74,50 @@ namespace AI
             _rigidbody = GetComponent<Rigidbody2D>();
         }
 
-        private void Start()
-        {
-            //OrientationInDegree = 0;
-            //_rotationInDegree = 0;
-        }
+        //private void Start()
+        //{
+        //OrientationInDegree = 0;
+        //_rotationInDegree = 0;
+        //}
 
-        public void Actualize(SteeringOutput steering, float deltaTime)
+        public void Actualize(SteeringOutput steeringOutput, float deltaTime)
         {
-            if (steering.StopVelocity)
+            if (steeringOutput.StopVelocity)
             {
                 _rigidbody.velocity = Vector2.zero;
             }
             else
             {
-                Vector2 currentVelocity = _rigidbody.velocity;
-
-                currentVelocity += steering.Linear * deltaTime;
-
-                if (currentVelocity.sqrMagnitude > MaxSpeed * MaxSpeed)
+                if (steeringOutput.IsInstantVelocity)
                 {
-                    currentVelocity.Normalize();
-                    currentVelocity *= MaxSpeed;
+                    _rigidbody.velocity = steeringOutput.Linear;
+                }
+                else
+                {
+                    Vector2 currentVelocity = _rigidbody.velocity;
+
+                    currentVelocity += steeringOutput.Linear * deltaTime;
+
+                    if (currentVelocity.sqrMagnitude > MaxSpeed * MaxSpeed)
+                    {
+                        currentVelocity.Normalize();
+                        currentVelocity *= MaxSpeed;
+                    }
+
+                    _rigidbody.velocity = currentVelocity;
                 }
 
-                _rigidbody.velocity = currentVelocity;
-                FaceMovementDirection(currentVelocity);
+                FaceMovementDirection(_rigidbody.velocity);
             }
             
-            if (steering.StopRotation)
+
+            if (steeringOutput.StopRotation)
             {
                 _rigidbody.angularVelocity = 0;
             }
             else
             {
-                _rigidbody.angularVelocity += steering.AngularInDegree;
+                _rigidbody.angularVelocity += steeringOutput.AngularInDegree;
             }
         }
 
@@ -173,110 +182,110 @@ namespace AI
         //    CapVelocity();
         //}
 
-        public void PrepareForUpdate()
-        {
-            // buffer last values
-            _oldVelocity = _rigidbody.velocity;
-            _oldAngularVelocity = _angularVelocity;
-            _oldOrientation = _rigidbody.rotation;
+        //public void PrepareForUpdate()
+        //{
+        //    // buffer last values
+        //    _oldVelocity = _rigidbody.velocity;
+        //    _oldAngularVelocity = _angularVelocity;
+        //    _oldOrientation = _rigidbody.rotation;
 
-            //_rigidbody.velocity = Vector2.zero;
-            _rigidbody.angularVelocity = 0;
-            //_angularVelocity = 0f;
-        }
+        //    //_rigidbody.velocity = Vector2.zero;
+        //    _rigidbody.angularVelocity = 0;
+        //    //_angularVelocity = 0f;
+        //}
 
-        private void ResetOrientation(float newOrientation)
-        {
-            _rigidbody.rotation = newOrientation;
+        //private void ResetOrientation(float newOrientation)
+        //{
+        //    _rigidbody.rotation = newOrientation;
 
-            _angularVelocity = 0f;
-        }
+        //    _angularVelocity = 0f;
+        //}
 
-        private void Rotate(float angularInDegree, float deltaTime)
-        {
-            _rigidbody.rotation += angularInDegree * deltaTime;
-        }
+        //private void Rotate(float angularInDegree, float deltaTime)
+        //{
+        //    _rigidbody.rotation += angularInDegree * deltaTime;
+        //}
 
-        private void CapVelocity()
-        {
-            Vector2 velocity = _rigidbody.velocity;
+        //private void CapVelocity()
+        //{
+        //    Vector2 velocity = _rigidbody.velocity;
 
-            if (velocity.sqrMagnitude > sqrMaxSpeed)
-            {
-                velocity.Normalize();
-                velocity *= MaxSpeed;
+        //    if (velocity.sqrMagnitude > sqrMaxSpeed)
+        //    {
+        //        velocity.Normalize();
+        //        velocity *= MaxSpeed;
 
-                _rigidbody.velocity = velocity;
-            }
-        }
+        //        _rigidbody.velocity = velocity;
+        //    }
+        //}
 
-        private void CapLinearAcceleration(float deltaTime, float inverseTime)
-        {
-            float currentSpeed = _rigidbody.velocity.magnitude;
-            float lastSpeed = _oldVelocity.magnitude;
+        //private void CapLinearAcceleration(float deltaTime, float inverseTime)
+        //{
+        //    float currentSpeed = _rigidbody.velocity.magnitude;
+        //    float lastSpeed = _oldVelocity.magnitude;
 
-            float speedDelta = (currentSpeed - lastSpeed);
-            float currentAcceleration = 0f;
+        //    float speedDelta = (currentSpeed - lastSpeed);
+        //    float currentAcceleration = 0f;
 
-            if (speedDelta > EPSILON)
-            {
-                currentAcceleration = speedDelta * inverseTime;
-            }
+        //    if (speedDelta > EPSILON)
+        //    {
+        //        currentAcceleration = speedDelta * inverseTime;
+        //    }
 
-            if (currentAcceleration > LinearAcceleration)
-            {
-                float targetSpeed = LinearAcceleration*deltaTime + lastSpeed;
+        //    if (currentAcceleration > LinearAcceleration)
+        //    {
+        //        float targetSpeed = LinearAcceleration*deltaTime + lastSpeed;
 
-                Vector2 velocity = _rigidbody.velocity;
+        //        Vector2 velocity = _rigidbody.velocity;
 
-                velocity.Normalize();
-                velocity *= targetSpeed;
+        //        velocity.Normalize();
+        //        velocity *= targetSpeed;
 
-                _rigidbody.velocity = velocity;
-            }
-        }
+        //        _rigidbody.velocity = velocity;
+        //    }
+        //}
 
-        private void CapAngularAcceleration(float deltaTime, float inverseTime)
-        {
-            float speedDelta = Mathf.Abs(_angularVelocity - _oldAngularVelocity);
-            float currentAcceleration = 0f;
+        //private void CapAngularAcceleration(float deltaTime, float inverseTime)
+        //{
+        //    float speedDelta = Mathf.Abs(_angularVelocity - _oldAngularVelocity);
+        //    float currentAcceleration = 0f;
 
-            if (speedDelta > EPSILON)
-            {
-                currentAcceleration = Mathf.Abs(speedDelta)*inverseTime;
-            }
+        //    if (speedDelta > EPSILON)
+        //    {
+        //        currentAcceleration = Mathf.Abs(speedDelta)*inverseTime;
+        //    }
 
-            if (currentAcceleration > AngularAcceleration)
-            {
-                float validAngularVelocity = AngularAcceleration * deltaTime * Mathf.Sign(_angularVelocity) + _oldAngularVelocity;
+        //    if (currentAcceleration > AngularAcceleration)
+        //    {
+        //        float validAngularVelocity = AngularAcceleration * deltaTime * Mathf.Sign(_angularVelocity) + _oldAngularVelocity;
 
-                if (validAngularVelocity > MaxAngularSpeed)
-                {
-                    validAngularVelocity = MaxAngularSpeed;
-                }
-                else if (validAngularVelocity < -MaxAngularSpeed)
-                {
-                    validAngularVelocity = -MaxAngularSpeed;
-                }
+        //        if (validAngularVelocity > MaxAngularSpeed)
+        //        {
+        //            validAngularVelocity = MaxAngularSpeed;
+        //        }
+        //        else if (validAngularVelocity < -MaxAngularSpeed)
+        //        {
+        //            validAngularVelocity = -MaxAngularSpeed;
+        //        }
 
-                float linearSpeed = _rigidbody.velocity.magnitude;
-                float rotation = validAngularVelocity*deltaTime;
+        //        float linearSpeed = _rigidbody.velocity.magnitude;
+        //        float rotation = validAngularVelocity*deltaTime;
 
-                Vector2 movement = _oldVelocity;
-                movement.Normalize();
-                movement = MathHelper.RotateVector(movement, rotation);
-                movement *= linearSpeed;
+        //        Vector2 movement = _oldVelocity;
+        //        movement.Normalize();
+        //        movement = MathHelper.RotateVector(movement, rotation);
+        //        movement *= linearSpeed;
 
-                _rigidbody.velocity = movement;
+        //        _rigidbody.velocity = movement;
 
-                _angularVelocity = validAngularVelocity;
-            }
-        }
+        //        _angularVelocity = validAngularVelocity;
+        //    }
+        //}
 
-        private void Move(Vector2 velocity)
-        {
-            _rigidbody.velocity = velocity;
-        }
+        //private void Move(Vector2 velocity)
+        //{
+        //    _rigidbody.velocity = velocity;
+        //}
 
         //public Vector2 GetPosition()
         //{
@@ -313,19 +322,19 @@ namespace AI
             return MathHelper.GetDirectionFromAngle(orientationInRadian);
         }
 
-        private void ComputeAngularVelocity(float inverseTime)
-        {
-            float delta = _rigidbody.rotation - _oldOrientation;
+        //private void ComputeAngularVelocity(float inverseTime)
+        //{
+        //    float delta = _rigidbody.rotation - _oldOrientation;
 
-            if (-EPSILON < delta || delta > EPSILON)
-            {
-                _angularVelocity = delta * inverseTime;
-            }
-            else
-            {
-                _angularVelocity = 0;
-            }
-        }
+        //    if (-EPSILON < delta || delta > EPSILON)
+        //    {
+        //        _angularVelocity = delta * inverseTime;
+        //    }
+        //    else
+        //    {
+        //        _angularVelocity = 0;
+        //    }
+        //}
 
         void OnDrawGizmosSelected()
         {

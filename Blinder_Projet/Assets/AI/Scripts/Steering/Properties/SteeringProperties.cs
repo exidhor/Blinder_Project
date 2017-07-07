@@ -10,6 +10,7 @@ namespace AI
 {
     public class SteeringProperties : MonoBehaviour
     {
+        // Global properties
         [SerializeField] private string _name;
         public string name { get { return _name; } }
 
@@ -25,7 +26,7 @@ namespace AI
         [SerializeField] private float _maxAngularAcceleration;
         public float maxAngularAcceleration { get { return _maxAngularAcceleration; } }
 
-        // Arrive specs
+        // Arrive properties
         [SerializeField] private float _targetRadius;
         public float targetRadius { get { return _targetRadius; } }
 
@@ -35,15 +36,19 @@ namespace AI
         [SerializeField] private float _timeToTarget;
         public float timeToTarget { get { return _timeToTarget; } }
 
-        // Face specs
+        // Face properties
         [SerializeField] private float _targetAngularRadius;
         public float targetAngularRadius { get { return _targetAngularRadius; } }
 
         [SerializeField] private float _slowAngularRadius;
         public float slowAngularRadius { get { return _slowAngularRadius; } }
 
-        // Pathfinding specs
+        // Pathfinding properties
         [SerializeField] private float _refreshPathTime;
         public float refreshPathTime { get { return _refreshPathTime; } }
+
+        // Pursue properties
+        [SerializeField] private float _maxPredictionTime;
+        public float maxPredictionTime { get { return _maxPredictionTime; } }
     }
 }

@@ -62,23 +62,33 @@ namespace AI
 
             Vector2 targetPosition;
 
+            SteeringOutput output;
+
             if (_currentNodeIndex >= _smoothPath.Count || _smoothPath.Count == 0)
             {
                 targetPosition = _target.position;
 
                 if (TargetIsTheEnd)
                 {
-                    return PrimitiveBehavior.Arrive(_character,
-                        targetPosition,
-                        _properties);
+                     output = PrimitiveBehavior.Arrive(_character,
+                                            targetPosition,
+                                            _properties);
                 }
-
-                return PrimitiveBehavior.Seek(_character, targetPosition, _properties);
+                else
+                {
+                    output = PrimitiveBehavior.Seek(_character, targetPosition, _properties);
+                }
             }
-            
-            targetPosition = _smoothPath[_currentNodeIndex];
+            else
+            {
+                targetPosition = _smoothPath[_currentNodeIndex];
 
-            return PrimitiveBehavior.Seek(_character, targetPosition, _properties);
+                output = PrimitiveBehavior.Seek(_character, targetPosition, _properties);
+            }
+
+            output.StopRotation = true;
+
+            return output;
         }
 
         void Update()

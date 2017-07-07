@@ -9,12 +9,23 @@ namespace AI
     {
         public override void Recompute()
         {
-            throw new NotImplementedException();
+            // nothing yet
         }
 
         public override SteeringOutput GetOutput()
         {
-            throw new NotImplementedException();
+            if (!_target.isSet)
+            {
+                return new SteeringOutput();
+            }
+
+            // todo : make an escape more intelligent (using pathfinding)
+
+            SteeringOutput output = PrimitiveBehavior.Flee(_character, _target.position, _properties);
+
+            output.StopRotation = true;
+
+            return output;
         }
     }
 }

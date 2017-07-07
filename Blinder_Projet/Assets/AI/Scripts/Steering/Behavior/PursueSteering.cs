@@ -9,12 +9,23 @@ namespace AI
     {
         public override void Recompute()
         {
-            throw new NotImplementedException();
+            // Nothing yet
         }
 
         public override SteeringOutput GetOutput()
         {
-            throw new NotImplementedException();
+            if (!_target.isSet)
+            {
+                return new SteeringOutput();
+            }
+
+            SteeringOutput output = PrimitiveBehavior.Pursue(_character,
+                                                            _target.body,
+                                                            _properties);
+
+            output.StopRotation = true;
+
+            return output;
         }
     }
 }

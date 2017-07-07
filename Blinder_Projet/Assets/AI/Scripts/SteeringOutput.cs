@@ -9,6 +9,8 @@ namespace AI
         //public bool IsOriented;
         //public bool IsInstantOrientation;
 
+        public bool IsInstantVelocity;
+
         public bool StopVelocity;
         public bool StopRotation;
 
@@ -28,6 +30,7 @@ namespace AI
 
             StopVelocity = false;
             StopRotation = false;
+            IsInstantVelocity = false;
 
             //IsOriented = false;
             //IsInstantOrientation = false;
@@ -37,6 +40,7 @@ namespace AI
         {
             Linear = Vector2.zero;
             AngularInDegree = 0;
+            IsInstantVelocity = false;
             //IsOriented = false;
             //IsInstantOrientation = false;
         }

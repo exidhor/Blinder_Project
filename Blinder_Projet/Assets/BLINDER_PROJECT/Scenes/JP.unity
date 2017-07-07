@@ -614,6 +614,10 @@ Prefab:
       propertyPath: m_UseFullKinematicContacts
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1246716869109134, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
   m_IsPrefabParent: 0
@@ -1187,6 +1191,10 @@ Prefab:
       propertyPath: m_UseFullKinematicContacts
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1246716869109134, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
   m_IsPrefabParent: 0
@@ -1424,6 +1432,10 @@ Prefab:
       propertyPath: m_UseFullKinematicContacts
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1246716869109134, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
   m_IsPrefabParent: 0
@@ -1630,6 +1642,10 @@ Prefab:
         type: 2}
       propertyPath: m_UseFullKinematicContacts
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1246716869109134, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
@@ -1934,6 +1950,10 @@ Prefab:
       propertyPath: m_UseFullKinematicContacts
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1246716869109134, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
   m_IsPrefabParent: 0
@@ -2139,6 +2159,18 @@ GameObject:
   m_PrefabParentObject: {fileID: 1557304712576042, guid: 9e7600697708d934fb59f669bcfa6caa,
     type: 2}
   m_PrefabInternal: {fileID: 773117279}
+--- !u!114 &379304523
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 379304522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d44109f7d5ff89242ac3f0799696bf66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxSpeed: 30
 --- !u!1 &461258570
 GameObject:
   m_ObjectHideFlags: 0
@@ -3076,6 +3108,10 @@ Prefab:
         type: 2}
       propertyPath: m_UseFullKinematicContacts
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1246716869109134, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
@@ -4811,6 +4847,11 @@ Prefab:
       propertyPath: _targetRadius
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 114820139540121864, guid: 8b78463799bcfbe46b4105d307a77a5d,
+        type: 2}
+      propertyPath: _maxPredictionTime
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8b78463799bcfbe46b4105d307a77a5d, type: 2}
   m_IsPrefabParent: 0
@@ -5688,6 +5729,10 @@ Prefab:
       propertyPath: m_UseFullKinematicContacts
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1246716869109134, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
   m_IsPrefabParent: 0
@@ -6467,6 +6512,10 @@ Prefab:
       propertyPath: m_UseFullKinematicContacts
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1246716869109134, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
   m_IsPrefabParent: 0
@@ -6577,6 +6626,10 @@ Prefab:
         type: 2}
       propertyPath: m_UseFullKinematicContacts
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1246716869109134, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
@@ -7041,6 +7094,10 @@ Prefab:
         type: 2}
       propertyPath: m_UseFullKinematicContacts
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1246716869109134, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
@@ -7662,6 +7719,10 @@ Prefab:
         type: 2}
       propertyPath: m_UseFullKinematicContacts
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1246716869109134, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
@@ -10398,6 +10459,10 @@ Prefab:
         type: 2}
       propertyPath: m_UseFullKinematicContacts
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1246716869109134, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: fa3cdff406115c1429fa59d79c2b0183, type: 2}

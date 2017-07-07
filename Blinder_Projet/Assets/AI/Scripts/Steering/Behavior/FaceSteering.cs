@@ -16,9 +16,13 @@ namespace AI
                 return new SteeringOutput();
             }
 
-            return PrimitiveBehavior.Face(_character,
-                _target.position,
-                _properties);
+            SteeringOutput output = PrimitiveBehavior.Face(_character,
+                                                    _target.position,
+                                                    _properties);
+
+            output.StopVelocity = true;
+
+            return output;
         }
     }
 }

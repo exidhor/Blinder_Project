@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using AI;
 using Tools;
 using UnityEngine;
 
 
 namespace BlinderProject
 {
-    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(Body))]
     public class PlayerMovement : MonoBehaviour
     {
         public float Speed;
@@ -14,11 +15,13 @@ namespace BlinderProject
         private AxisTrigger _horizontalAction = new AxisTrigger();
         private AxisTrigger _verticalAction = new AxisTrigger();
 
-        private Rigidbody2D _rigidbody;
+        [SerializeField, UnityReadOnly] private SteeringOutput _steeringOutput; 
+
+        private Body _body;
 
         void Awake()
         {
-            _rigidbody = GetComponent<Rigidbody2D>();
+            _body = GetComponent<Body>();
         }
         
         void Update()
@@ -43,7 +46,12 @@ namespace BlinderProject
                 vertical /= MathHelper.TwoSqrt;
             }
 
-            _rigidbody.velocity = new Vector2(horizontal, vertical);
+            _steeringOutput.Reset();
+            _steeringOutput.IsInstantVelocity = true;
+
+            _steeringOutput.Linear = new Vector2(horizontal, vertical);
+
+            _body.Actualize(_steeringOutput, Time.fixedDeltaTime);
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Tools;
 using UnityEngine;
 
@@ -7,15 +9,15 @@ namespace AI
 {
     public static partial class PrimitiveBehavior
     {
-        public static SteeringOutput Seek(Body character, Vector2 target, SteeringProperties properties)
+        public static SteeringOutput Flee(Body character,
+                                            Vector2 target,
+                                            SteeringProperties properties)
         {
             SteeringOutput output = new SteeringOutput();
 
-            output.StopRotation = true;
-
             // First work out the direction
-            output.Linear = target;
-            output.Linear -= character.position;
+            output.Linear = character.position;
+            output.Linear -= target;
 
             // If there is no direction, do nothing
             output.Linear = MathHelper.ConstructMovement(output.Linear, properties.maxAcceleration, 0.01f);
