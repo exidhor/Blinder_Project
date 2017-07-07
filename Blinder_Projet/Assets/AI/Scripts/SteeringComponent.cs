@@ -14,23 +14,23 @@ namespace AI
     {
         [SerializeField, UnityReadOnly] private SteeringOutput _outputBuffer;
         [SerializeField, UnityReadOnly] private Steering _steering;
-        [SerializeField, UnityReadOnly] private SteeringSpecs _steeringSpecs;
+        [SerializeField, UnityReadOnly] private SteeringProperties _steeringProperties;
 
-        private Body _kinematic;
+        private Body _body;
 
         void Awake()
         {
-            _kinematic = GetComponent<Body>();
+            _body = GetComponent<Body>();
         }
 
         void Start()
         {
             // tmp
-            SetSpecs("Human");
+            SetProperties("Human");
             SetSteering(ESteeringType.Seek, new Location(GameManager.instance.player.transform));
         }
 
-        public void ApplyOnKinematic(float deltaTime)
+        public void ApplyOnBody(float deltaTime)
         {
             // _kinematic.PrepareForUpdate();
 
@@ -40,25 +40,25 @@ namespace AI
                 _outputBuffer = _steering.GetOutput();
                 Profiler.EndSample();
                 Profiler.BeginSample("kinematic");
-                _kinematic.Actualize(_outputBuffer, deltaTime);
+                _body.Actualize(_outputBuffer, deltaTime);
                 Profiler.EndSample();
             }
         }
 
-        public void SetSpecs(string specsName)
+        public void SetProperties(string propertiesName)
         {
-            _steeringSpecs = SteeringSpecsTable.instance.GetSpecs(specsName);
+            _steeringProperties = SteeringPropertiesTable.instance.GetProperties(propertiesName);
 
-            if (_steeringSpecs != null)
+            if (_steeringProperties != null)
             {
                 if (_steering)
                 {
-                    _steering.Init(_kinematic, _steeringSpecs, null);
+                    _steering.Init(_body, _steeringProperties, null);
                 }
             }
             else
             {
-                Debug.LogWarning("Can't find the specs in the table. Verify the name : \"" + specsName + "\"");
+                Debug.LogWarning("Can't find the properties in the table. Verify the name : \"" + propertiesName + "\"");
             }
         }
 
@@ -69,15 +69,15 @@ namespace AI
                 _steering.Release();
             }
 
-            _steering = SteeringTable.instance.GetFreeSteering(type, _kinematic, _steeringSpecs, target);
+            _steering = SteeringTable.instance.GetFreeSteering(type, _body, _steeringProperties, target);
 
-            _kinematic.ResetBody();
+            _body.ResetBody();
         }
 
         void FixedUpdate()
         {
             Profiler.BeginSample("naviguation");
-            ApplyOnKinematic(Time.fixedDeltaTime);
+            ApplyOnBody(Time.fixedDeltaTime);
             Profiler.EndSample();
         }
 

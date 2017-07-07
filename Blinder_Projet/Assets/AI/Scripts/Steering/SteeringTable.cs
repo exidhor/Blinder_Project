@@ -33,7 +33,7 @@ namespace AI
             }
         }
 
-        public Steering GetFreeSteering(ESteeringType type, Body character, SteeringSpecs specs, Location target = null)
+        public Steering GetFreeSteering(ESteeringType type, Body character, SteeringProperties properties, Location target = null)
         {
             if (type == ESteeringType.None)
             {
@@ -42,7 +42,7 @@ namespace AI
 
             Steering steering = (Steering) _pools[(int) type].GetFreeResource();
 
-            steering.Init(character, specs, target);
+            steering.Init(character, properties, target);
 
             return steering;
         }

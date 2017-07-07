@@ -18,7 +18,7 @@ namespace AI
 
             return PrimitiveBehavior.Face(_character,
                 _target.position,
-                _specs);
+                _properties);
         }
     }
 }

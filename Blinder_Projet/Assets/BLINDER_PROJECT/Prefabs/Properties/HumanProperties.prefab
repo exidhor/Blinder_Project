@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4962311500918038}
   - component: {fileID: 114820139540121864}
   m_Layer: 0
-  m_Name: HumanSpecs
+  m_Name: HumanProperties
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

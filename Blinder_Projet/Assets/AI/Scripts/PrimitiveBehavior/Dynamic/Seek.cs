@@ -7,7 +7,7 @@ namespace AI
 {
     public static partial class PrimitiveBehavior
     {
-        public static SteeringOutput Seek(Body character, Vector2 target, SteeringSpecs specs)
+        public static SteeringOutput Seek(Body character, Vector2 target, SteeringProperties properties)
         {
             SteeringOutput output = new SteeringOutput();
 
@@ -16,7 +16,7 @@ namespace AI
             output.Linear -= character.position;
 
             // If there is no direction, do nothing
-            output.Linear = MathHelper.ConstructMovement(output.Linear, specs.maxAcceleration, 0.01f);
+            output.Linear = MathHelper.ConstructMovement(output.Linear, properties.maxAcceleration, 0.01f);
 
             return output;
         }

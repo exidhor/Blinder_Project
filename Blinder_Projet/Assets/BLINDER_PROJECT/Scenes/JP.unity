@@ -2038,68 +2038,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
---- !u!1001 &370274645
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1292361593}
-    m_Modifications:
-    - target: {fileID: 4962311500918038, guid: 8b78463799bcfbe46b4105d307a77a5d, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4962311500918038, guid: 8b78463799bcfbe46b4105d307a77a5d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4962311500918038, guid: 8b78463799bcfbe46b4105d307a77a5d, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4962311500918038, guid: 8b78463799bcfbe46b4105d307a77a5d, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4962311500918038, guid: 8b78463799bcfbe46b4105d307a77a5d, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4962311500918038, guid: 8b78463799bcfbe46b4105d307a77a5d, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4962311500918038, guid: 8b78463799bcfbe46b4105d307a77a5d, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4962311500918038, guid: 8b78463799bcfbe46b4105d307a77a5d, type: 2}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1691751312567664, guid: 8b78463799bcfbe46b4105d307a77a5d, type: 2}
-      propertyPath: m_Name
-      value: EngineSpecs
-      objectReference: {fileID: 0}
-    - target: {fileID: 114820139540121864, guid: 8b78463799bcfbe46b4105d307a77a5d,
-        type: 2}
-      propertyPath: _name
-      value: Engine
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 8b78463799bcfbe46b4105d307a77a5d, type: 2}
-  m_IsPrefabParent: 0
---- !u!4 &370274646 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 4962311500918038, guid: 8b78463799bcfbe46b4105d307a77a5d,
-    type: 2}
-  m_PrefabInternal: {fileID: 370274645}
---- !u!114 &370274647 stripped
-MonoBehaviour:
-  m_PrefabParentObject: {fileID: 114820139540121864, guid: 8b78463799bcfbe46b4105d307a77a5d,
-    type: 2}
-  m_PrefabInternal: {fileID: 370274645}
-  m_Script: {fileID: 11500000, guid: 611ec8d9e9e041d4491c4694cf88d926, type: 3}
 --- !u!1 &377370451
 GameObject:
   m_ObjectHideFlags: 0
@@ -4159,6 +4097,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114811845096239306, guid: 9e7600697708d934fb59f669bcfa6caa,
+        type: 2}
+      propertyPath: Speed
+      value: 30
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9e7600697708d934fb59f669bcfa6caa, type: 2}
   m_IsPrefabParent: 0
@@ -4796,6 +4739,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114966620844746118, guid: 6f97293b36af5ab46bfa2d43a7caa0b3,
+        type: 2}
+      propertyPath: SteeringPoolEntries.Array.data[4].Prefab
+      value: 
+      objectReference: {fileID: 1975624723}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6f97293b36af5ab46bfa2d43a7caa0b3, type: 2}
   m_IsPrefabParent: 0
@@ -4856,7 +4804,7 @@ Prefab:
     - target: {fileID: 114820139540121864, guid: 8b78463799bcfbe46b4105d307a77a5d,
         type: 2}
       propertyPath: _maxSpeed
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 114820139540121864, guid: 8b78463799bcfbe46b4105d307a77a5d,
         type: 2}
@@ -6744,7 +6692,7 @@ GameObject:
   - component: {fileID: 1292361593}
   - component: {fileID: 1292361594}
   m_Layer: 0
-  m_Name: SteeringSpecsTable
+  m_Name: SteeringPropertiesTable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6761,7 +6709,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1531543965}
-  - {fileID: 370274646}
   m_Father: {fileID: 1162529275}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6776,9 +6723,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0168cefb51cfb8468a6b4836c04d508, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _steeringSpecsList:
+  _steeringPropertiesList:
   - {fileID: 1531543964}
-  - {fileID: 370274647}
 --- !u!1 &1295460622
 GameObject:
   m_ObjectHideFlags: 0
@@ -6828,10 +6774,11 @@ MonoBehaviour:
     _type: 0
     _position: {x: 0, y: 0}
     _transform: {fileID: 2003992127}
-    _kinematicBody: {fileID: 0}
-  _specs: {fileID: 1531543964}
+    _body: {fileID: 0}
+  _properties: {fileID: 0}
   DrawDebugSmoothPath: 1
   DrawDebugPath: 1
+  TargetIsTheEnd: 1
   _currentTime: 0
   _currentNodeIndex: 0
   _path: []

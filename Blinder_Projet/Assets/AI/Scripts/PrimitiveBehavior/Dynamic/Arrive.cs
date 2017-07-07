@@ -6,7 +6,7 @@ namespace AI
     {
         public static SteeringOutput Arrive(Body character,
                                             Vector2 target,
-                                            SteeringSpecs specs)
+                                            SteeringProperties properties)
         {
             SteeringOutput output = new SteeringOutput();
 
@@ -17,7 +17,7 @@ namespace AI
             float squareDistance = output.Linear.SqrMagnitude();
 
             // If there is no direction, do nothing
-            if (squareDistance < specs.targetRadius * specs.targetRadius)
+            if (squareDistance < properties.targetRadius * properties.targetRadius)
             {
                 output.Linear = Vector2.zero;
                 output.StopVelocity = true;
@@ -26,29 +26,29 @@ namespace AI
             }
             
             output.Linear.Normalize();
-            output.Linear *= specs.maxSpeed;
+            output.Linear *= properties.maxSpeed;
 
             // if we are outside the slowRadius, then go maxSpeed (and no changement)
             // Otherwise calculate a scaled speed
-            if (squareDistance < specs.slowRadius * specs.slowRadius)
+            if (squareDistance < properties.slowRadius * properties.slowRadius)
             {
-                output.Linear *= Mathf.Sqrt(squareDistance) / specs.slowRadius;
+                output.Linear *= Mathf.Sqrt(squareDistance) / properties.slowRadius;
             }
 
             // acceleration tries to get to the target velocity
             output.Linear -= character.velocity;
 
-            if (specs.timeToTarget == 0f)
+            if (properties.timeToTarget == 0f)
             {
-                output.Linear *= specs.maxAcceleration;
+                output.Linear *= properties.maxAcceleration;
             }
             else
             {
-                output.Linear /= specs.timeToTarget;
+                output.Linear /= properties.timeToTarget;
             }
 
             // If that is too fast, then clip the speed
-            output.Linear = Vector2.ClampMagnitude(output.Linear, specs.maxAcceleration);
+            output.Linear = Vector2.ClampMagnitude(output.Linear, properties.maxAcceleration);
 
             return output;
         }

@@ -70,22 +70,22 @@ namespace AI
                 {
                     return PrimitiveBehavior.Arrive(_character,
                         targetPosition,
-                        _specs);
+                        _properties);
                 }
 
-                return PrimitiveBehavior.Seek(_character, targetPosition, _specs);
+                return PrimitiveBehavior.Seek(_character, targetPosition, _properties);
             }
             
             targetPosition = _smoothPath[_currentNodeIndex];
 
-            return PrimitiveBehavior.Seek(_character, targetPosition, _specs);
+            return PrimitiveBehavior.Seek(_character, targetPosition, _properties);
         }
 
         void Update()
         {
             _currentTime += Time.deltaTime;
 
-            if (_specs != null && _currentTime > _specs.refreshPathTime)
+            if (_properties != null && _currentTime > _properties.refreshPathTime)
             {
                 RefreshPath();
             }

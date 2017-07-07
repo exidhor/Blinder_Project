@@ -6,7 +6,7 @@ namespace AI
     {
         public static SteeringOutput Face(Body character,
                                            Vector2 target,
-                                           SteeringSpecs specs)
+                                           SteeringProperties properties)
         {
             // First work out the direction
             Vector2 direction = target - character.position;
@@ -22,7 +22,7 @@ namespace AI
              
             return Align(character, 
                 targetOrientation,
-                specs);
+                properties);
         }
     }
 }

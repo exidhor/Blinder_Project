@@ -11,7 +11,7 @@ namespace AI
     {
         public static SteeringOutput Align(Body character,
                                            float targetOrientation,
-                                           SteeringSpecs specs)
+                                           SteeringProperties properties)
         {
             SteeringOutput output = new SteeringOutput();
 
@@ -23,18 +23,18 @@ namespace AI
             float rotationSize = Mathf.Abs(rotation);
 
             // check if we are already there, is yes, return a void output
-            if (rotationSize < specs.targetAngularRadius)
+            if (rotationSize < properties.targetAngularRadius)
             {
                 output.StopRotation = true;
                 return output;
             }
 
-            float targetRotation = specs.maxRotation;
+            float targetRotation = properties.maxRotation;
 
             // if we are inside the slowRadius, then we calculate a scaled rotation
-            if (rotationSize < specs.slowAngularRadius)
+            if (rotationSize < properties.slowAngularRadius)
             {
-                targetRotation *= rotationSize/ specs.slowAngularRadius;
+                targetRotation *= rotationSize/ properties.slowAngularRadius;
             }
 
             // the final target rotation combines speed (already in the variable)
@@ -43,14 +43,14 @@ namespace AI
 
             // Acceleration tries to get to the target rotation
             output.AngularInDegree = targetRotation - character.rotation;
-            output.AngularInDegree /= specs.timeToTarget;
+            output.AngularInDegree /= properties.timeToTarget;
 
             // Check if acceleration is too great
             float angularAcceleration = Mathf.Abs(output.AngularInDegree);
-            if (angularAcceleration > specs.maxAngularAcceleration)
+            if (angularAcceleration > properties.maxAngularAcceleration)
             {
                 output.AngularInDegree /= angularAcceleration;
-                output.AngularInDegree *= specs.maxAngularAcceleration;
+                output.AngularInDegree *= properties.maxAngularAcceleration;
             }
 
             return output;

@@ -8,7 +8,7 @@ using Tools;
 
 namespace AI
 {
-    public class SteeringSpecs : MonoBehaviour
+    public class SteeringProperties : MonoBehaviour
     {
         [SerializeField] private string _name;
         public string name { get { return _name; } }

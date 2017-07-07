@@ -63,15 +63,15 @@ namespace AIEditor
         {
             EditorGUI.indentLevel++;
 
-            EditorGUILayout.HelpBox("Search into the SteeringSpecsTable the right specs, and set it" +
+            EditorGUILayout.HelpBox("Search into the SteeringPropertiesTable the right properties, and set it" +
                                     " to the SteeringComponent. Be sure to type an existant name." +
-                                    "You can find names in children of SteeringSpecsTable.", MessageType.Info);
+                                    "You can find names in children of SteeringPropertiesTable.", MessageType.Info);
 
             _specsName = EditorGUILayout.TextField("name", _specsName);
 
-            if (GUILayout.Button("Load Specs"))
+            if (GUILayout.Button("Load Properties"))
             {
-                _targetObject.SetSpecs(_specsName);
+                _targetObject.SetProperties(_specsName);
             }
 
             EditorGUI.indentLevel--;

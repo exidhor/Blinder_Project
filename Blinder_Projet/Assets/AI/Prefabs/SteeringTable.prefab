@@ -68,11 +68,7 @@ MonoBehaviour:
     PoolSize: 15
     ExpandPoolSize: 5
     Type: 3
-  - Prefab: {fileID: 114246630572466536, guid: 86b22e8bfdaaac547bfd10e530a8c0d8, type: 2}
-    PoolSize: 15
-    ExpandPoolSize: 5
-    Type: 4
-  - Prefab: {fileID: 114921354530581170, guid: a20cf2fbfdc74d74e877b591abd82ba1, type: 2}
+  - Prefab: {fileID: 0}
     PoolSize: 15
     ExpandPoolSize: 5
     Type: 5

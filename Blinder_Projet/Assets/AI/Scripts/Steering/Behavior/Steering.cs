@@ -9,12 +9,12 @@ namespace AI
         [SerializeField] protected Body _character;
         [SerializeField] protected Location _target = new Location();
 
-        [SerializeField] protected SteeringSpecs _specs;
+        [SerializeField] protected SteeringProperties _properties;
 
-        public void Init(Body character, SteeringSpecs specs, Location target)
+        public void Init(Body character, SteeringProperties properties, Location target)
         {
             _character = character;
-            _specs = specs;
+            _properties = properties;
 
             SetTarget(target);
         }
